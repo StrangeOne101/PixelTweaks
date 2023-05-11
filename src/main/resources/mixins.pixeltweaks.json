@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.7.10",
+  "package": "com.strangeone101.pixeltweaks.mixin",
+  "refmap": "mixins.pixeltweaks.refmap.json",
+  "target": "@env(DEFAULT)",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+
+  ],
+  "client": [
+    "OpponentElementMixin"
+  ]
+}

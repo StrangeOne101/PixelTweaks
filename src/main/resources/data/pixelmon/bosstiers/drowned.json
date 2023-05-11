@@ -1,0 +1,17 @@
+{
+  "id": "drowned",
+  "name": "enum.trainerBoss.drowned",
+  "canRandomlySpawn": false,
+  "weight": 0,
+  "color": {
+    "r": 72, "g": 168, "b": 181, "a": 255
+  },
+  "modelScaleFactor": 3,
+  "isMega": false,
+  "megaStoneObtainChance": 0,
+  "megaStoneRepeatChance": 0,
+  "alwaysPalette": "drowned",
+  "levelMultiplier": 1,
+  "extraLevels": 20,
+  "dropSets": []
+}
