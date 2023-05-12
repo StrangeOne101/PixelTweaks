@@ -1,0 +1,17 @@
+# Suggestions / TODO List
+- Global party EXP like from modern games
+- Make flying legendaries hover in place in their AI. So they don't fly away too much
+- Make shrines have configurable spawns
+- Battle music specific for legendaries or specific mons
+- Make beacon bases and items compatible with pixelmon gems
+- Make tridents drop
+- Configurable cloning machine
+  - How many times something can be cloned
+  - What can be cloned into what (with what chances)
+  - What items can be used to clone
+- Configurable vending machines
+- Make moomoo milk drinkable with clearing effects
+- Make fox pokemon immune to berry bushes
+- Group level up messages together
+- Make hypertrain level 50/configurable
+- Make dig/rock smash/cut work on all modded blocks

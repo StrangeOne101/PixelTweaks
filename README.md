@@ -16,4 +16,6 @@ As of version 1.0, there is the following:
 # Suggestions / Contributing
 Got suggestions? Please submit them in the PixelTweaks thread in the Pixelmon discord!
 
+Click [here](TODO.md) to see the list of planned features!
+
 PRs are also welcome!
