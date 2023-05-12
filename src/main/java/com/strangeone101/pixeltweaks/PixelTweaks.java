@@ -64,6 +64,7 @@ public class PixelTweaks {
     public void initializeTweaks(FMLCommonSetupEvent event) {
         LOGGER.info("Initializing tweaks");
         new Healer();
+        new NewGamerules();
         //new ExternalMoveBlocks();
     }
 }
