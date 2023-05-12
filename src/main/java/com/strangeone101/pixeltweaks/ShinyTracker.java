@@ -30,6 +30,8 @@ public class ShinyTracker {
     private Set<PixelmonEntity> shinyTracking = new HashSet<>();
 
     public ClippingHelper camera = null;
+    private double range = TweaksConfig.shinySparkleRange.get();
+    private float volume = Math.min(TweaksConfig.shinySparkleVolume.get().floatValue(), 2F);
 
     public boolean shouldTrackShiny(PixelmonEntity entity) {
         if (entity.isUncatachable() || !entity.isAlive() || entity.isBossPokemon()
@@ -66,7 +68,7 @@ public class ShinyTracker {
             boolean rendered = Minecraft.getInstance().getRenderManager().shouldRender(entity, camera, vec.x, vec.y, vec.z);
             boolean visible = rayTrace(entity);
 
-            if (entity.getPositionVec().squareDistanceTo(Minecraft.getInstance().player.getPositionVec()) <= 20 * 20 && rendered && visible) {
+            if (entity.getPositionVec().squareDistanceTo(Minecraft.getInstance().player.getPositionVec()) <= range * range && rendered && visible) {
                 //PixelTweaks.LOGGER.info("Visisble2: " + visible);
                 //Remove from tracking
                 iterator.remove();
@@ -110,12 +112,15 @@ public class ShinyTracker {
 
     public void spawnSparkle(PixelmonEntity entity) {
         ClientPlayerEntity thiz = Minecraft.getInstance().player;
-        ClientScheduler.schedule(3, () -> {
-            SimpleSound sound = new SimpleSound(new ResourceLocation(PixelTweaks.MODID, "sparkle"), SoundCategory.NEUTRAL,
-                    1F, 1F, false, 0, ISound.AttenuationType.LINEAR,
-                    entity.getPosX(), entity.getPosY(), entity.getPosZ(), true);
-            Minecraft.getInstance().getSoundHandler().play(sound);
-        });
+        if (volume > 0) {
+            ClientScheduler.schedule(3, () -> {
+                SimpleSound sound = new SimpleSound(new ResourceLocation(PixelTweaks.MODID, "sparkle"), SoundCategory.PLAYERS,
+                        volume, 1F, false, 0, ISound.AttenuationType.LINEAR,
+                        entity.getPosX(), entity.getPosY(), entity.getPosZ(), true);
+                Minecraft.getInstance().getSoundHandler().play(sound);
+            });
+        }
+
 
         final double d = entity.getWidth() / 2.5D + 0.2D;
         final double h = entity.getHeight() / 2.5D - 0.5D;

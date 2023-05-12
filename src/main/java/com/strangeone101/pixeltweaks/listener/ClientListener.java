@@ -4,11 +4,13 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.ClientScheduler;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.ShinyTracker;
+import com.strangeone101.pixeltweaks.TweaksConfig;
 import com.strangeone101.pixeltweaks.particle.FakeParticle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.renderer.culling.ClippingHelper;
 import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -26,18 +28,31 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 @OnlyIn(Dist.CLIENT)
 public class ClientListener {
 
+    private boolean enableSparkle;
+
     public ClientListener() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onTextureStitch);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, this::onPokemonSpawn);
         MinecraftForge.EVENT_BUS.addListener(this::onClientTick);
         MinecraftForge.EVENT_BUS.addListener(this::onPlayerLeaveWorld);
         MinecraftForge.EVENT_BUS.addListener(this::onRenderWorldLastEvent);
-        //MinecraftForge.EVENT_BUS.addListener(this::onTextureStitch);
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onTextureStitch);
+
+    }
+
+    public void clientSetup(FMLClientSetupEvent event) {
+        if (TweaksConfig.shinySparkleRange.get() > 0) {
+            enableSparkle = true;
+        }
+
+        LanguageManager languageManager = Minecraft.getInstance().getLanguageManager();
+
+
     }
 
     public void onPokemonSpawn(EntityJoinWorldEvent event) {
-        if (event.getEntity() instanceof PixelmonEntity && !event.isCanceled() && event.getResult() != Event.Result.DENY && event.getWorld().isRemote) {
+        if (enableSparkle && event.getEntity() instanceof PixelmonEntity && !event.isCanceled() && event.getResult() != Event.Result.DENY && event.getWorld().isRemote) {
             //PixelTweaks.LOGGER.info("Pixelmon spawned on client: " + event.getWorld().isRemote);
             ClientScheduler.schedule(1, () -> { //Wait a tick so the entity is fully loaded, so it isn't a bulbasaur
                 PixelmonEntity entity = (PixelmonEntity) event.getEntity();
@@ -54,7 +69,7 @@ public class ClientListener {
     }
 
     public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.END && !Minecraft.getInstance().isGamePaused()
+        if (enableSparkle && event.phase == TickEvent.Phase.END && !Minecraft.getInstance().isGamePaused()
                 && (Minecraft.getInstance().currentScreen == null || Minecraft.getInstance().currentScreen instanceof ChatScreen)) {
             ShinyTracker.INSTANCE.tick();
             ClientScheduler.tick();
@@ -66,8 +81,10 @@ public class ClientListener {
     }
 
     public void onRenderWorldLastEvent(RenderWorldLastEvent event) {
+        if (enableSparkle) {
+            ShinyTracker.INSTANCE.camera = new ClippingHelper(event.getMatrixStack().getLast().getMatrix(), event.getProjectionMatrix());
+        }
 
-        ShinyTracker.INSTANCE.camera = new ClippingHelper(event.getMatrixStack().getLast().getMatrix(), event.getProjectionMatrix());
         //PixelTweaks.LOGGER.info("Matrix: " + event.getMatrixStack().getLast().getMatrix());
         //PixelTweaks.LOGGER.info("Projection: " + event.getProjectionMatrix());
     }
@@ -75,10 +92,6 @@ public class ClientListener {
     /*public void onCameraSetup(EntityViewRenderEvent.CameraSetup event) {
         Minecraft.getInstance().gameRenderer.getActiveRenderInfo().
     }*/
-
-    public void clientSetup(FMLClientSetupEvent event) {
-
-    }
 
     public void onTextureStitch(TextureStitchEvent.Pre event) {
         if (event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_PARTICLES_TEXTURE)) {

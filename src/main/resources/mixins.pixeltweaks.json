@@ -9,6 +9,6 @@
 
   ],
   "client": [
-    "OpponentElementMixin"
+    "client.OpponentElementMixin"
   ]
 }

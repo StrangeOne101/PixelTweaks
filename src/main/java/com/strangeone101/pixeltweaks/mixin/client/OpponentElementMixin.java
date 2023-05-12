@@ -1,12 +1,10 @@
-package com.strangeone101.pixeltweaks.mixin;
+package com.strangeone101.pixeltweaks.mixin.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.Gender;
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
-import com.pixelmonmod.pixelmon.api.util.helpers.ResourceLocationHelper;
 import com.pixelmonmod.pixelmon.battles.status.StatusType;
 import com.pixelmonmod.pixelmon.client.ClientProxy;
 import com.pixelmonmod.pixelmon.client.gui.Resources;
@@ -16,7 +14,6 @@ import com.pixelmonmod.pixelmon.client.gui.battles.PixelmonClientData;
 import com.pixelmonmod.pixelmon.client.gui.battles.pokemonOverlays.OpponentElement;
 import com.pixelmonmod.pixelmon.client.gui.widgets.PixelmonWidget;
 import com.pixelmonmod.pixelmon.client.storage.ClientStorageManager;
-import com.strangeone101.pixeltweaks.PixelTweaks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
