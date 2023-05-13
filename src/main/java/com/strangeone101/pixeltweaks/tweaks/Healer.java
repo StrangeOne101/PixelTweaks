@@ -18,7 +18,7 @@ public class Healer {
             //FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Block.class, this::onBlockRegistry);
             PixelTweaks.LOGGER.info("Registered healer tweak");
             try {
-                Field field = ObfuscationReflectionHelper.findField(AbstractBlock.class, "lootTable");
+                Field field = ObfuscationReflectionHelper.findField(AbstractBlock.class, "field_220085_g"); // lootTable field
                 boolean accessible = field.isAccessible();
                 field.setAccessible(true);
                 field.set(BlockRegistration.HEALER.get(), new ResourceLocation("pixeltweaks", "blocks/healer"));

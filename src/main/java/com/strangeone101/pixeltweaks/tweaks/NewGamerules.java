@@ -16,7 +16,7 @@ public class NewGamerules {
 
     public NewGamerules() {
         try{
-            Method createBoolean = ObfuscationReflectionHelper.findMethod(GameRules.BooleanValue.class, "create", boolean.class);
+            Method createBoolean = ObfuscationReflectionHelper.findMethod(GameRules.BooleanValue.class, "func_223568_b", boolean.class); //the create(boolean) method
             createBoolean.setAccessible(true);
             DeferredWorkQueue.runLater( () ->
             {
