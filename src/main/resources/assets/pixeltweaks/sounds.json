@@ -4,5 +4,19 @@
     "sounds": [
       "pixeltweaks:sparkle"
     ]
+  },
+  "arceus/intro": {
+    "subtitle": "pixeltweaks.subtitle.music.arceus",
+    "sounds": [{
+      "name": "pixeltweaks:music/arceus/intro",
+      "stream": true
+    }]
+  },
+  "arceus/loop": {
+    "subtitle": "pixeltweaks.subtitle.music.arceus",
+    "sounds": [{
+      "name": "pixeltweaks:music/arceus/loop",
+      "stream": true
+    }]
   }
 }

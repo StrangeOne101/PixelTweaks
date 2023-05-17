@@ -22,7 +22,7 @@ apply plugin: 'org.spongepowered.mixin'
 
 
 group = 'com.strangeone101'
-version = '1.1'
+version = '1.2'
 
 java {
     archivesBaseName = 'PixelTweaks'
@@ -68,7 +68,7 @@ minecraft {
 
 
             mods {
-                pixelextrasex {
+                pixeltweaks {
                     source sourceSets.main
                 }
             }
@@ -83,7 +83,7 @@ minecraft {
 
 
             mods {
-                pixelextrasex {
+                pixeltweaks {
                     source sourceSets.main
                 }
             }
@@ -97,7 +97,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'pixelextrasex', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'pixeltweaks', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
                 pixeltweaks {
@@ -154,7 +154,7 @@ jar {
         attributes([
                 "Specification-Title"     : "pixeltweaks",
                 "Specification-Vendor"    : "StrangeOne101",
-                "Specification-Version"   : "1.1", // We are version 1 of ourselves
+                "Specification-Version"   : project.jar.archiveVersion, // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "StrangeOne101",

@@ -9,6 +9,9 @@
     "InteractionBottleCapMixin"
   ],
   "client": [
-    "client.OpponentElementMixin"
+    "client.BattleMusicMixin",
+    "client.OpponentElementMixin",
+    "client.PixelmonMusicMixin",
+    "client.WorldHelperMixin"
   ]
 }

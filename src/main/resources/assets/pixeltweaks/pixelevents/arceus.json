@@ -1,0 +1,17 @@
+{
+  "type": "battle_music",
+  "conditions": [
+    {
+      "type": "pokemon",
+      "spec": "species:arceus",
+      "wild": true
+    }
+  ],
+  "music": {
+    "start": "pixeltweaks:arceus/intro",
+    "loop": "pixeltweaks:arceus/loop",
+    "end": ""
+  }
+}
+
+
