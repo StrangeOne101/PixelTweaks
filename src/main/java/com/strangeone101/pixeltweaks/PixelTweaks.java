@@ -5,6 +5,7 @@ import com.strangeone101.pixeltweaks.listener.CommonListener;
 import com.strangeone101.pixeltweaks.tweaks.ExternalMoveBlocks;
 import com.strangeone101.pixeltweaks.tweaks.Healer;
 import com.strangeone101.pixeltweaks.tweaks.NewGamerules;
+import com.strangeone101.pixeltweaks.tweaks.TridentDrops;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -65,6 +66,7 @@ public class PixelTweaks {
         LOGGER.info("Initializing tweaks");
         new Healer();
         new NewGamerules();
+        new TridentDrops();
         //new ExternalMoveBlocks();
     }
 }
