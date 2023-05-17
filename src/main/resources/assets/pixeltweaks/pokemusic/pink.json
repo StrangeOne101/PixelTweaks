@@ -1,0 +1,16 @@
+{
+  "type": "bgm",
+  "music": {
+    "start": "pixeltweaks:pink"
+  },
+  "conditions": [
+    {
+      "type": "pokemon",
+      "spec": "palette:pink"
+    },
+    {
+      "type": "range",
+      "range": 16.0
+    }
+  ]
+}

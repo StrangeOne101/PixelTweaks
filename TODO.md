@@ -13,5 +13,8 @@
 - Make moomoo milk drinkable with clearing effects
 - Make fox pokemon immune to berry bushes
 - Group level up messages together
-- Make hypertrain level 50/configurable
 - Make dig/rock smash/cut work on all modded blocks
+- Catch multiplier & one separate one for legendaries
+- Right click battled NPCs to see their defeat message again
+- Make it so apricorns drop after a while of being ripe
+- Make catch combos not break when you change species

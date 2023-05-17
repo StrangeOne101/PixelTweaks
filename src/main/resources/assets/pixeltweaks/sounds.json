@@ -4,5 +4,17 @@
     "sounds": [
       "pixeltweaks:sparkle"
     ]
+  },
+  "arceus/loop": {
+    "subtitle": "pixelmon.subtitle.battlemusic",
+    "sounds": [
+      "pixeltweaks:music/battle_la_arceus"
+    ]
+  },
+  "arceus/intro": {
+    "subtitle": "pixelmon.subtitle.battlemusic",
+    "sounds": [
+      "pixeltweaks:music/battle_la_arceus_intro"
+    ]
   }
 }

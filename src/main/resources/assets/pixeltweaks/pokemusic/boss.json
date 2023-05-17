@@ -1,0 +1,18 @@
+{
+  "type": "bgm",
+  "conditions": [
+    {
+      "type": "pokemon",
+      "spec": "isboss"
+    },
+    {
+      "type": "range",
+      "range": 16.0
+    }
+  ],
+  "music": {
+    "start": "pixeltweaks:alpha_intro",
+    "loop": "pixeltweaks:alpha_loop",
+    "end": "pixeltweaks:alpha_end"
+  }
+}
