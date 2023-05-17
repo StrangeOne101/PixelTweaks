@@ -1,26 +1,25 @@
 package com.strangeone101.pixeltweaks.pixelevents.condition;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.pixelmonmod.api.pokemon.PokemonSpecification;
-import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.pixelevents.Condition;
 
-import java.lang.reflect.Type;
+import java.util.List;
 
-public class PokemonCondition extends Condition<Pokemon> {
-    public PokemonSpecification spec;
+public class PokemonListCondition extends Condition<Pokemon> {
+    public List<PokemonSpecification> spec;
     public Boolean wild;
 
     @Override
     public boolean conditionMet(Pokemon pokemon) {
         if (wild != null && (pokemon.getOriginalTrainer() == null) != wild) return false;
-        if (spec != null && !spec.matches(pokemon)) return false;
+        if (spec != null) {
+            for (PokemonSpecification s : spec) {
+                if (s.matches(pokemon)) return true;
+            }
+            return false;
+        }
 
         return true;
     }
@@ -32,7 +31,7 @@ public class PokemonCondition extends Condition<Pokemon> {
 
     @Override
     public String toString() {
-        return "PokemonCondition{" +
+        return "PokemonListCondition{" +
                 "spec='" + spec + '\'' +
                 ", wild=" + wild +
                 '}';

@@ -5,16 +5,18 @@
       "pixeltweaks:sparkle"
     ]
   },
-  "arceus/loop": {
-    "subtitle": "pixelmon.subtitle.battlemusic",
-    "sounds": [
-      "pixeltweaks:music/battle_la_arceus"
-    ]
-  },
   "arceus/intro": {
-    "subtitle": "pixelmon.subtitle.battlemusic",
-    "sounds": [
-      "pixeltweaks:music/battle_la_arceus_intro"
-    ]
+    "subtitle": "pixeltweaks.subtitle.music.arceus",
+    "sounds": [{
+      "name": "pixeltweaks:music/arceus/intro",
+      "stream": true
+    }]
+  },
+  "arceus/loop": {
+    "subtitle": "pixeltweaks.subtitle.music.arceus",
+    "sounds": [{
+      "name": "pixeltweaks:music/arceus/loop",
+      "stream": true
+    }]
   }
 }

@@ -47,10 +47,10 @@ public abstract class BattleMusicMixin {
      */
     @Overwrite(remap = false)
     public static void startBattleMusic(BattleMusicType type, int index, long playtime, boolean repeat) {
-        PixelTweaks.LOGGER.info("Starting battle music for " + type.name() + " at index " + index + " with playtime " + playtime + " and repeat " + repeat);
+        PixelTweaks.LOGGER.debug("Starting battle music for " + type.name() + " at index " + index + " with playtime " + playtime + " and repeat " + repeat);
 
         BattleController controller = BattleRegistry.getBattle(Minecraft.getInstance().player);
-        PixelTweaks.LOGGER.info("Controller is " + controller);
+        PixelTweaks.LOGGER.debug("Controller is " + controller);
 
         if (controller == null || playtime == -1) {
             endBattleMusic();
@@ -61,16 +61,16 @@ public abstract class BattleMusicMixin {
         BattleParticipant player = controller.getPlayer(Minecraft.getInstance().player.getDisplayName().getString());
         List<PixelmonWrapper> opponents = controller.getOpponentPokemon(player);
         Collection<MusicEvent.Battle> events = EventRegistry.getEvents(MusicEvent.Battle.class);
-        PixelTweaks.LOGGER.info("Size is " + events.size());
+        PixelTweaks.LOGGER.debug("Size is " + events.size());
 
         Optional<MusicEvent.Battle> optional = events.stream().filter(event -> {
             return event.conditions.stream().allMatch(condition -> {
                 for (PixelmonWrapper opponent : opponents) {
                     if (condition.conditionMet(opponent.entity)) {
-                        PixelTweaks.LOGGER.info("Condition " + condition.toString() + " met!");
+                        PixelTweaks.LOGGER.debug("Condition " + condition.toString() + " met!");
                         return true;
                     } else {
-                        PixelTweaks.LOGGER.info("Condition " + condition.toString() + " failed!");
+                        PixelTweaks.LOGGER.debug("Condition " + condition.toString() + " failed!");
                     }
                 }
                 return false;
@@ -79,7 +79,7 @@ public abstract class BattleMusicMixin {
 
         if (optional.isPresent()) {
             MusicEvent.Battle event = optional.get();
-            PixelTweaks.LOGGER.info("Playing sound event " + event.getFile());
+            PixelTweaks.LOGGER.debug("Playing sound event " + event.getFile());
             VoidMusicTicker.replaceMusicTicker();
             chainedMusic = new ChainedMusic(event.music);
 

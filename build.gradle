@@ -22,19 +22,11 @@ apply plugin: 'org.spongepowered.mixin'
 
 
 group = 'com.strangeone101'
-version = '1.2-BETA'
+version = '1.2'
 
 java {
     archivesBaseName = 'PixelTweaks'
     toolchain.languageVersion = JavaLanguageVersion.of(8)
-}
-
-processResources {
-    inputs.property "version", project.version
-
-    filesMatching("**/mods.toml") {
-        expand "version": project.version
-    }
 }
 
 minecraft {
@@ -175,10 +167,4 @@ jar.finalizedBy('reobfJar')
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
-}
-
-tasks.withType(ProcessResources).configureEach {
-    filesMatching('**/mods.toml') {
-        expand "version": project.version
-    }
 }

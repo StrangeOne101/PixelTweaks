@@ -3,11 +3,12 @@
   "conditions": [
     {
       "type": "pokemon",
-      "spec": "species:arceus"
+      "spec": "species:arceus",
+      "wild": true
     }
   ],
   "music": {
-    "start": "",
+    "start": "pixeltweaks:arceus/intro",
     "loop": "pixeltweaks:arceus/loop",
     "end": ""
   }

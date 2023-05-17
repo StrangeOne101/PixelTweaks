@@ -9,6 +9,7 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.pixelevents.condition.BiomeCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.PlayerCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.PokemonCondition;
+import com.strangeone101.pixeltweaks.pixelevents.condition.PokemonListCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.RangeCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.StructureCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.TrainerCondition;
@@ -26,23 +27,25 @@ public abstract class Condition<T> {
         @Override
         public Condition<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonObject = json.getAsJsonObject();
-            String musicType = jsonObject.get("type").getAsString();
+            String conditionType = jsonObject.get("type").getAsString();
 
-            if ("pokemon".equals(musicType)) {
+            if ("pokemon".equals(conditionType)) {
                 return context.deserialize(json, PokemonCondition.class);
-            } else if ("range".equals(musicType)) {
+            } else if ("pokemon_list".equals(conditionType)) {
+                return context.deserialize(json, PokemonListCondition.class);
+            } else if ("range".equals(conditionType)) {
                 return context.deserialize(json, RangeCondition.class);
-            } else if ("biome".equals(musicType)) {
+            } else if ("biome".equals(conditionType)) {
                 return context.deserialize(json, BiomeCondition.class);
-            } else if ("structure".equals(musicType)) {
+            } else if ("structure".equals(conditionType)) {
                 return context.deserialize(json, StructureCondition.class);
-            } else if ("player".equals(musicType)) {
+            } else if ("player".equals(conditionType)) {
                 return context.deserialize(json, PlayerCondition.class);
-            } else if ("trainer".equals(musicType)) {
+            } else if ("trainer".equals(conditionType)) {
                 return context.deserialize(json, TrainerCondition.class);
             }
 
-            throw new JsonParseException("Invalid music type: " + musicType);
+            throw new JsonParseException("Invalid music type: " + conditionType);
         }
     }
 

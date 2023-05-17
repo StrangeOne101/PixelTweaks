@@ -15,6 +15,8 @@ public abstract class Event {
     public String type;
     public List<Condition> conditions;
 
+    public int priority = 0;
+
     transient String pack;
     transient String file;
 
@@ -45,6 +47,10 @@ public abstract class Event {
 
     public String getFile() {
         return file;
+    }
+
+    public int getPriority() {
+        return priority;
     }
 
     @Override
