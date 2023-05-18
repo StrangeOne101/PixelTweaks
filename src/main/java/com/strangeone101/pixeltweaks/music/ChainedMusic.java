@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.util.SoundCategory;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class ChainedMusic {
@@ -96,7 +97,20 @@ public class ChainedMusic {
     public boolean isPlaying() {
         if (!introPlayed) return true;
         if (introFinished && !finished) return true;
-        if (finished && Minecraft.getInstance().getSoundHandler().isPlaying(this.end)) return true;
+        if (finished && this.end != null && Minecraft.getInstance().getSoundHandler().isPlaying(this.end)) return true;
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChainedMusic music1 = (ChainedMusic) o;
+        return introPlayed == music1.introPlayed && introFinished == music1.introFinished && finished == music1.finished && Objects.equals(music, music1.music) && Objects.equals(intro, music1.intro) && Objects.equals(loop, music1.loop) && Objects.equals(end, music1.end);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(music, intro, loop, end, introPlayed, introFinished, finished);
     }
 }

@@ -4,10 +4,12 @@ import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
-import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
+import com.pixelmonmod.pixelmon.client.ClientProxy;
+import com.pixelmonmod.pixelmon.client.gui.battles.PixelmonClientData;
 import com.pixelmonmod.pixelmon.client.music.BattleMusic;
 import com.pixelmonmod.pixelmon.client.music.PixelmonMusic;
 import com.pixelmonmod.pixelmon.client.music.VoidMusicTicker;
+import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.pixelmonmod.pixelmon.sounds.BattleMusicType;
 import com.pixelmonmod.pixelmon.sounds.PixelSounds;
 import com.strangeone101.pixeltweaks.PixelTweaks;
@@ -18,15 +20,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.LocatableSound;
 import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -49,56 +54,90 @@ public abstract class BattleMusicMixin {
     public static void startBattleMusic(BattleMusicType type, int index, long playtime, boolean repeat) {
         PixelTweaks.LOGGER.debug("Starting battle music for " + type.name() + " at index " + index + " with playtime " + playtime + " and repeat " + repeat);
 
-        BattleController controller = BattleRegistry.getBattle(Minecraft.getInstance().player);
-        PixelTweaks.LOGGER.debug("Controller is " + controller);
-
-        if (controller == null || playtime == -1) {
+        if (playtime == -1) {
             endBattleMusic();
             return;
         }
 
-        //ClientProxy.battleManager.displayedEnemyPokemon.st
-        BattleParticipant player = controller.getPlayer(Minecraft.getInstance().player.getDisplayName().getString());
-        List<PixelmonWrapper> opponents = controller.getOpponentPokemon(player);
-        Collection<MusicEvent.Battle> events = EventRegistry.getEvents(MusicEvent.Battle.class);
-        PixelTweaks.LOGGER.debug("Size is " + events.size());
+        List<PixelmonEntity> opponentEntities = new ArrayList<>(1);
 
-        Optional<MusicEvent.Battle> optional = events.stream().filter(event -> {
-            return event.conditions.stream().allMatch(condition -> {
-                for (PixelmonWrapper opponent : opponents) {
-                    if (condition.conditionMet(opponent.entity)) {
-                        PixelTweaks.LOGGER.debug("Condition " + condition.toString() + " met!");
-                        return true;
-                    } else {
-                        PixelTweaks.LOGGER.debug("Condition " + condition.toString() + " failed!");
-                    }
-                }
-                return false;
-            });
-        }).max(Comparator.comparingInt(event -> event.conditions.size()));
+        if (!Minecraft.getInstance().isIntegratedServerRunning()) { //On a server
+            //Define list of displayed opponents
+            PixelTweaks.LOGGER.debug("Multi player battle music");
+            List<PixelmonClientData> opponents = new ArrayList<>(Arrays.asList(ClientProxy.battleManager.displayedEnemyPokemon));
+            //Loop through all entities in the world
+            for (Entity entity : Minecraft.getInstance().world.getAllEntities()) {
+                if (entity instanceof PixelmonEntity) {
+                    PixelmonEntity pokemon = (PixelmonEntity)entity;
 
-        if (optional.isPresent()) {
-            MusicEvent.Battle event = optional.get();
-            PixelTweaks.LOGGER.debug("Playing sound event " + event.getFile());
-            VoidMusicTicker.replaceMusicTicker();
-            chainedMusic = new ChainedMusic(event.music);
-
-            if (chainedMusic.shouldTick()) {
-                PixelmonMusic.EXECUTOR.submit(() -> {
-                    try {
-                        Thread.sleep(20);
-
-                        while (chainedMusic.shouldTick()) {
-                            chainedMusic.tick();
-                            Thread.sleep(20);
+                    //Loop through all opponents and check if the UUID matches
+                    for (Iterator<PixelmonClientData> it = opponents.iterator(); it.hasNext(); ) {
+                        PixelmonClientData data = it.next();
+                        if (data.pokemonUUID.equals(pokemon.getUniqueID())) {
+                            opponentEntities.add(pokemon);
+                            it.remove();
+                            break;
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
-                });
-            }
 
-            return;
+                    if (opponents.isEmpty()) break;
+                }
+            }
+        } else { //Single player. This method is faster
+            PixelTweaks.LOGGER.debug("Single player battle music");
+            BattleController controller = BattleRegistry.getBattle(Minecraft.getInstance().player);
+            if (controller == null) {
+                PixelTweaks.LOGGER.error("Battle controller is null! Can not load battle music for events!");
+            } else {
+                PixelTweaks.LOGGER.debug("Controller is " + controller);
+                BattleParticipant player = controller.getPlayer(Minecraft.getInstance().player.getDisplayName().getString());
+                controller.getOpponentPokemon(player).stream().map(wrapper -> wrapper.entity).forEach(opponentEntities::add);
+            }
+        }
+
+        if (!opponentEntities.isEmpty()) {
+            // BattleParticipant player = controller.getPlayer(Minecraft.getInstance().player.getDisplayName().getString());
+            //List<PixelmonWrapper> opponents = controller.getOpponentPokemon(player);
+            Collection<MusicEvent.Battle> events = EventRegistry.getEvents(MusicEvent.Battle.class);
+            PixelTweaks.LOGGER.debug("Size is " + events.size());
+
+            Optional<MusicEvent.Battle> optional = events.stream().filter(event -> {
+                return event.conditions.stream().allMatch(condition -> {
+                    for (PixelmonEntity opponent : opponentEntities) {
+                        if (condition.conditionMet(opponent)) {
+                            PixelTweaks.LOGGER.debug("Condition " + condition.toString() + " met!");
+                            return true;
+                        } else {
+                            PixelTweaks.LOGGER.debug("Condition " + condition.toString() + " failed!");
+                        }
+                    }
+                    return false;
+                });
+            }).max(Comparator.comparingInt(event -> event.conditions.size()));
+
+            if (optional.isPresent() && !isPlaying()) {
+                MusicEvent.Battle event = optional.get();
+                PixelTweaks.LOGGER.debug("Playing sound event " + event.getFile());
+                VoidMusicTicker.replaceMusicTicker();
+                chainedMusic = new ChainedMusic(event.music);
+
+                if (chainedMusic.shouldTick()) {
+                    PixelmonMusic.EXECUTOR.submit(() -> {
+                        try {
+                            Thread.sleep(20);
+
+                            while (chainedMusic != null && chainedMusic.shouldTick()) {
+                                chainedMusic.tick();
+                                Thread.sleep(20);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+
+                return;
+            }
         }
 
 
