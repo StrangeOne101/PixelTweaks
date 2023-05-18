@@ -1,17 +1,9 @@
 package com.strangeone101.pixeltweaks.pixelevents.condition;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.pixelmonmod.api.pokemon.PokemonSpecification;
-import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.pixelevents.Condition;
-
-import java.lang.reflect.Type;
 
 public class PokemonCondition extends Condition<Pokemon> {
     public PokemonSpecification spec;

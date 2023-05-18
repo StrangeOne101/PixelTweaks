@@ -1,6 +1,5 @@
 package com.strangeone101.pixeltweaks.pixelevents.condition;
 
-import com.pixelmonmod.pixelmon.api.util.helpers.WorldHelper;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.mixin.client.WorldHelperMixin;
 import com.strangeone101.pixeltweaks.pixelevents.Condition;
@@ -10,7 +9,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
-import net.minecraft.world.server.ServerWorld;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.HashSet;

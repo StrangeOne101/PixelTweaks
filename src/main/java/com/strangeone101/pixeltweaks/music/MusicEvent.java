@@ -1,6 +1,5 @@
 package com.strangeone101.pixeltweaks.music;
 
-
 import com.strangeone101.pixeltweaks.pixelevents.Event;
 
 public class MusicEvent extends Event {

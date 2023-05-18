@@ -1,7 +1,6 @@
 package com.strangeone101.pixeltweaks.mixin;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
 import com.pixelmonmod.pixelmon.api.events.pokemon.BottleCapEvent;
 import com.pixelmonmod.pixelmon.api.interactions.IInteraction;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;

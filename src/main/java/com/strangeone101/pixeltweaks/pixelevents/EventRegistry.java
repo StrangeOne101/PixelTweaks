@@ -4,11 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import com.pixelmonmod.api.pokemon.PokemonSpecification;
 import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
 import com.strangeone101.pixeltweaks.PixelTweaks;
@@ -57,11 +53,6 @@ public class EventRegistry implements ISelectiveResourceReloadListener {
         }
 
     }
-
-    /*public void onResourcesReloadEvent(ClientLi event) {
-        event.addListener(this);
-        PixelTweaks.LOGGER.info("Added music loader");
-    }*/
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {

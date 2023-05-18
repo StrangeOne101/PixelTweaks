@@ -10,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.renderer.culling.ClippingHelper;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -38,17 +37,12 @@ public class ClientListener {
         MinecraftForge.EVENT_BUS.addListener(this::onPlayerLeaveWorld);
         MinecraftForge.EVENT_BUS.addListener(this::onRenderWorldLastEvent);
 
-
     }
 
     public void clientSetup(FMLClientSetupEvent event) {
         if (TweaksConfig.shinySparkleRange.get() > 0) {
             enableSparkle = true;
         }
-
-        LanguageManager languageManager = Minecraft.getInstance().getLanguageManager();
-
-
     }
 
     public void onPokemonSpawn(EntityJoinWorldEvent event) {
@@ -84,14 +78,7 @@ public class ClientListener {
         if (enableSparkle) {
             ShinyTracker.INSTANCE.camera = new ClippingHelper(event.getMatrixStack().getLast().getMatrix(), event.getProjectionMatrix());
         }
-
-        //PixelTweaks.LOGGER.info("Matrix: " + event.getMatrixStack().getLast().getMatrix());
-        //PixelTweaks.LOGGER.info("Projection: " + event.getProjectionMatrix());
     }
-
-    /*public void onCameraSetup(EntityViewRenderEvent.CameraSetup event) {
-        Minecraft.getInstance().gameRenderer.getActiveRenderInfo().
-    }*/
 
     public void onTextureStitch(TextureStitchEvent.Pre event) {
         if (event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_PARTICLES_TEXTURE)) {
@@ -100,4 +87,6 @@ public class ClientListener {
             FakeParticle.atlasTexture = event.getMap();
         }
     }
+
+
 }
