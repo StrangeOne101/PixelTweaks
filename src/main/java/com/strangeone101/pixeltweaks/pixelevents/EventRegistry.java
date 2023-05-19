@@ -36,7 +36,11 @@ public class EventRegistry implements ISelectiveResourceReloadListener {
     private static Map<Class<? extends Event>, Set<Event>> EVENTS = Maps.newHashMap();
 
     protected static void registerEvent(Event event) {
-        EVENTS.computeIfAbsent(event.getClass(), k -> Sets.newTreeSet(Comparator.comparingInt(Event::getPriority).reversed())).add(event);
+        EVENTS.computeIfAbsent(event.getClass(), k -> Sets.newTreeSet(
+               (e1, e2) -> {
+                   if (e1.getPriority() == e2.getPriority()) return e2.hashCode() - e1.hashCode();
+                   return e2.getPriority() - e1.getPriority();
+               })).add(event);
     }
 
     public static <T extends Event> Collection<T> getEvents(Class<T> eventClass) {

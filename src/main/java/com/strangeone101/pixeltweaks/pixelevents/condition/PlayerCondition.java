@@ -54,6 +54,7 @@ public class PlayerCondition extends Condition<PlayerEntity> {
     public String toString() {
         return "PlayerCondition{" +
                 "uuid=" + uuid +
+                ", name='" + name + '\'' +
                 ", minPartyLevel=" + minPartyLevel +
                 ", maxPartyLevel=" + maxPartyLevel +
                 '}';

@@ -9,6 +9,7 @@ import com.strangeone101.pixeltweaks.music.MusicEvent;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class Event {
 
@@ -60,5 +61,18 @@ public abstract class Event {
                 ", conditions=" + conditions +
                 ", pack='" + pack + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return priority == event.priority && Objects.equals(type, event.type) && Objects.equals(conditions, event.conditions) && Objects.equals(pack, event.pack) && Objects.equals(file, event.file);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, conditions, priority, pack, file);
     }
 }
