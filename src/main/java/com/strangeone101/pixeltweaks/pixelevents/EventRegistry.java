@@ -13,6 +13,8 @@ import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 
@@ -31,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
+@OnlyIn(Dist.CLIENT)
 public class EventRegistry implements ISelectiveResourceReloadListener {
 
     private static Map<Class<? extends Event>, Set<Event>> EVENTS = Maps.newHashMap();

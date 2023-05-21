@@ -6,6 +6,7 @@ import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.ShinyTracker;
 import com.strangeone101.pixeltweaks.TweaksConfig;
 import com.strangeone101.pixeltweaks.particle.FakeParticle;
+import com.strangeone101.pixeltweaks.pixelevents.EventRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.renderer.culling.ClippingHelper;
@@ -37,6 +38,7 @@ public class ClientListener {
         MinecraftForge.EVENT_BUS.addListener(this::onPlayerLeaveWorld);
         MinecraftForge.EVENT_BUS.addListener(this::onRenderWorldLastEvent);
 
+        new EventRegistry();
     }
 
     public void clientSetup(FMLClientSetupEvent event) {

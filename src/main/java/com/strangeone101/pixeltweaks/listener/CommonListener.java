@@ -6,7 +6,6 @@ import com.pixelmonmod.pixelmon.api.events.ExperienceGainEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.SpawnEvent;
 import com.pixelmonmod.pixelmon.entities.npcs.NPCTrainer;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
-import com.strangeone101.pixeltweaks.pixelevents.EventRegistry;
 import com.strangeone101.pixeltweaks.tweaks.NewGamerules;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.GameRules;
@@ -16,8 +15,6 @@ public class CommonListener {
 
     public CommonListener() {
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onPokemonSpawn);
-
-        new EventRegistry();
     }
 
     /**
