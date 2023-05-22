@@ -22,6 +22,7 @@ import java.util.Set;
 public class StructureCondition extends Condition<PixelmonEntity> {
     public List<ResourceLocation> structures;
     public transient Set<Structure<?>> internalStructures;
+    boolean invert = false;
 
     @Override
     public boolean conditionMet(PixelmonEntity item) {
@@ -35,13 +36,13 @@ public class StructureCondition extends Condition<PixelmonEntity> {
 
         for (Structure<?> structure : internalStructures) {
             if (insideStructure(item.world, structure.getStructureName(), item.getPosition())) {
-                return true;
+                return !invert;
             } else if (item.getOwner() != null && insideStructure(item.world, structure.getStructureName(), item.getOwner().getPosition())) {
-                return true;
+                return !invert;
             }
         }
 
-        return false;
+        return invert;
     }
 
     @Override

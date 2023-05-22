@@ -9,10 +9,11 @@ import java.util.List;
 
 public class BiomeCondition extends Condition<Biome> {
     public List<ResourceLocation> biomes;
+    boolean invert = false;
 
     @Override
     public boolean conditionMet(Biome item) {
-        return biomes.contains(item.getRegistryName());
+        return biomes.contains(item.getRegistryName()) != invert;
     }
 
     @Override
@@ -24,6 +25,7 @@ public class BiomeCondition extends Condition<Biome> {
     public String toString() {
         return "BiomeCondition{" +
                 "biomes=" + biomes +
+                ", invert=" + invert +
                 '}';
     }
 

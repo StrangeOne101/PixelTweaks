@@ -74,6 +74,7 @@ public class EventRegistry implements ISelectiveResourceReloadListener {
                 .registerTypeAdapter(PokemonSpecification.class, (JsonDeserializer<PokemonSpecification>)(json, type, context) -> PokemonSpecificationProxy.create(json.getAsString()))
                 .create();
 
+        int loadedSuccessfully = 0;
         for (ResourceLocation location : fileLocations) {
             PixelTweaks.LOGGER.debug(location.toString());
             try {
@@ -87,13 +88,13 @@ public class EventRegistry implements ISelectiveResourceReloadListener {
                 event.file = location.getPath();
                 PixelTweaks.LOGGER.debug(event);
                 registerEvent(event);
-
-            } catch (IOException e) {
+                loadedSuccessfully++;
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        PixelTweaks.LOGGER.info("Loaded " + fileLocations.size() + " event files");
+        PixelTweaks.LOGGER.info("Loaded " + loadedSuccessfully + " event files");
 
         // Get files from mods
         /*try {

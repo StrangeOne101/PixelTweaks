@@ -22,7 +22,7 @@ apply plugin: 'org.spongepowered.mixin'
 
 
 group = 'com.strangeone101'
-version = '1.2.1'
+version = '1.3'
 
 java {
     archivesBaseName = 'PixelTweaks'

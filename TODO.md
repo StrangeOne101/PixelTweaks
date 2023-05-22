@@ -2,19 +2,19 @@
 - Global party EXP like from modern games
 - Make flying legendaries hover in place in their AI. So they don't fly away too much
 - Make shrines have configurable spawns
-- Battle music specific for legendaries or specific mons
+- ~~Battle music specific for legendaries or specific mons~~ **DONE**
 - Make beacon bases and items compatible with pixelmon gems
-- Make tridents drop
+- ~~Make tridents drop~~ **DONE**
 - Configurable cloning machine
   - How many times something can be cloned
   - What can be cloned into what (with what chances)
   - What items can be used to clone
 - Configurable vending machines
 - Make moomoo milk drinkable with clearing effects
-- Make fox pokemon immune to berry bushes
+- ~~Make fox pokemon immune to berry bushes~~ **DONE**
 - Group level up messages together
 - Make dig/rock smash/cut work on all modded blocks
 - Catch multiplier & one separate one for legendaries
 - Right click battled NPCs to see their defeat message again
-- Make it so apricorns drop after a while of being ripe
-- Make catch combos not break when you change species
+- ~~Make it so apricorns drop after a while of being ripe~~ **DONE**
+- Make the battle UI show more details when holding SHIFT

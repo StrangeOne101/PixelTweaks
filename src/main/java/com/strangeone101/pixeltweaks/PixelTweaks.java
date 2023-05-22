@@ -2,7 +2,7 @@ package com.strangeone101.pixeltweaks;
 
 import com.strangeone101.pixeltweaks.listener.ClientListener;
 import com.strangeone101.pixeltweaks.listener.CommonListener;
-import com.strangeone101.pixeltweaks.tweaks.ExternalMoveBlocks;
+import com.strangeone101.pixeltweaks.tweaks.FoxImmunity;
 import com.strangeone101.pixeltweaks.tweaks.Healer;
 import com.strangeone101.pixeltweaks.tweaks.NewGamerules;
 import com.strangeone101.pixeltweaks.tweaks.TridentDrops;
@@ -67,6 +67,8 @@ public class PixelTweaks {
         new Healer();
         new NewGamerules();
         new TridentDrops();
+        new FoxImmunity();
+
         //new ExternalMoveBlocks();
     }
 }

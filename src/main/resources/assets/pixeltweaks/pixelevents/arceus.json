@@ -9,9 +9,9 @@
   ],
   "music": {
     "start": "pixeltweaks:arceus/intro",
-    "loop": "pixeltweaks:arceus/loop",
-    "end": ""
-  }
+    "loop": "pixeltweaks:arceus/loop"
+  },
+  "priority": 100
 }
 
 

@@ -6,7 +6,10 @@
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "InteractionBottleCapMixin"
+    "ApriconLeavesBlockMixin",
+    "BerryLeavesBlockMixin",
+    "InteractionBottleCapMixin",
+    "PixelmonEntityMixin"
   ],
   "client": [
     "client.BattleMusicMixin",

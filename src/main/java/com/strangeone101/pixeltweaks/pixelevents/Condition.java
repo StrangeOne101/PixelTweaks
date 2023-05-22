@@ -12,7 +12,9 @@ import com.strangeone101.pixeltweaks.pixelevents.condition.PokemonCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.PokemonListCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.RangeCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.StructureCondition;
+import com.strangeone101.pixeltweaks.pixelevents.condition.TimeCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.TrainerCondition;
+import com.strangeone101.pixeltweaks.pixelevents.condition.WeatherCondition;
 
 import java.lang.reflect.Type;
 
@@ -43,6 +45,10 @@ public abstract class Condition<T> {
                 return context.deserialize(json, PlayerCondition.class);
             } else if ("trainer".equals(conditionType)) {
                 return context.deserialize(json, TrainerCondition.class);
+            } else if ("weather".equals(conditionType)) {
+                return context.deserialize(json, WeatherCondition.class);
+            } else if ("time".equals(conditionType)) {
+                return context.deserialize(json, TimeCondition.class);
             }
 
             throw new JsonParseException("Invalid music type: " + conditionType);
