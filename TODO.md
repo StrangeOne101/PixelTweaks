@@ -17,4 +17,6 @@
 - Catch multiplier & one separate one for legendaries
 - Right click battled NPCs to see their defeat message again
 - ~~Make it so apricorns drop after a while of being ripe~~ **DONE**
-- Make the battle UI show more details when holding SHIFT
+- Make the battle UI show more details when holding SHIFT, such as descriotions, damage, super effective or not, physical/special attack, etc
+- Make Zygarde cells spawn
+- Make local weather systems like the games
