@@ -20,3 +20,4 @@
 - Make the battle UI show more details when holding SHIFT, such as descriotions, damage, super effective or not, physical/special attack, etc
 - Make Zygarde cells spawn
 - Make local weather systems like the games
+- Make Mimikyu, Genesect and Aegislash able to have forms without their abilities ruining the form in battle (their abilities have a hardcoded form to revert to in situations)
