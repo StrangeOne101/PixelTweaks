@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.3.1
+- Made Mimikyu and Aegislash support custom forms
+- Fixed Aegislash not reverting to Shield form
+
+## 1.3 (Berry Update)
+- Added apricorns (and berries) dropping naturally
+  - Configurable (defaults to enabled).
+  - They take 20x longer to drop naturally than they do to ripen
+  - They despawn after 1 minute
+- Made fox pokemon immune to berry bushes. They can also be healed by feeding them berries
+- Added new Time Condition for events (for battle music resource packs)
+- Added new Weather condition for events (for battle music resource packs)
+- Added new "invert" property to some conditions (for battle music resource packs)
+
 ## 1.2 (Battle Music Update)
 - Added battle music events!
   - Allows music to play when you battle specific pokemon/players/trainers

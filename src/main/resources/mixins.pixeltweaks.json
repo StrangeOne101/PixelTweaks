@@ -9,6 +9,8 @@
     "ApriconLeavesBlockMixin",
     "BerryLeavesBlockMixin",
     "InteractionBottleCapMixin",
+    "MixinAegislashAbility",
+    "MixinMimikyuAbility",
     "PixelmonEntityMixin"
   ],
   "client": [
