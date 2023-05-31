@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.3.2
+- Updated to Pixelmon Reforged 9.1.4
+
 ## 1.3.1
 - Made Mimikyu and Aegislash support custom forms
 - Fixed Aegislash not reverting to Shield form

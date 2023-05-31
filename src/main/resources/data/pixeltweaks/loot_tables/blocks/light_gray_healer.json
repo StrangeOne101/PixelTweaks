@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "pixelmon:healer"
+          "name": "pixelmon:light_gray_healer"
         }
       ],
       "conditions": [

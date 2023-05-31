@@ -61,7 +61,7 @@ Got suggestions to add? Suggest them in the discord thread in the pixelmon disco
 [[dependencies.pixeltweaks]]
    modId="pixelmon"
    mandatory=true
-   versionRange="[9.1.0, 9.9.9]"
+   versionRange="[9.1.4, 9.9.9]"
    side="BOTH"
    ordering="AFTER"
 

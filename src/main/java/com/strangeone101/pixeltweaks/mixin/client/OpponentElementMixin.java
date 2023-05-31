@@ -54,7 +54,7 @@ public abstract class OpponentElementMixin extends PixelmonWidget {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(770, 771);
         ScreenHelper.drawImage(matrix, OPPONENT, (float)this.x, (float)(this.y - 3), 160.0F, 50.0F, this.zLevel);
-        float healthPercent = this.enemy.health / (float)this.enemy.maxHealth;
+        float healthPercent = this.enemy.health.floatValue() / (float)this.enemy.maxHealth;
         ScreenHelper.drawBar(matrix, (double)(this.x + 44), (double)(this.y + 20), 109.0D, 10.0D, healthPercent, this.enemy.getHealthColor());
         ScreenHelper.drawImage(healthPercent <= 0.5F ? (healthPercent <= 0.25F ? WARNING : CAUTION) : HEALTHY, matrix, (float)(this.x - 10), (float)(this.y - 18), 60.0F, 60.0F, this.zLevel);
         float[] rgb = {1F, 1F, 1F};
