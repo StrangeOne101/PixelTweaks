@@ -11,7 +11,8 @@
     "InteractionBottleCapMixin",
     "MixinAegislashAbility",
     "MixinMimikyuAbility",
-    "PixelmonEntityMixin"
+    "PixelmonEntityMixin",
+    "ZygardeListenerMixin"
   ],
   "client": [
     "client.BattleMusicMixin",
