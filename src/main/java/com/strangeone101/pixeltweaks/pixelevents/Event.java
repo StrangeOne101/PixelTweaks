@@ -54,6 +54,8 @@ public abstract class Event {
         return priority;
     }
 
+    public abstract boolean isClientSide();
+
     @Override
     public String toString() {
         return "Event{" +
