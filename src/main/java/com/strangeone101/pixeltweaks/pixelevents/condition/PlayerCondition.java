@@ -4,8 +4,11 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.PlayerPartyStorage;
 import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
+import com.pixelmonmod.pixelmon.client.ClientProxy;
+import com.pixelmonmod.pixelmon.client.gui.battles.ClientBattleManager;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.pixelevents.Condition;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.UUID;
@@ -23,21 +26,24 @@ public class PlayerCondition extends Condition<PlayerEntity> {
         if (uuid != null && !player.getUniqueID().equals(uuid)) return false;
         if (name != null && !player.getName().getString().equals(name)) return false;
 
-        PlayerPartyStorage storage = StorageProxy.getParty(player.getUniqueID());
+        //Right now, getting levels from the party requires being in single player
+        if (Minecraft.getInstance().isIntegratedServerRunning()) {
+            PlayerPartyStorage storage = StorageProxy.getParty(player.getUniqueID());
 
-        int minLevel = 100;
-        int maxLevel = 0;
+            int minLevel = 100;
+            int maxLevel = 0;
 
-        for (int i = 0; i < 6; i++) {
-            Pokemon pokemon = storage.get(new StoragePosition(-1, i));
-            if (pokemon != null) {
-                minLevel = Math.min(minLevel, pokemon.getPokemonLevel());
-                maxLevel = Math.max(maxLevel, pokemon.getPokemonLevel());
+            for (int i = 0; i < 6; i++) {
+                Pokemon pokemon = storage.get(new StoragePosition(-1, i));
+                if (pokemon != null) {
+                    minLevel = Math.min(minLevel, pokemon.getPokemonLevel());
+                    maxLevel = Math.max(maxLevel, pokemon.getPokemonLevel());
+                }
             }
-        }
 
-        if (minLevel < minPartyLevel) return false;
-        if (maxLevel > maxPartyLevel) return false;
+            if (minLevel < minPartyLevel) return false;
+            if (maxLevel > maxPartyLevel) return false;
+        }
 
         return true;
     }

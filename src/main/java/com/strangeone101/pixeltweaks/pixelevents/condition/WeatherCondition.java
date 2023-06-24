@@ -5,8 +5,6 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.pixelevents.Condition;
 import net.minecraft.world.World;
 
-import java.util.function.Predicate;
-
 public class WeatherCondition extends Condition<World> {
     public WeatherType weather = WeatherType.CLEAR;
     boolean invert = false;

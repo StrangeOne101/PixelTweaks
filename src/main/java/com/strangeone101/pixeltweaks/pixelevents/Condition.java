@@ -7,10 +7,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.pixelevents.condition.BiomeCondition;
+import com.strangeone101.pixeltweaks.pixelevents.condition.CalendarCondition;
+import com.strangeone101.pixeltweaks.pixelevents.condition.ChanceCondition;
+import com.strangeone101.pixeltweaks.pixelevents.condition.DimensionCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.PlayerCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.PokemonCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.PokemonListCondition;
-import com.strangeone101.pixeltweaks.pixelevents.condition.RangeCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.StructureCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.TimeCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.TrainerCondition;
@@ -35,8 +37,6 @@ public abstract class Condition<T> {
                 return context.deserialize(json, PokemonCondition.class);
             } else if ("pokemon_list".equals(conditionType)) {
                 return context.deserialize(json, PokemonListCondition.class);
-            } else if ("range".equals(conditionType)) {
-                return context.deserialize(json, RangeCondition.class);
             } else if ("biome".equals(conditionType)) {
                 return context.deserialize(json, BiomeCondition.class);
             } else if ("structure".equals(conditionType)) {
@@ -49,9 +49,15 @@ public abstract class Condition<T> {
                 return context.deserialize(json, WeatherCondition.class);
             } else if ("time".equals(conditionType)) {
                 return context.deserialize(json, TimeCondition.class);
+            } else if ("dimension".equals(conditionType)) {
+                return context.deserialize(json, DimensionCondition.class);
+            } else if ("calendar".equals(conditionType)) {
+                return context.deserialize(json, CalendarCondition.class);
+            } else if ("chance".equals(conditionType)) {
+                return context.deserialize(json, ChanceCondition.class);
             }
 
-            throw new JsonParseException("Invalid music type: " + conditionType);
+            throw new JsonParseException("Invalid condition type: " + conditionType);
         }
     }
 

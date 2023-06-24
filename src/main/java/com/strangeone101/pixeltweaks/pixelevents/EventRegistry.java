@@ -72,6 +72,7 @@ public class EventRegistry implements ISelectiveResourceReloadListener {
                 .registerTypeAdapter(Condition.class, new Condition.Deserializer())
                 .registerTypeAdapter(ResourceLocation.class, (JsonDeserializer<ResourceLocation>)(json, type, context) -> json.isJsonNull() || json.getAsString().isEmpty() ? null : new ResourceLocation(json.getAsString()))
                 .registerTypeAdapter(PokemonSpecification.class, (JsonDeserializer<PokemonSpecification>)(json, type, context) -> PokemonSpecificationProxy.create(json.getAsString()))
+                .registerTypeAdapter(SpecificTime.class, new SpecificTime.Deserializer())
                 .create();
 
         int loadedSuccessfully = 0;
