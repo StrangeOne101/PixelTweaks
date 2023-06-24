@@ -9,7 +9,6 @@ import jdk.jfr.Experimental;
 public class CalendarCondition extends Condition<Void> {
 
     public boolean invert = false;
-
     public SpecificTime start;
     public SpecificTime end;
 
