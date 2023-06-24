@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.4
+- Added Zygarde cell spawning
+  - Cells now spawn again
+  - Cells will spawn in chunks closer to you more often than not when they decide to spawn
+  - Cells that spawn in newly generated chunks will be invisible. But this can't be fixed
+  - The materials that cells spawn on is configurable via tags
+- Fixed intro battle music not fading out when the battle ends early
+- Added new battle music conditions
+  - Added Dimension condition
+  - Added Chance condition
+  - Added Calendar condition
+  - Updated Biome condition to support BetterSpawnerConfig biome categories
+  - Updated Trainer condition to support way more things
+  - Fixed Player condition breaking in Multiplayer
+  - Fixed biome condition not working in Multiplayer
+- Nerfed tridents in loot
+- Fixed lang files missing gamerule lang nodes
+
 ## 1.3.2
 - Updated to Pixelmon Reforged 9.1.4
 
