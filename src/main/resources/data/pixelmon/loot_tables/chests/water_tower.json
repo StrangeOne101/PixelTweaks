@@ -106,7 +106,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 10,
+          "weight": 20,
           "name": "minecraft:stick",
           "functions": [
             {
@@ -120,12 +120,12 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 7,
+          "weight": 14,
           "name": "minecraft:wooden_sword"
         },
         {
           "type": "minecraft:item",
-          "weight": 5,
+          "weight": 10,
           "name": "minecraft:stick",
           "functions": [
             {
@@ -143,7 +143,7 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 5,
+          "weight": 10,
           "name": "minecraft:wooden_sword",
           "functions": [
             {
@@ -154,11 +154,11 @@
         },
         {
           "type": "empty",
-          "weight": 7
+          "weight": 14
         },
         {
           "type": "minecraft:item",
-          "weight": 3,
+          "weight": 1,
           "name": "minecraft:trident"
         }
       ]
