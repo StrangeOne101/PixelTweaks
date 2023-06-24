@@ -1,5 +1,7 @@
 {
   "pixeltweaks.subtitle.sparkle": "Shiny Pokemon Sparkles",
   "pixelmon.interaction.bottlecap.level": "%s must be level %i before using this!",
-  "pixeltweaks.subtitle.music.arceus": "Arceus Battle Music"
+  "pixeltweaks.subtitle.music.arceus": "Arceus Battle Music",
+  "gamerule.doPokemonSpawning": "Spawn Pokemon",
+  "gamerule.doTrainerSpawning": "Spawn Trainers (NPCs)"
 }

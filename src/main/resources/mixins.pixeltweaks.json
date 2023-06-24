@@ -12,6 +12,7 @@
     "MixinAegislashAbility",
     "MixinMimikyuAbility",
     "PixelmonEntityMixin",
+    "ZygardeCellBlockMixin",
     "ZygardeListenerMixin"
   ],
   "client": [

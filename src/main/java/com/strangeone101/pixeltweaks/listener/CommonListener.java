@@ -6,15 +6,28 @@ import com.pixelmonmod.pixelmon.api.events.ExperienceGainEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.SpawnEvent;
 import com.pixelmonmod.pixelmon.entities.npcs.NPCTrainer;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
+import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.tweaks.NewGamerules;
+import com.strangeone101.pixeltweaks.tweaks.ZygardeCellSpawner;
+import com.strangeone101.pixeltweaks.worldgen.ZygardeCellFeature;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.GameRules;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TagsUpdatedEvent;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 
 public class CommonListener {
 
     public CommonListener() {
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onPokemonSpawn);
+        MinecraftForge.EVENT_BUS.addListener(this::onBiomeLoad);
+        //Pixelmon.EVENT_BUS.addListener(this::onPokemonExperienceGain);
+        MinecraftForge.EVENT_BUS.addListener(this::onTagReload);
+
+        new ZygardeCellSpawner();
     }
 
     /**
@@ -41,5 +54,18 @@ public class CommonListener {
         if (event.getType() == ExperienceGainType.BATTLE && !Pixelmon.isClient()) {
 
         }
+    }
+
+    public void onBiomeLoad(BiomeLoadingEvent event) {
+        ConfiguredFeature<?, ?> configuredFeature = ZygardeCellFeature.CONFIGURED_FEATURE;
+        if (configuredFeature == null) {
+            PixelTweaks.LOGGER.error("Failed to find the configured feature for Zygarde cells! Cannot spawn!");
+            return;
+        }
+        event.getGeneration().withFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION, configuredFeature);
+    }
+
+    public void onTagReload(TagsUpdatedEvent event) {
+        ZygardeCellSpawner.setTags();
     }
 }
