@@ -10,6 +10,7 @@ import com.strangeone101.pixeltweaks.pixelevents.condition.BiomeCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.CalendarCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.ChanceCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.DimensionCondition;
+import com.strangeone101.pixeltweaks.pixelevents.condition.IsRaidCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.PlayerCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.PokemonCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.PokemonListCondition;
@@ -55,6 +56,8 @@ public abstract class Condition<T> {
                 return context.deserialize(json, CalendarCondition.class);
             } else if ("chance".equals(conditionType)) {
                 return context.deserialize(json, ChanceCondition.class);
+            } else if ("is_raid".equals(conditionType)) {
+                return context.deserialize(json, IsRaidCondition.class);
             }
 
             throw new JsonParseException("Invalid condition type: " + conditionType);

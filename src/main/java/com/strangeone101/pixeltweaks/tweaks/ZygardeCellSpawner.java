@@ -300,7 +300,10 @@ public class ZygardeCellSpawner {
         if (currentState.isAir() || (!currentState.isSolid() && currentState.getFluidState().getFluid() == Fluids.EMPTY && (!currentState.hasProperty(BlockStateProperties.WATERLOGGED) || !currentState.get(BlockStateProperties.WATERLOGGED)))) {
             Direction rotation = facing.getAxis() == Direction.Axis.Y ? Direction.byHorizontalIndex(RandomHelper.getRandom().nextInt(4)) : (RandomHelper.getRandomChance() ? Direction.UP : Direction.DOWN);
 
-            Block block = RandomHelper.getRandom().nextInt(20) == 0 ? PixelmonBlocks.zygarde_core : PixelmonBlocks.zygarde_cell;
+            int coreChance = 20;
+            if (chunk instanceof Chunk && ((Chunk) chunk).getWorld().isThundering()) coreChance = 7;
+
+            Block block = RandomHelper.getRandom().nextInt(coreChance) == 0 ? PixelmonBlocks.zygarde_core : PixelmonBlocks.zygarde_cell;
             BlockState state = (BlockState)((BlockState)block.getDefaultState().with(ZygardeCellBlock.ORIENTATION_PROPERTY, facing)).with(ZygardeCellBlock.ROTATION_PROPERTY, rotation);
             ZygardeCellTileEntity tileEntity = new ZygardeCellTileEntity();
             tileEntity.setPos(pos);

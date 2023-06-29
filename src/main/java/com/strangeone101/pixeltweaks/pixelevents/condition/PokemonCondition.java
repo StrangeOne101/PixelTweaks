@@ -5,21 +5,22 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.pixelevents.Condition;
 
-public class PokemonCondition extends Condition<Pokemon> {
+public class PokemonCondition extends Condition<PixelmonEntity> {
     public PokemonSpecification spec;
     public Boolean wild;
+    public boolean invert;
 
     @Override
-    public boolean conditionMet(Pokemon pokemon) {
-        if (wild != null && (pokemon.getOriginalTrainer() == null) != wild) return false;
-        if (spec != null && !spec.matches(pokemon)) return false;
+    public boolean conditionMet(PixelmonEntity pokemon) {
+        if (wild != null && (pokemon.isTame() != wild) != invert) return false;
+        if (spec != null && spec.matches(pokemon.getPokemon()) != invert) return false;
 
         return true;
     }
 
     @Override
-    public Pokemon itemFromPixelmon(PixelmonEntity entity) {
-        return entity.getPokemon();
+    public PixelmonEntity itemFromPixelmon(PixelmonEntity entity) {
+        return entity;
     }
 
     @Override
@@ -27,6 +28,7 @@ public class PokemonCondition extends Condition<Pokemon> {
         return "PokemonCondition{" +
                 "spec='" + spec + '\'' +
                 ", wild=" + wild +
+                ", invert=" + invert +
                 '}';
     }
 

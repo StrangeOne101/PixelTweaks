@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.1
+- Zygarde cores spawn 3x as often in thunder now
+- Fixed the wild property in pokemon conditions not working
+- Added invert property to pokemon conditions
+- Added is_raid condition type
+
 ## 1.4
 - Added Zygarde cell spawning
   - Cells now spawn again

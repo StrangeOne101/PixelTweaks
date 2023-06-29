@@ -7,26 +7,27 @@ import com.strangeone101.pixeltweaks.pixelevents.Condition;
 
 import java.util.List;
 
-public class PokemonListCondition extends Condition<Pokemon> {
+public class PokemonListCondition extends Condition<PixelmonEntity> {
     public List<PokemonSpecification> spec;
     public Boolean wild;
+    public boolean invert;
 
     @Override
-    public boolean conditionMet(Pokemon pokemon) {
-        if (wild != null && (pokemon.getOriginalTrainer() == null) != wild) return false;
+    public boolean conditionMet(PixelmonEntity pokemon) {
+        if (wild != null && (pokemon.isTame() != wild) != invert) return false;
         if (spec != null) {
             for (PokemonSpecification s : spec) {
-                if (s.matches(pokemon)) return true;
+                if (s.matches(pokemon.getPokemon())) return !invert;
             }
-            return false;
+            return invert;
         }
 
         return true;
     }
 
     @Override
-    public Pokemon itemFromPixelmon(PixelmonEntity entity) {
-        return entity.getPokemon();
+    public PixelmonEntity itemFromPixelmon(PixelmonEntity entity) {
+        return entity;
     }
 
     @Override
@@ -34,6 +35,7 @@ public class PokemonListCondition extends Condition<Pokemon> {
         return "PokemonListCondition{" +
                 "spec='" + spec + '\'' +
                 ", wild=" + wild +
+                ", invert=" + invert +
                 '}';
     }
 
