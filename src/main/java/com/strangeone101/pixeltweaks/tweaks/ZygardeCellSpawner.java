@@ -125,7 +125,7 @@ public class ZygardeCellSpawner {
 
                     UUID random = (UUID) RandomHelper.getRandomElementFromArray(ZygardeListenerMixin.getHasCube().toArray(new UUID[0]));
                     ServerPlayerEntity player = server.getPlayerList().getPlayerByUUID(random);
-                    if (player.isSpectator()) {
+                    if (player == null || player.isSpectator()) {
                         return;
                     }
 

@@ -12,10 +12,10 @@ public class PokemonCondition extends Condition<PixelmonEntity> {
 
     @Override
     public boolean conditionMet(PixelmonEntity pokemon) {
-        if (wild != null && (pokemon.isTame() != wild) != invert) return false;
-        if (spec != null && spec.matches(pokemon.getPokemon()) != invert) return false;
+        if (wild != null && ((pokemon.getPokemon().getOriginalTrainer() == null) != wild)) return invert;
+        if (spec != null && !spec.matches(pokemon.getPokemon())) return invert;
 
-        return true;
+        return !invert;
     }
 
     @Override
