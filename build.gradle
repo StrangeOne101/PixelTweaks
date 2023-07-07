@@ -115,6 +115,19 @@ repositories {
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
 
+    maven {
+        // location of the maven that hosts JEI files
+        name = "Progwml6 maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+        content { includeGroup "mezz.jei" }
+    }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+        content { includeGroup "mezz.jei" }
+    }
+
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
     flatDir {
         dir 'libs'
@@ -128,8 +141,8 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.39'
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
-    // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
-    // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
+    compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds JEI API as a compile dependency
+    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
     //implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
 
     // Examples using mod jars from ./libs
@@ -141,7 +154,6 @@ dependencies {
 
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
     implementation fg.deobf('com.pixelmonmod.pixelmon:Pixelmon-1.16.5-9.1.5-universal:9.1.5')
-    implementation "joda-time:joda-time:2.12.5"
 }
 
 mixin {
