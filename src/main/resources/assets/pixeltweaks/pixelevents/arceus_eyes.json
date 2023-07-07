@@ -1,0 +1,15 @@
+{
+  "type": "pokemon_overlay",
+  "conditions": [
+    {
+      "type": "pokemon",
+      "spec": "species:Arceus"
+    }
+  ],
+  "layers": [
+    {
+      "texture": "pixeltweaks:pokemon/493_arceus/all/base/none/eyes.png",
+      "emissive": true
+    }
+  ]
+}

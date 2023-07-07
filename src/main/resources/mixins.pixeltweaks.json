@@ -17,7 +17,10 @@
   ],
   "client": [
     "client.BattleMusicMixin",
+    "client.DataSyncControlPacketMixin",
     "client.OpponentElementMixin",
+    "client.PixelmonEntity_OverlayMixin",
+    "client.PokemonShimLayerMixin",
     "client.WorldHelperMixin"
   ]
 }

@@ -5,6 +5,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.strangeone101.pixeltweaks.client.overlay.PokemonOverlay;
 import com.strangeone101.pixeltweaks.music.MusicEvent;
 
 import java.lang.reflect.Type;
@@ -38,6 +39,8 @@ public abstract class Event {
                 event = context.deserialize(json, MusicEvent.BGM.class);
             } else if ("battle_music".equals(eventType) || "battlemusic".equals(eventType)) {
                 event = context.deserialize(json, MusicEvent.Battle.class);
+            } else if ("pokemon_overlay".equals(eventType)) {
+                event = context.deserialize(json, PokemonOverlay.class);
             } else {
                 throw new JsonParseException("Invalid event type: " + eventType);
             }
