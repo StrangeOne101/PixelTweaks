@@ -1,5 +1,6 @@
 package com.strangeone101.pixeltweaks.music;
 
+import com.strangeone101.pixeltweaks.struct.Fade;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Objects;
@@ -8,7 +9,7 @@ public class Sound {
 
     public ResourceLocation sound;
 
-    public Music.Fade fade = new Music.Fade();
+    public Fade fade = new Fade();
 
     public float volume = 1.0F;
     public float pitch = 1.0F;

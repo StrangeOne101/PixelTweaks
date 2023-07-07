@@ -1,4 +1,4 @@
-package com.strangeone101.pixeltweaks.pixelevents;
+package com.strangeone101.pixeltweaks.struct;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

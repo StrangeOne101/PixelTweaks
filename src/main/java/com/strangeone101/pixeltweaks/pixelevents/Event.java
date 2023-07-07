@@ -26,19 +26,29 @@ public abstract class Event {
         @Override
         public Event deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonObject = json.getAsJsonObject();
-            String musicType = jsonObject.get("type").getAsString();
+            String eventType = jsonObject.get("type").getAsString();
             if (jsonObject.has("pack")) {
                 //Remove the pack field as it can't be set
                 jsonObject.remove("pack");
             }
 
-            if ("bgm".equals(musicType)) {
-                return context.deserialize(json, MusicEvent.BGM.class);
-            } else if ("battle_music".equals(musicType) || "battlemusic".equals(musicType)) {
-                return context.deserialize(json, MusicEvent.Battle.class);
+            Event event = null;
+
+            if ("bgm".equals(eventType)) {
+                event = context.deserialize(json, MusicEvent.BGM.class);
+            } else if ("battle_music".equals(eventType) || "battlemusic".equals(eventType)) {
+                event = context.deserialize(json, MusicEvent.Battle.class);
+            } else {
+                throw new JsonParseException("Invalid event type: " + eventType);
             }
 
-            throw new JsonParseException("Invalid music type: " + musicType);
+            if (event instanceof IValidator) {
+                if (!((IValidator) event).validate()) {
+                    throw new JsonParseException("Failed to validate " + eventType + ": " + ((IValidator) event).getError());
+                }
+            }
+
+            return event;
         }
     }
 

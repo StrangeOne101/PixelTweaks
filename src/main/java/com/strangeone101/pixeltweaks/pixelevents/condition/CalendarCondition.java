@@ -2,7 +2,7 @@ package com.strangeone101.pixeltweaks.pixelevents.condition;
 
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.pixelevents.Condition;
-import com.strangeone101.pixeltweaks.pixelevents.SpecificTime;
+import com.strangeone101.pixeltweaks.struct.SpecificTime;
 import jdk.jfr.Experimental;
 
 @Experimental

@@ -1,5 +1,6 @@
 package com.strangeone101.pixeltweaks.music;
 
+import com.strangeone101.pixeltweaks.struct.Fade;
 import net.minecraft.util.ResourceLocation;
 import java.util.Objects;
 
@@ -12,11 +13,6 @@ public class Music {
 
     public float volume = 1.0F;
     public float pitch = 1.0F;
-
-    public static class Fade {
-        public long start = 1000;
-        public long end = 1000;
-    }
 
     @Override
     public boolean equals(Object o) {

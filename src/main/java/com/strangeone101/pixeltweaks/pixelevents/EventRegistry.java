@@ -8,6 +8,7 @@ import com.google.gson.JsonDeserializer;
 import com.pixelmonmod.api.pokemon.PokemonSpecification;
 import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
 import com.strangeone101.pixeltweaks.PixelTweaks;
+import com.strangeone101.pixeltweaks.struct.SpecificTime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResource;
@@ -17,18 +18,14 @@ import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Predicate;
 
 public class EventRegistry implements ISelectiveResourceReloadListener {
@@ -36,11 +33,19 @@ public class EventRegistry implements ISelectiveResourceReloadListener {
     private static Map<Class<? extends Event>, Set<Event>> EVENTS = Maps.newHashMap();
 
     protected static void registerEvent(Event event) {
-        EVENTS.computeIfAbsent(event.getClass(), k -> Sets.newTreeSet(
-               (e1, e2) -> {
-                   if (e1.getPriority() == e2.getPriority()) return e2.hashCode() - e1.hashCode();
-                   return e2.getPriority() - e1.getPriority();
-               })).add(event);
+        EVENTS.computeIfAbsent(event.getClass(), k -> newTreeset()).add(event);
+
+        if (event instanceof EventListener) {
+            ((EventListener) event).onRegister();
+        }
+    }
+
+    public static TreeSet<Event> newTreeset() {
+        return Sets.newTreeSet(
+        (e1, e2) -> {
+            if (e1.getPriority() == e2.getPriority()) return e2.hashCode() - e1.hashCode();
+            return e2.getPriority() - e1.getPriority();
+        });
     }
 
     public static <T extends Event> Collection<T> getEvents(Class<T> eventClass) {
@@ -62,7 +67,7 @@ public class EventRegistry implements ISelectiveResourceReloadListener {
     public void onResourceManagerReload(IResourceManager resourceManager) {
         String directoryPath = "pixelevents";
 
-        PixelTweaks.LOGGER.debug("Loading music from " + directoryPath);
+        PixelTweaks.LOGGER.debug("Loading events from " + directoryPath);
 
         // Get files from resource packs. We use a set to stop double ups from occurring
         Set<ResourceLocation> fileLocations = Sets.newHashSet(resourceManager.getAllResourceLocations(directoryPath, file -> file.toLowerCase().endsWith(".json")));
