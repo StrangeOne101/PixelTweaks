@@ -5,8 +5,10 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonBase;
 import com.pixelmonmod.pixelmon.entities.pixelmon.AbstractHoldsItemsEntity;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
+import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.client.overlay.PixelmonEntityLayerExtension;
 import com.strangeone101.pixeltweaks.client.overlay.PokemonOverlay;
+import com.strangeone101.pixeltweaks.pixelevents.Condition;
 import net.minecraft.entity.EntityType;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.world.World;
@@ -53,15 +55,28 @@ public class PixelmonEntity_OverlayMixin extends AbstractHoldsItemsEntity implem
         if (PokemonOverlay.SPECIES_EVENTS.containsKey(pokemon.getSpecies())) {
             for (PokemonSpecification spec : PokemonOverlay.SPECIES_EVENTS.get(pokemon.getSpecies()).keySet()) {
                 if (spec.matches(pokemon)) {
-                    this.setPTOverlay(PokemonOverlay.SPECIES_EVENTS.get(pokemon.getSpecies()).get(spec));
-                    break;
+                    for (PokemonOverlay overlay : PokemonOverlay.SPECIES_EVENTS.get(pokemon.getSpecies()).get(spec)) {
+                        if (overlay.conditions.stream().allMatch(c -> c.conditionMet((PixelmonEntity)((Object)this)))) {
+                            this.setPTOverlay(overlay);
+                            break;
+                        }
+                    }
                 }
             }
         } else {
-            for (PokemonSpecification spec : PokemonOverlay.NON_SPECIES_EVENT.keySet()) {
+                for (PokemonSpecification spec : PokemonOverlay.NON_SPECIES_EVENT.keySet()) {
                 if (spec.matches(pokemon)) {
-                    this.setPTOverlay(PokemonOverlay.NON_SPECIES_EVENT.get(spec));
-                    break;
+                    outer:
+                    for (PokemonOverlay overlay : PokemonOverlay.NON_SPECIES_EVENT.get(spec)) {
+                        for (Condition c : overlay.conditions) {
+                            if (!c.conditionMet((PixelmonEntity)((Object)this))) {
+                                PixelTweaks.LOGGER.debug("Failed " + c.toString());
+                                continue outer;
+                            }
+                            PixelTweaks.LOGGER.debug("Passed " + c.toString());
+                        }
+                        this.setPTOverlay(overlay);
+                    }
                 }
             }
         }

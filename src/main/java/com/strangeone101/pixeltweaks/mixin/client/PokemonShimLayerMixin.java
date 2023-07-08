@@ -3,7 +3,6 @@ package com.strangeone101.pixeltweaks.mixin.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
 import com.pixelmonmod.pixelmon.client.models.PixelmonModelBase;
-import com.pixelmonmod.pixelmon.client.render.PixelmonRendering;
 import com.pixelmonmod.pixelmon.client.render.entity.layers.PokemonShimLayer;
 import com.pixelmonmod.pixelmon.client.render.entity.renderers.AbstractPokemonRenderer;
 import com.pixelmonmod.pixelmon.entities.pixelmon.AbstractClientEntity;
@@ -12,12 +11,17 @@ import com.strangeone101.pixeltweaks.client.overlay.PixelmonEntityLayerExtension
 import com.strangeone101.pixeltweaks.client.overlay.PokemonOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderState;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -63,7 +67,7 @@ public abstract class PokemonShimLayerMixin<E extends AbstractClientEntity> exte
             if (layer.fade != null) {
                 long existed = pixelmon.ticksExisted * 50L;
                 if (existed < layer.fade.start) {
-                    alpha *= (float) (existed / layer.fade.start);
+                    alpha *= ((double)existed / layer.fade.start);
                 }
             }
 
@@ -74,7 +78,24 @@ public abstract class PokemonShimLayerMixin<E extends AbstractClientEntity> exte
             float[] colors = layer.color.getColorComponents(new float[4]);
             colors[3] = alpha;
 
-            this.model.render(pixelmon, matrix, buffer.getBuffer(PixelmonRendering.getSMDTransparentRenderType(layer.texture)), light, packedOverlay, colors[0], colors[1], colors[2], colors[3]);
+            this.model.render(pixelmon, matrix, buffer.getBuffer(pixelTweaks$render(layer.texture)), light, packedOverlay, colors[0], colors[1], colors[2], colors[3]);
         }
+    }
+
+    @Unique
+    private static RenderType pixelTweaks$render(ResourceLocation texture) {
+        RenderType.State state = RenderType.State.getBuilder().shadeModel(RenderState.SHADE_ENABLED)
+                .texture(new RenderState.TextureState(texture, false, false))
+                .transparency(RenderType.TRANSLUCENT_TRANSPARENCY)
+                .diffuseLighting(RenderType.DIFFUSE_LIGHTING_ENABLED)
+                .alpha(RenderType.DEFAULT_ALPHA)
+                .cull(RenderType.CULL_DISABLED)
+                .lightmap(RenderType.LIGHTMAP_ENABLED)
+                .overlay(RenderType.OVERLAY_ENABLED)
+                .writeMask(RenderType.COLOR_WRITE)
+                .target(RenderType.TRANSLUCENT_TARGET)
+                .fog(RenderType.NO_FOG)
+                .build(true);
+        return RenderType.makeType("custom_smd_pixeltweaks", DefaultVertexFormats.ENTITY, 4, 256, false, false, state);
     }
 }

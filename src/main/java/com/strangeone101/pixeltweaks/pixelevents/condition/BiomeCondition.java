@@ -44,12 +44,15 @@ public class BiomeCondition extends Condition<ResourceLocation> {
 
     @Override
     public ResourceLocation itemFromPixelmon(PixelmonEntity entity) {
-        Biome biome = entity.getEntityWorld().getBiome(entity.getPosition());
+        Biome biome = Minecraft.getInstance().world.getBiome(entity.getPosition());
         return getBiome(biome);
     }
 
     public static ResourceLocation getBiome(Biome biome) {
-        return Minecraft.getInstance().world.func_241828_r().getRegistry(Registry.BIOME_KEY).getKey(biome);
+        if (biome == null) return null;
+        ResourceLocation l = Minecraft.getInstance().world.func_241828_r().getRegistry(Registry.BIOME_KEY).getKey(biome);
+        if (l == null) return biome.getRegistryName();
+        return l;
     }
 
     @Override

@@ -11,18 +11,13 @@ import com.strangeone101.pixeltweaks.pixelevents.IValidator;
 import com.strangeone101.pixeltweaks.pixelevents.condition.PokemonCondition;
 import com.strangeone101.pixeltweaks.pixelevents.condition.PokemonListCondition;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PokemonOverlay extends Event implements IValidator {
 
-    public static Map<PokemonSpecification, PokemonOverlay> NON_SPECIES_EVENT = new LinkedHashMap<>();
-    public static Map<Species, Map<PokemonSpecification, PokemonOverlay>> SPECIES_EVENTS = new HashMap<>();
+    public static Map<PokemonSpecification, Set<PokemonOverlay>> NON_SPECIES_EVENT = new LinkedHashMap<>();
+    public static Map<Species, Map<PokemonSpecification, Set<PokemonOverlay>>> SPECIES_EVENTS = new HashMap<>();
 
     public OverlayLayer[] layers;
 
@@ -54,9 +49,11 @@ public class PokemonOverlay extends Event implements IValidator {
                         Species species = spec.create().getSpecies();
                         PokemonOverlay.SPECIES_EVENTS.putIfAbsent(species, new HashMap<>());
 
-                        PokemonOverlay.SPECIES_EVENTS.get(species).putIfAbsent(spec, overlay);
+                        PokemonOverlay.SPECIES_EVENTS.get(species).putIfAbsent(spec, new LinkedHashSet<>());
+                        PokemonOverlay.SPECIES_EVENTS.get(species).get(spec).add(overlay);
                     } else {
-                        PokemonOverlay.NON_SPECIES_EVENT.put(spec, overlay);
+                        PokemonOverlay.NON_SPECIES_EVENT.putIfAbsent(spec, new LinkedHashSet<>());
+                        PokemonOverlay.NON_SPECIES_EVENT.get(spec).add(overlay);
                     }
 
                 } else if (c instanceof PokemonListCondition) {
@@ -65,14 +62,17 @@ public class PokemonOverlay extends Event implements IValidator {
                             Species species = spec.create().getSpecies();
                             PokemonOverlay.SPECIES_EVENTS.putIfAbsent(species, new HashMap<>());
 
-                            PokemonOverlay.SPECIES_EVENTS.get(species).putIfAbsent(spec, overlay);
+                            PokemonOverlay.SPECIES_EVENTS.get(species).putIfAbsent(spec, new LinkedHashSet<>());
+                            PokemonOverlay.SPECIES_EVENTS.get(species).get(spec).add(overlay);
                         } else {
-                            PokemonOverlay.NON_SPECIES_EVENT.put(spec, overlay);
+                            PokemonOverlay.NON_SPECIES_EVENT.putIfAbsent(spec, new LinkedHashSet<>());
+                            PokemonOverlay.NON_SPECIES_EVENT.get(spec).add(overlay);
                         }
                     });
                 }
             };
 
+            //Remove any pokemon conditions from the overlay as they are not needed anymore
             overlay.conditions = overlay.conditions.stream().filter(c -> !(c instanceof PokemonCondition || c instanceof PokemonListCondition)).collect(Collectors.toList());
         }
     }
