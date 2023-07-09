@@ -79,7 +79,7 @@ public abstract class PokemonShimLayerMixin<E extends AbstractClientEntity> exte
             float[] colors = layer.color.getColorComponents(new float[4]);
             colors[3] = alpha;
 
-            this.model.render(pixelmon, matrix, buffer.getBuffer(PixelmonRendering.getSMDCulledRenderType(layer.texture)), light, packedOverlay, colors[0], colors[1], colors[2], colors[3]);
+            this.model.render(pixelmon, matrix, buffer.getBuffer(PixelmonRendering.getSMDTransparentRenderType(layer.texture)), light, packedOverlay, colors[0], colors[1], colors[2], colors[3]);
         }
     }
 
