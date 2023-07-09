@@ -3,6 +3,7 @@ package com.strangeone101.pixeltweaks.mixin.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
 import com.pixelmonmod.pixelmon.client.models.PixelmonModelBase;
+import com.pixelmonmod.pixelmon.client.render.PixelmonRendering;
 import com.pixelmonmod.pixelmon.client.render.entity.layers.PokemonShimLayer;
 import com.pixelmonmod.pixelmon.client.render.entity.renderers.AbstractPokemonRenderer;
 import com.pixelmonmod.pixelmon.entities.pixelmon.AbstractClientEntity;
@@ -78,7 +79,7 @@ public abstract class PokemonShimLayerMixin<E extends AbstractClientEntity> exte
             float[] colors = layer.color.getColorComponents(new float[4]);
             colors[3] = alpha;
 
-            this.model.render(pixelmon, matrix, buffer.getBuffer(pixelTweaks$render(layer.texture)), light, packedOverlay, colors[0], colors[1], colors[2], colors[3]);
+            this.model.render(pixelmon, matrix, buffer.getBuffer(PixelmonRendering.getSMDCulledRenderType(layer.texture)), light, packedOverlay, colors[0], colors[1], colors[2], colors[3]);
         }
     }
 
@@ -87,6 +88,7 @@ public abstract class PokemonShimLayerMixin<E extends AbstractClientEntity> exte
         RenderType.State state = RenderType.State.getBuilder().shadeModel(RenderState.SHADE_ENABLED)
                 .texture(new RenderState.TextureState(texture, false, false))
                 .transparency(RenderType.TRANSLUCENT_TRANSPARENCY)
+                .depthTest(RenderType.DEPTH_EQUAL)
                 .diffuseLighting(RenderType.DIFFUSE_LIGHTING_ENABLED)
                 .alpha(RenderType.DEFAULT_ALPHA)
                 .cull(RenderType.CULL_DISABLED)
