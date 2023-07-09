@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.5
+- Added JEI Integration
+  - Makes Pokeballs, Pokeball lids, TMs and TRs show in JEI.
+  - Can now be looked up for recipes easily
+- Made all pixelmon item information (the lore you see when you hold SNEAK) now split into multiple lines after a certain length (60 characters)
+- Added `pokemon_overlay` event for resource packs
+  - Allows resource packs to define textures to overlay on pokemon under certain conditions
+  - Allows you to make emissive textures without the need for a datapack
+  - As an example, Arceus' eyes are now emissive (glow in the dark)
+
 ## 1.4.1
 - Zygarde cores spawn 3x as often in thunder now
 - Disabled Zygarde cell feature spawning as it was causing timeout issues
