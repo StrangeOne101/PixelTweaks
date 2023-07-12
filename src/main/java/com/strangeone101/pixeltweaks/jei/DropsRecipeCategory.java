@@ -1,15 +1,12 @@
 package com.strangeone101.pixeltweaks.jei;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
+import com.pixelmonmod.api.pokemon.requirement.impl.GenderRequirement;
+import com.pixelmonmod.api.pokemon.requirement.impl.PaletteRequirement;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.drops.ItemWithChance;
 import com.pixelmonmod.pixelmon.api.pokemon.drops.PokemonDropInformation;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
-import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
-import com.pixelmonmod.pixelmon.api.util.helpers.SpriteItemHelper;
-import com.pixelmonmod.pixelmon.items.SpriteItem;
-import com.strangeone101.pixeltweaks.PixelTweaks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -17,22 +14,19 @@ import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.plugins.vanilla.ingredients.item.ItemStackRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DropsRecipeCategory implements IRecipeCategory<PokemonDropInformation> {
 
     public static final ResourceLocation UID = new ResourceLocation("pixeltweaks", "drops");
-    private static final PokemonIngredientRenderer renderer = new PokemonIngredientRenderer();
+    private static final PokemonWrapperIngredientRenderer renderer = new PokemonWrapperIngredientRenderer(3F);
 
     private IDrawable bg;
 
@@ -40,14 +34,12 @@ public class DropsRecipeCategory implements IRecipeCategory<PokemonDropInformati
     private final IDrawableStatic slotDrawable;
 
     public DropsRecipeCategory(IGuiHelper gui){
-        ItemStack itemStack = new ItemStack(PixelmonItems.pixelmon_sprite);
-        CompoundNBT tagCompound = new CompoundNBT();
-        itemStack.setTag(tagCompound);
-        tagCompound.putShort("ndex", (short)194);
+        ItemStack itemStack = new ItemStack(PixelmonItems.quick_claw);
 
         this.icon = gui.createDrawableIngredient(itemStack);
         this.slotDrawable = gui.getSlotDrawable();
-        this.bg = gui.drawableBuilder(new ResourceLocation("pixeltweaks", "textures/jei/drops_bg.png"), 0, 0, 112, 106).setTextureSize(112, 106).build();
+        this.bg = gui.drawableBuilder(new ResourceLocation("pixeltweaks", "textures/jei/drops_bg2.png"), 0, 0, 112, 100).setTextureSize(112, 100).build();
+
     }
     @Override
     public ResourceLocation getUid() {
@@ -76,8 +68,7 @@ public class DropsRecipeCategory implements IRecipeCategory<PokemonDropInformati
 
     @Override
     public void setIngredients(PokemonDropInformation recipe, IIngredients ingredients) {
-        Pokemon pokemon = recipe.getPokemonSpec().create();
-        ingredients.setInput(JEIIntegration.POKEMON, pokemon.getForm());
+        ingredients.setInput(JEIIntegration.WRAPPED_POKEMON, new JEIPokemonWrapper(recipe.getPokemonSpec()));
 
         List<ItemStack> items = new ArrayList<>();
         for (ItemWithChance drop : recipe.getDrops()) {
@@ -88,10 +79,10 @@ public class DropsRecipeCategory implements IRecipeCategory<PokemonDropInformati
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, PokemonDropInformation recipe, IIngredients ingredients) {
-        recipeLayout.getIngredientsGroup(JEIIntegration.POKEMON).init(0, true, renderer, 20, 12, 32, 32, 0, 0);
-        recipeLayout.getIngredientsGroup(JEIIntegration.POKEMON).set(0, ingredients.getInputs(JEIIntegration.POKEMON).get(0));
+        recipeLayout.getIngredientsGroup(JEIIntegration.WRAPPED_POKEMON).init(0, true, renderer, 14 - 8, 6, 48, 48, 0, 0);
+        recipeLayout.getIngredientsGroup(JEIIntegration.WRAPPED_POKEMON).set(0, ingredients.getInputs(JEIIntegration.WRAPPED_POKEMON).get(0));
         for (int i = 0; i < recipe.getDrops().size(); i++) {
-            recipeLayout.getItemStacks().init(i + 1, false, 9 + (25 * i), 66);
+            recipeLayout.getItemStacks().init(i + 1, false, 8 + (26 * i), 65);
             recipeLayout.getItemStacks().set(i + 1, recipe.getDrops().get(i).getItemStack());
         }
     }
@@ -103,7 +94,13 @@ public class DropsRecipeCategory implements IRecipeCategory<PokemonDropInformati
             double chance = drop.getChance() * 100;
             String chanceString = String.format("%.0f", chance) + "%";
             int w = Minecraft.getInstance().fontRenderer.getStringWidth(chanceString);
-            Minecraft.getInstance().fontRenderer.drawString(matrixStack, chanceString, 9 + (25 * i) + 15 - (w / 2), 66 + 24, 0xFFFFFF);
+            Minecraft.getInstance().fontRenderer.drawStringWithShadow(matrixStack, chanceString, 8 + (26 * i) + 10 - ((float) w / 2), 66 + 24, 0xFFFFFF);
+
+            //String amountString = drop.getMin() + "-" + drop.getMax();
+            //Minecraft.getInstance().fontRenderer.drawStringWithShadow(matrixStack, amountString, 8 + (26 * i), 66 + 4, 0xFFFFFF);
+
         }
     }
+
+
 }

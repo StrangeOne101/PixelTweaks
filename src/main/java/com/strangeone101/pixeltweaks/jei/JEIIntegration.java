@@ -1,6 +1,5 @@
 package com.strangeone101.pixeltweaks.jei;
 
-import com.pixelmonmod.api.pokemon.PokemonSpecification;
 import com.pixelmonmod.pixelmon.api.pokemon.drops.PokemonDropInformation;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
@@ -9,19 +8,15 @@ import com.pixelmonmod.pixelmon.entities.npcs.registry.DropItemRegistry;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.MethodsReturnNonnullByDefault;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IModIngredientRegistration;
-import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,8 +26,7 @@ public class JEIIntegration implements IModPlugin {
     public static final ResourceLocation UID = new ResourceLocation("pixeltweaks", "jei");
 
     public static final IIngredientType<Stats> POKEMON = () -> Stats.class;
-
-    public static IRecipeRegistration RECIPE_REGISTRATIONS;
+    public static final IIngredientType<JEIPokemonWrapper> WRAPPED_POKEMON = () -> JEIPokemonWrapper.class;
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
@@ -54,6 +48,8 @@ public class JEIIntegration implements IModPlugin {
     @Override
     public void registerIngredients(IModIngredientRegistration registration) {
         registration.register(POKEMON, new HashSet<>(), new PokemonIngredientHelper(), new PokemonIngredientRenderer());
+        registration.register(WRAPPED_POKEMON, new HashSet<>(), new PokemonWrapperIngredientHelper(), new PokemonWrapperIngredientRenderer());
+
     }
 
     @Override

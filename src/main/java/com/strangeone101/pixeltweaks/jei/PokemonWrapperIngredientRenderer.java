@@ -3,10 +3,10 @@ package com.strangeone101.pixeltweaks.jei;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.pixelmonmod.api.pokemon.PokemonSpecification;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonBuilder;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
+import com.pixelmonmod.pixelmon.api.pokemon.species.palette.PaletteProperties;
 import com.pixelmonmod.pixelmon.api.util.helpers.SpriteItemHelper;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
@@ -17,38 +17,56 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PokemonIngredientRenderer implements IIngredientRenderer<Stats> {
+public class PokemonWrapperIngredientRenderer implements IIngredientRenderer<JEIPokemonWrapper> {
+
+    private float scale;
+    public PokemonWrapperIngredientRenderer(float scale) {
+        this.scale = scale;
+    }
+
+    public PokemonWrapperIngredientRenderer() {
+        this(1F);
+    }
 
     @Override
-    public void render(MatrixStack matrixStack, int xPosition, int yPosition, @Nullable Stats ingredient) {
+    public void render(MatrixStack matrixStack, int xPosition, int yPosition, @Nullable JEIPokemonWrapper ingredient) {
         if (ingredient == null) return;
         RenderHelper.enableStandardItemLighting();
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-        Pokemon pokemon = PokemonBuilder.builder().species(ingredient.getParentSpecies()).form(ingredient).build();
+        Pokemon pokemon = ingredient.buildPokemon;
         //itemRenderer.renderItemAndEffectIntoGUI(SpriteItemHelper.getPhoto(pokemon), xPosition, yPosition);
-        renderItem(matrixStack, SpriteItemHelper.getPhoto(pokemon), xPosition, yPosition, 2.0F);
+        renderItem(matrixStack, SpriteItemHelper.getPhoto(pokemon), xPosition, yPosition, this.scale);
         RenderHelper.disableStandardItemLighting();
     }
 
     @Override
-    public List<ITextComponent> getTooltip(Stats ingredient, ITooltipFlag tooltipFlag) {
+    public List<ITextComponent> getTooltip(JEIPokemonWrapper ingredient, ITooltipFlag tooltipFlag) {
         List<ITextComponent> allTooltips = new ArrayList<>();
-        allTooltips.add(ingredient.getParentSpecies().getTranslatedName());
-        String form = ingredient.getLocalizedName();
-        if (form != null && !form.isEmpty()) allTooltips.add(ITextComponent.getTextComponentOrEmpty(form));
+        String species = ingredient.getForm().getParentSpecies().getTranslatedName().getString();
+        String form = ingredient.getForm().getLocalizedName();
+        String rawForm = ingredient.getForm().getName();
+        if (form != null && !form.isEmpty() && !rawForm.equals("") && !rawForm.equals("Default")) species = form + " " + species;
+        allTooltips.add(new StringTextComponent(species));
+        if (ingredient.getPalette().isPresent()) {
+            allTooltips.add(new StringTextComponent(TextFormatting.GRAY + ingredient.getPalette().get().getLocalizedName()));
+        }
+        if (ingredient.getGender().isPresent()) {
+            allTooltips.add(new StringTextComponent(TextFormatting.GRAY + ingredient.getGender().get().getLocalizedName()));
+        }
         return allTooltips;
     }
 
-    public void renderItem(MatrixStack matrixStack, ItemStack stack, int x, int y, float scale) {
+    public static void renderItem(MatrixStack matrixStack, ItemStack stack, int x, int y, float scale) {
         RenderSystem.pushMatrix();
         Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         Minecraft.getInstance().getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).setBlurMipmapDirect(false, false);
@@ -68,14 +86,13 @@ public class PokemonIngredientRenderer implements IIngredientRenderer<Stats> {
         RenderSystem.translatef(half, half, 0.0F);
         RenderSystem.scalef(1.0F, -1.0F, 1.0F);
         RenderSystem.scalef(full, full, full);
-        MatrixStack matrixstack = new MatrixStack();
         IRenderTypeBuffer.Impl irendertypebuffer$impl = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
         boolean flag = !bakedmodel.isSideLit();
         if (flag) {
             RenderHelper.setupGuiFlatDiffuseLighting();
         }
 
-        Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.GUI, false, matrixstack, irendertypebuffer$impl, 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
+        Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.GUI, false, matrixStack, irendertypebuffer$impl, 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
         irendertypebuffer$impl.finish();
         RenderSystem.enableDepthTest();
         if (flag) {
