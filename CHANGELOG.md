@@ -4,6 +4,7 @@
 - Added pokemon drops and poke loot chests recipes to JEI
   - Shows all the possible drops for pokemon in JEI
   - Shows all the possible drops for poke loot chests in JEI
+- Added English (GB) and Japanese lang files
 
 ## 1.5
 - Added JEI Integration
