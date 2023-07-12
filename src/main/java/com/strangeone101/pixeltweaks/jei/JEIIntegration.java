@@ -55,6 +55,7 @@ public class JEIIntegration implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         registration.addRecipeCategories(new DropsRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(new PokeLootRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
@@ -81,6 +82,17 @@ public class JEIIntegration implements IModPlugin {
         }
         drops.forEach(drop -> jeiRuntime.getRecipeManager().addRecipe(drop, DropsRecipeCategory.UID));
         PixelTweaks.LOGGER.info("Registered " + drops.size() + " drop recipes to JEI!");
+
+        PokeLootPool tier1 = new PokeLootPool(1, DropItemRegistry.tier1);
+        PokeLootPool tier2 = new PokeLootPool(2, DropItemRegistry.tier2);
+        PokeLootPool tier3 = new PokeLootPool(3, DropItemRegistry.tier3);
+        PokeLootPool tier4 = new PokeLootPool(4, DropItemRegistry.ultraSpace);
+
+        jeiRuntime.getRecipeManager().addRecipe(tier1, PokeLootRecipeCategory.UID);
+        jeiRuntime.getRecipeManager().addRecipe(tier2, PokeLootRecipeCategory.UID);
+        jeiRuntime.getRecipeManager().addRecipe(tier3, PokeLootRecipeCategory.UID);
+        jeiRuntime.getRecipeManager().addRecipe(tier4, PokeLootRecipeCategory.UID);
+
     }
 
     @Override

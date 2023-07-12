@@ -1,0 +1,13 @@
+{
+  "pixeltweaks.subtitle.sparkle": "光沢のあるポケモンが輝きます",
+  "pixelmon.interaction.bottlecap.level": "これを使用するには%sのレベルが%iである必要があります！",
+  "pixeltweaks.subtitle.music.arceus": "アルセウスバトルミュージック",
+  "gamerule.doPokemonSpawning": "スポーンポケモン",
+  "gamerule.doTrainerSpawning": "スポーントレーナー（NPC）",
+  "jei.pixeltweaks.drops.title": "ポケモンドロップ",
+  "jei.pixeltweaks.pokeloot.title": "ポケモンルートチェスト",
+  "jei.pixeltweaks.pokeloot.subtitle.1": "ティア1ルート",
+  "jei.pixeltweaks.pokeloot.subtitle.2": "ティア2ルート",
+  "jei.pixeltweaks.pokeloot.subtitle.3": "ティア3ルート",
+  "jei.pixeltweaks.pokeloot.subtitle.4": "ウルトラスペースルート"
+}
