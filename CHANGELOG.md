@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6
+- Added pokemon drops and poke loot chests recipes to JEI
+  - Shows all the possible drops for pokemon in JEI
+  - Shows all the possible drops for poke loot chests in JEI
+
 ## 1.5
 - Added JEI Integration
   - Makes Pokeballs, Pokeball lids, TMs and TRs show in JEI.
