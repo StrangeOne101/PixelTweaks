@@ -296,37 +296,30 @@ public class ZygardeCellSpawner {
     }
 
     private static void spawnOn(IChunk chunk, BlockPos pos, Direction facing) {
-        BlockState currentState = chunk.getBlockState(pos);
-        if (currentState.isAir() || (!currentState.isSolid() && currentState.getFluidState().getFluid() == Fluids.EMPTY && (!currentState.hasProperty(BlockStateProperties.WATERLOGGED) || !currentState.get(BlockStateProperties.WATERLOGGED)))) {
-            Direction rotation = facing.getAxis() == Direction.Axis.Y ? Direction.byHorizontalIndex(RandomHelper.getRandom().nextInt(4)) : (RandomHelper.getRandomChance() ? Direction.UP : Direction.DOWN);
+        if (chunk instanceof Chunk) {
+            BlockState currentState = ((Chunk)chunk).getWorld().getBlockState(pos);
+            if (currentState.isAir() || (!currentState.isSolid() && currentState.getFluidState().getFluid() == Fluids.EMPTY && (!currentState.hasProperty(BlockStateProperties.WATERLOGGED) || !currentState.get(BlockStateProperties.WATERLOGGED)))) {
+                Direction rotation = facing.getAxis() == Direction.Axis.Y ? Direction.byHorizontalIndex(RandomHelper.getRandom().nextInt(4)) : (RandomHelper.getRandomChance() ? Direction.UP : Direction.DOWN);
 
-            int coreChance = 20;
-            if (chunk instanceof Chunk && ((Chunk) chunk).getWorld().isThundering()) coreChance = 7;
+                int coreChance = 20;
+                if (((Chunk) chunk).getWorld().isThundering()) coreChance = 7;
 
-            Block block = RandomHelper.getRandom().nextInt(coreChance) == 0 ? PixelmonBlocks.zygarde_core : PixelmonBlocks.zygarde_cell;
-            BlockState state = (BlockState)((BlockState)block.getDefaultState().with(ZygardeCellBlock.ORIENTATION_PROPERTY, facing)).with(ZygardeCellBlock.ROTATION_PROPERTY, rotation);
-            ZygardeCellTileEntity tileEntity = new ZygardeCellTileEntity();
-            tileEntity.setPos(pos);
-            tileEntity.setCoreType(ZygardeCubeItem.CoreType.RANDOM);
-            BlockPos realPos = chunk.getPos().asBlockPos().add(pos.getX(), pos.getY(), pos.getZ());
+                Block block = RandomHelper.getRandom().nextInt(coreChance) == 0 ? PixelmonBlocks.zygarde_core : PixelmonBlocks.zygarde_cell;
+                BlockState state = (BlockState)((BlockState)block.getDefaultState().with(ZygardeCellBlock.ORIENTATION_PROPERTY, facing)).with(ZygardeCellBlock.ROTATION_PROPERTY, rotation);
+                ZygardeCellTileEntity tileEntity = new ZygardeCellTileEntity();
+                tileEntity.setPos(pos);
+                tileEntity.setCoreType(ZygardeCubeItem.CoreType.RANDOM);
+                BlockPos realPos = chunk.getPos().asBlockPos().add(pos.getX(), pos.getY(), pos.getZ());
 
-            if (chunk instanceof Chunk) {
                 ((Chunk)chunk).getWorld().setBlockState(realPos, state);
                 ((Chunk)chunk).getWorld().addTileEntity(tileEntity);
                 ((Chunk)chunk).getWorld().markAndNotifyBlock(realPos, (Chunk)chunk, state, state, 3, 0);
                 //((Chunk)chunk).addTileEntity(tileEntity);
                 //PixelTweaks.LOGGER.debug("Spawned via chunk method: " + (((Chunk)chunk).getWorld().getServer().getExecutionThread() == Thread.currentThread()));
-            } else {
-                //chunk.setBlockState(pos, state, false);
-                chunk.setBlockState(pos, state, false);
-                chunk.addTileEntity(pos, tileEntity);
-                chunk.markBlockForPostprocessing(pos);
-                //Scheduling.schedule(1, () -> tileEntity.markDirty(), false); //Make the tile entity forcefully tick
-                //PixelTweaks.LOGGER.debug("Spawned via IChunk: " + chunk.toString() + ", world: ");
-            }
 
-            chunk.setModified(true);
-            PixelTweaks.LOGGER.debug("Spawned Zygarde Cell at " + realPos);
+                chunk.setModified(true);
+                PixelTweaks.LOGGER.debug("Spawned Zygarde Cell at " + realPos);
+            }
         }
     }
 
