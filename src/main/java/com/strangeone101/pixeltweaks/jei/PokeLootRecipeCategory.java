@@ -3,38 +3,23 @@ package com.strangeone101.pixeltweaks.jei;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.pixelmonmod.pixelmon.api.pokemon.drops.ItemWithChance;
-import com.pixelmonmod.pixelmon.api.pokemon.drops.PokemonDropInformation;
-import com.pixelmonmod.pixelmon.api.pokemon.item.pokeball.PokeBall;
-import com.pixelmonmod.pixelmon.api.pokemon.item.pokeball.PokeBallRegistry;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
+import com.strangeone101.pixeltweaks.PixelTweaks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IFocus;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.config.Constants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Matrix4f;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -98,13 +83,23 @@ public class PokeLootRecipeCategory implements IRecipeCategory<PokeLootPool> {
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, PokeLootPool recipe, IIngredients ingredients) {
-        int items = ingredients.getOutputs(VanillaTypes.ITEM).size();
+        boolean focus = recipeLayout.getFocus(VanillaTypes.ITEM) != null && recipeLayout.getFocus(VanillaTypes.ITEM).getMode() == IFocus.Mode.OUTPUT;
+
+        int items = ingredients.getOutputs(VanillaTypes.ITEM).size() - (focus ? 1 : 0);
+        int offset = focus ? 1 : 0;
 
         final int columns = 8;
 
         List<ItemStack> allItems = new ArrayList<>(recipe.getItems());
+
+        if (focus) {
+            recipeLayout.getItemStacks().init(0, false, 0, 18);
+            recipeLayout.getItemStacks().set(0, recipeLayout.getFocus(VanillaTypes.ITEM).getValue());
+            allItems.removeIf(item -> recipeLayout.getFocus(VanillaTypes.ITEM).getValue().isItemEqual(item));
+        }
+
         Collections.shuffle(allItems);
-        for (int i = 0; i < items && i < columns * 4; i++) {
+        for (int i = offset; i < items && i < columns * 4; i++) {
 
             Collections.rotate(allItems, 7);
             int x = (i % columns) * 18;
@@ -138,7 +133,5 @@ public class PokeLootRecipeCategory implements IRecipeCategory<PokeLootPool> {
         //String amountString = drop.getMin() + "-" + drop.getMax();
         //Minecraft.getInstance().fontRenderer.drawStringWithShadow(matrixStack, amountString, 8 + (26 * i), 66 + 4, 0xFFFFFF);
 
-
     }
-
 }
