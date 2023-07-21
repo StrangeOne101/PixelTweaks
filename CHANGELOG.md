@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.7
+- Added JEI recipes for Infusers
+- Added anti-crop trampling setting to prevent pokemon from trampling crops. Configurable.
+- Made Zygarde cell spawning obey the pixelmon config setting (in spawning.yml)
+- Made the length of lore wrapping on items configurable
+
+## 1.6.1
+- Fixed viewing an item in a pokeloot chest recipe from filling every single slot
+- Attempted to fix Zygarde cell placement bug (#6)
+
 ## 1.6
 - Added pokemon drops and poke loot chests recipes to JEI
   - Shows all the possible drops for pokemon in JEI

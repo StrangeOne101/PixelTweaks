@@ -23,9 +23,12 @@ import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.fml.ModList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import vazkii.ambience.Ambience;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,9 +45,10 @@ public abstract class BattleMusicMixin {
     @Shadow(remap = false)
     private static LocatableSound song;
 
-    private static ChainedMusic chainedMusic;
-
-    private static final Set<LocatableSound> fading = new HashSet<>();
+    @Unique
+    private static ChainedMusic pixelTweaks$chainedMusic;
+    @Unique
+    private static float pixelTweaks$oldGain;
 
     /**
      * @author StrangeOne101
@@ -118,16 +122,16 @@ public abstract class BattleMusicMixin {
             if (optional.isPresent() && !isPlaying()) {
                 MusicEvent.Battle event = optional.get();
                 PixelTweaks.LOGGER.debug("Playing sound event " + event.getFile());
-                VoidMusicTicker.replaceMusicTicker();
-                chainedMusic = new ChainedMusic(event.music);
+                pixelTweaks$pause();
+                pixelTweaks$chainedMusic = new ChainedMusic(event.music);
 
-                if (chainedMusic.shouldTick()) {
+                if (pixelTweaks$chainedMusic.shouldTick()) {
                     PixelmonMusic.EXECUTOR.submit(() -> {
                         try {
                             Thread.sleep(20);
 
-                            while (chainedMusic != null && chainedMusic.shouldTick()) {
-                                chainedMusic.tick();
+                            while (pixelTweaks$chainedMusic != null && pixelTweaks$chainedMusic.shouldTick()) {
+                                pixelTweaks$chainedMusic.tick();
                                 Thread.sleep(20);
                             }
                         } catch (Exception e) {
@@ -142,7 +146,7 @@ public abstract class BattleMusicMixin {
 
 
         Minecraft mc = Minecraft.getInstance();
-        VoidMusicTicker.replaceMusicTicker();
+        pixelTweaks$pause();
         if (isPlaying()) {
             mc.getSoundHandler().stop(song);
             song = null;
@@ -162,17 +166,29 @@ public abstract class BattleMusicMixin {
     public static void endBattleMusic() {
         Minecraft mc = Minecraft.getInstance();
         if (isPlaying()) {
-            if (chainedMusic != null) {
-                chainedMusic.finish(VoidMusicTicker::restoreMusicTicker);
+            if (pixelTweaks$chainedMusic != null) {
+                pixelTweaks$chainedMusic.finish(BattleMusicMixin::pixelTweaks$unpause);
             } else {
-                PixelmonMusic.fadeSoundToStop(song, 2000L, VoidMusicTicker::restoreMusicTicker);
+                PixelmonMusic.fadeSoundToStop(song, 2000L, BattleMusicMixin::pixelTweaks$unpause);
             }
         } else if (mc.getMusicTicker() instanceof VoidMusicTicker) {
-            VoidMusicTicker.restoreMusicTicker();
+            pixelTweaks$unpause();
         }
 
         song = null;
-        chainedMusic = null;
+        pixelTweaks$chainedMusic = null;
+    }
+
+    @Unique
+    private static void pixelTweaks$unpause() {
+        VoidMusicTicker.replaceMusicTicker();
+        //pixelTweaks$unpauseAmbienceMod();
+    }
+
+    @Unique
+    private static void pixelTweaks$pause() {
+        VoidMusicTicker.replaceMusicTicker();
+        //pixelTweaks$pauseAmbienceMod();
     }
 
     /**
@@ -181,8 +197,23 @@ public abstract class BattleMusicMixin {
      */
     @Overwrite(remap = false)
     public static boolean isPlaying() {
-        return (chainedMusic != null && chainedMusic.isPlaying()) || (song != null && PixelmonMusic.getSoundHandler().isPlaying(song));
+        return (pixelTweaks$chainedMusic != null && pixelTweaks$chainedMusic.isPlaying()) || (song != null && PixelmonMusic.getSoundHandler().isPlaying(song));
     }
 
+    @Unique
+    private static void pixelTweaks$pauseAmbienceMod() {
+        if (ModList.get().isLoaded("ambience") && Ambience.thread != null) {
+            pixelTweaks$oldGain = Ambience.thread.getGain();
+            Ambience.thread.setGain(0F);
+            Ambience.thread.resetPlayer();
+        }
+    }
+
+    @Unique
+    private static void pixelTweaks$unpauseAmbienceMod() {
+        if (ModList.get().isLoaded("ambience")  && Ambience.thread != null) {
+            Ambience.thread.setGain(pixelTweaks$oldGain);
+        }
+    }
 
 }

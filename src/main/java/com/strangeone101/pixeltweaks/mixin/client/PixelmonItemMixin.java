@@ -1,6 +1,7 @@
 package com.strangeone101.pixeltweaks.mixin.client;
 
 import com.pixelmonmod.pixelmon.items.PixelmonItem;
+import com.strangeone101.pixeltweaks.TweaksConfig;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +29,11 @@ public abstract class PixelmonItemMixin extends Item {
      */
     @Overwrite(remap = false)
     public String getTooltipText() {
-        return I18n.hasKey(this.getTranslationKey() + ".tooltip") ? String.join("\n", pixelTweaks$splitString(I18n.format(this.getTranslationKey() + ".tooltip"), pixelTweaks$LENGTH)) : "";
+        return I18n.hasKey(this.getTranslationKey() + ".tooltip") ?
+                (TweaksConfig.autoWrapLoreLength.get() > 0 ?
+                        String.join("\n", pixelTweaks$splitString(I18n.format(this.getTranslationKey() + ".tooltip"), TweaksConfig.autoWrapLoreLength.get()))
+                        : I18n.format(this.getTranslationKey() + ".tooltip"))
+                : "";
     }
 
     /**

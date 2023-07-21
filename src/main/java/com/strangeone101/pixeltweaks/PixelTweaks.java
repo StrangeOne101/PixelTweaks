@@ -2,10 +2,7 @@ package com.strangeone101.pixeltweaks;
 
 import com.strangeone101.pixeltweaks.listener.ClientListener;
 import com.strangeone101.pixeltweaks.listener.CommonListener;
-import com.strangeone101.pixeltweaks.tweaks.FoxImmunity;
-import com.strangeone101.pixeltweaks.tweaks.Healer;
-import com.strangeone101.pixeltweaks.tweaks.NewGamerules;
-import com.strangeone101.pixeltweaks.tweaks.TridentDrops;
+import com.strangeone101.pixeltweaks.tweaks.*;
 import com.strangeone101.pixeltweaks.worldgen.ZygardeCellFeature;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -27,9 +24,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.asm.launch.MixinBootstrap;
-import org.spongepowered.asm.mixin.MixinEnvironment;
-import org.spongepowered.asm.util.ConstraintParser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -86,6 +80,7 @@ public class PixelTweaks {
         new NewGamerules();
         new TridentDrops();
         new FoxImmunity();
+        new AntiPokeTrample();
 
         Lazy<ZygardeCellFeature> lazyFeature = Lazy.of(() -> ZygardeCellFeature.FEATURE);
         event.enqueueWork(() -> {

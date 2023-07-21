@@ -4,18 +4,21 @@ import com.pixelmonmod.pixelmon.api.pokemon.drops.PokemonDropInformation;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
+import com.pixelmonmod.pixelmon.client.gui.machines.infuser.InfuserContainer;
+import com.pixelmonmod.pixelmon.client.gui.machines.infuser.InfuserScreen;
 import com.pixelmonmod.pixelmon.entities.npcs.registry.DropItemRegistry;
+import com.pixelmonmod.pixelmon.init.registry.RecipeTypeRegistration;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.api.registration.IModIngredientRegistration;
-import mezz.jei.api.registration.IRecipeCategoryRegistration;
-import mezz.jei.api.registration.IRecipeRegistration;
-import mezz.jei.api.registration.ISubtypeRegistration;
+import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
+import net.minecraft.client.gui.screen.inventory.SmokerScreen;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -56,6 +59,7 @@ public class JEIIntegration implements IModPlugin {
     public void registerCategories(IRecipeCategoryRegistration registration) {
         registration.addRecipeCategories(new DropsRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
         registration.addRecipeCategories(new PokeLootRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(new InfuserRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
@@ -66,6 +70,7 @@ public class JEIIntegration implements IModPlugin {
             drops.addAll(DropItemRegistry.pokemonDrops.get(species));
         }
         registration.addRecipes(drops, DropsRecipeCategory.UID);*/
+        registration.addRecipes(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getRecipesForType(RecipeTypeRegistration.INFUSER_RECIPE_TYPE), InfuserRecipeCategory.UID);
     }
 
     @Override
@@ -93,6 +98,17 @@ public class JEIIntegration implements IModPlugin {
         jeiRuntime.getRecipeManager().addRecipe(tier3, PokeLootRecipeCategory.UID);
         jeiRuntime.getRecipeManager().addRecipe(tier4, PokeLootRecipeCategory.UID);
 
+    }
+
+    @Override
+    public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        registration.addRecipeClickArea(InfuserScreen.class, 108, 32, 16, 16, InfuserRecipeCategory.UID);
+    }
+
+    @Override
+    public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
+        //Doesn't work due to pixelmon bugs, I think. I think the slot numbers are all wrong
+        //registration.addRecipeTransferHandler(InfuserContainer.class, InfuserRecipeCategory.UID, 1, 2, 9, 36);
     }
 
     @Override

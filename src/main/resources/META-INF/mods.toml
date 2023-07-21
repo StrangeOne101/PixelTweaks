@@ -64,4 +64,10 @@ Got suggestions to add? Suggest them in the discord thread in the pixelmon disco
    versionRange="[9.1.4, 9.9.9]"
    side="BOTH"
    ordering="AFTER"
+[[dependencies.pixeltweaks]]
+   modId="jei"
+   mandatory=false
+   versionRange="[7.6.1.0,)"
+   side="BOTH"
+   ordering="NONE"
 

@@ -94,6 +94,11 @@ public class ZygardeCellSpawner {
                 ZygardeListenerMixin.getSpawnableBlocks().addAll(LOGS.getAllElements()); //Add all the blocks from the tag
                 ZygardeListenerMixin.getSpawnableBlocks().addAll(LEAVES.getAllElements()); //Add all the blocks from the tag
 
+                if (!PixelmonConfigProxy.getSpawning().isSpawnZygardeCells()) {
+                    PixelTweaks.LOGGER.info("Zygarde cell spawning disabled! Modify the pixelmon spawning.yml config to change this");
+                    return; //If spawning is disabled, don't do anything else
+                }
+
                 Scheduling.schedule(20 * 5, (task) -> {
                     MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
                     if (server != null && server.isServerRunning()) {
