@@ -1,4 +1,4 @@
-package com.strangeone101.pixeltweaks.jei;
+package com.strangeone101.pixeltweaks.jei.category;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;

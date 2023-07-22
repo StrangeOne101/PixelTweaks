@@ -4,9 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.api.pokemon.PokemonBuilder;
-import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
-import com.pixelmonmod.pixelmon.api.pokemon.species.palette.PaletteProperties;
 import com.pixelmonmod.pixelmon.api.util.helpers.SpriteItemHelper;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
@@ -27,7 +24,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PokemonWrapperIngredientRenderer implements IIngredientRenderer<JEIPokemonWrapper> {
+public class PokemonWrapperIngredientRenderer implements IIngredientRenderer<PokemonIngredient> {
 
     private float scale;
     public PokemonWrapperIngredientRenderer(float scale) {
@@ -39,7 +36,7 @@ public class PokemonWrapperIngredientRenderer implements IIngredientRenderer<JEI
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int xPosition, int yPosition, @Nullable JEIPokemonWrapper ingredient) {
+    public void render(MatrixStack matrixStack, int xPosition, int yPosition, @Nullable PokemonIngredient ingredient) {
         if (ingredient == null) return;
         RenderHelper.enableStandardItemLighting();
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
@@ -50,7 +47,7 @@ public class PokemonWrapperIngredientRenderer implements IIngredientRenderer<JEI
     }
 
     @Override
-    public List<ITextComponent> getTooltip(JEIPokemonWrapper ingredient, ITooltipFlag tooltipFlag) {
+    public List<ITextComponent> getTooltip(PokemonIngredient ingredient, ITooltipFlag tooltipFlag) {
         List<ITextComponent> allTooltips = new ArrayList<>();
         String species = ingredient.getForm().getParentSpecies().getTranslatedName().getString();
         String form = ingredient.getForm().getLocalizedName();

@@ -1,12 +1,12 @@
-package com.strangeone101.pixeltweaks.jei;
+package com.strangeone101.pixeltweaks.jei.category;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.pixelmonmod.api.pokemon.requirement.impl.GenderRequirement;
-import com.pixelmonmod.api.pokemon.requirement.impl.PaletteRequirement;
-import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.drops.ItemWithChance;
 import com.pixelmonmod.pixelmon.api.pokemon.drops.PokemonDropInformation;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
+import com.strangeone101.pixeltweaks.jei.JEIIntegration;
+import com.strangeone101.pixeltweaks.jei.PokemonIngredient;
+import com.strangeone101.pixeltweaks.jei.PokemonWrapperIngredientRenderer;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -17,7 +17,6 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
@@ -68,7 +67,7 @@ public class DropsRecipeCategory implements IRecipeCategory<PokemonDropInformati
 
     @Override
     public void setIngredients(PokemonDropInformation recipe, IIngredients ingredients) {
-        ingredients.setInput(JEIIntegration.WRAPPED_POKEMON, new JEIPokemonWrapper(recipe.getPokemonSpec()));
+        ingredients.setInput(JEIIntegration.WRAPPED_POKEMON, new PokemonIngredient(recipe.getPokemonSpec()));
 
         List<ItemStack> items = new ArrayList<>();
         for (ItemWithChance drop : recipe.getDrops()) {

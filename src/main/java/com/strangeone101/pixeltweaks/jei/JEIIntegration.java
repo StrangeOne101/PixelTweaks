@@ -4,19 +4,19 @@ import com.pixelmonmod.pixelmon.api.pokemon.drops.PokemonDropInformation;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
-import com.pixelmonmod.pixelmon.client.gui.machines.infuser.InfuserContainer;
 import com.pixelmonmod.pixelmon.client.gui.machines.infuser.InfuserScreen;
 import com.pixelmonmod.pixelmon.entities.npcs.registry.DropItemRegistry;
 import com.pixelmonmod.pixelmon.init.registry.RecipeTypeRegistration;
 import com.strangeone101.pixeltweaks.PixelTweaks;
+import com.strangeone101.pixeltweaks.jei.category.DropsRecipeCategory;
+import com.strangeone101.pixeltweaks.jei.category.InfuserRecipeCategory;
+import com.strangeone101.pixeltweaks.jei.category.PokeLootRecipeCategory;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
-import net.minecraft.client.gui.screen.inventory.SmokerScreen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -29,7 +29,7 @@ public class JEIIntegration implements IModPlugin {
     public static final ResourceLocation UID = new ResourceLocation("pixeltweaks", "jei");
 
     public static final IIngredientType<Stats> POKEMON = () -> Stats.class;
-    public static final IIngredientType<JEIPokemonWrapper> WRAPPED_POKEMON = () -> JEIPokemonWrapper.class;
+    public static final IIngredientType<PokemonIngredient> WRAPPED_POKEMON = () -> PokemonIngredient.class;
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
@@ -50,7 +50,6 @@ public class JEIIntegration implements IModPlugin {
 
     @Override
     public void registerIngredients(IModIngredientRegistration registration) {
-        registration.register(POKEMON, new HashSet<>(), new PokemonIngredientHelper(), new PokemonIngredientRenderer());
         registration.register(WRAPPED_POKEMON, new HashSet<>(), new PokemonWrapperIngredientHelper(), new PokemonWrapperIngredientRenderer());
 
     }

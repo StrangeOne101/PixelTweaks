@@ -6,13 +6,12 @@ import com.pixelmonmod.api.pokemon.requirement.impl.PaletteRequirement;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.Gender;
-import com.pixelmonmod.pixelmon.api.pokemon.species.gender.GenderProperties;
 import com.pixelmonmod.pixelmon.api.pokemon.species.palette.PaletteProperties;
 
 import java.util.Objects;
 import java.util.Optional;
 
-public class JEIPokemonWrapper {
+public class PokemonIngredient {
 
     private Stats stats;
     private Optional<Gender> gender = Optional.empty();
@@ -20,7 +19,7 @@ public class JEIPokemonWrapper {
 
     protected Pokemon buildPokemon;
 
-    public JEIPokemonWrapper(PokemonSpecification specification) {
+    public PokemonIngredient(PokemonSpecification specification) {
         this.buildPokemon = specification.create();
 
         this.stats = buildPokemon.getForm();
@@ -49,7 +48,7 @@ public class JEIPokemonWrapper {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        JEIPokemonWrapper that = (JEIPokemonWrapper) o;
+        PokemonIngredient that = (PokemonIngredient) o;
 
         return stats.getParentSpecies().equals(that.stats.getParentSpecies()) && stats.getName().equalsIgnoreCase(that.stats.getName()) && Objects.equals(gender, that.gender) && Objects.equals(palette, that.palette);
     }

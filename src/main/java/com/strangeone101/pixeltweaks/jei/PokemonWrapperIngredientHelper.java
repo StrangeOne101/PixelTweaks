@@ -1,6 +1,5 @@
 package com.strangeone101.pixeltweaks.jei;
 
-import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
 import mezz.jei.api.ingredients.IIngredientHelper;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.recipe.IFocus;
@@ -9,17 +8,17 @@ import net.minecraft.client.resources.I18n;
 
 import javax.annotation.Nullable;
 
-public class PokemonWrapperIngredientHelper implements IIngredientHelper<JEIPokemonWrapper> {
+public class PokemonWrapperIngredientHelper implements IIngredientHelper<PokemonIngredient> {
 
     @Override
-    public IFocus<?> translateFocus(IFocus<JEIPokemonWrapper> focus, IFocusFactory focusFactory) {
+    public IFocus<?> translateFocus(IFocus<PokemonIngredient> focus, IFocusFactory focusFactory) {
         return IIngredientHelper.super.translateFocus(focus, focusFactory);
     }
 
     @Nullable
     @Override
-    public JEIPokemonWrapper getMatch(Iterable<JEIPokemonWrapper> ingredients, JEIPokemonWrapper ingredientToMatch) {
-        for (JEIPokemonWrapper ingredient : ingredients) {
+    public PokemonIngredient getMatch(Iterable<PokemonIngredient> ingredients, PokemonIngredient ingredientToMatch) {
+        for (PokemonIngredient ingredient : ingredients) {
             if (ingredient.equals(ingredientToMatch)) {
                 return ingredient;
             }
@@ -29,8 +28,8 @@ public class PokemonWrapperIngredientHelper implements IIngredientHelper<JEIPoke
 
     @Nullable
     @Override
-    public JEIPokemonWrapper getMatch(Iterable<JEIPokemonWrapper> ingredients, JEIPokemonWrapper ingredientToMatch, UidContext context) {
-        for (JEIPokemonWrapper ingredient : ingredients) {
+    public PokemonIngredient getMatch(Iterable<PokemonIngredient> ingredients, PokemonIngredient ingredientToMatch, UidContext context) {
+        for (PokemonIngredient ingredient : ingredients) {
             if (ingredient.equals(ingredientToMatch)) {
                 return ingredient;
             }
@@ -40,7 +39,7 @@ public class PokemonWrapperIngredientHelper implements IIngredientHelper<JEIPoke
     }
 
     @Override
-    public String getDisplayName(JEIPokemonWrapper ingredient) {
+    public String getDisplayName(PokemonIngredient ingredient) {
         String species = I18n.format(ingredient.getForm().getParentSpecies().getTranslationKey());
         String form = ingredient.getForm().getLocalizedName();
         if (form != null && !form.isEmpty() && !form.equals("Default") && !form.equals("None")) species = form + " " + species;
@@ -49,27 +48,27 @@ public class PokemonWrapperIngredientHelper implements IIngredientHelper<JEIPoke
     }
 
     @Override
-    public String getUniqueId(JEIPokemonWrapper ingredient) {
+    public String getUniqueId(PokemonIngredient ingredient) {
         return getResourceId(ingredient);
     }
 
     @Override
-    public String getUniqueId(JEIPokemonWrapper ingredient, UidContext context) {
+    public String getUniqueId(PokemonIngredient ingredient, UidContext context) {
         return getResourceId(ingredient);
     }
 
     @Override
-    public String getModId(JEIPokemonWrapper ingredient) {
+    public String getModId(PokemonIngredient ingredient) {
         return "pixelmon";
     }
 
     @Override
-    public String getDisplayModId(JEIPokemonWrapper ingredient) {
+    public String getDisplayModId(PokemonIngredient ingredient) {
         return "Pixelmon Mod";
     }
 
     @Override
-    public String getResourceId(JEIPokemonWrapper ingredient) {
+    public String getResourceId(PokemonIngredient ingredient) {
         String species = ingredient.getForm().getParentSpecies().getName();
         String form = ingredient.getForm().getName();
         if (form != null && !form.isEmpty()) species = form + "_" + species;
@@ -78,17 +77,17 @@ public class PokemonWrapperIngredientHelper implements IIngredientHelper<JEIPoke
     }
 
     @Override
-    public JEIPokemonWrapper copyIngredient(JEIPokemonWrapper ingredient) {
+    public PokemonIngredient copyIngredient(PokemonIngredient ingredient) {
         return ingredient;
     }
 
     @Override
-    public boolean isValidIngredient(JEIPokemonWrapper ingredient) {
+    public boolean isValidIngredient(PokemonIngredient ingredient) {
         return true;
     }
 
     @Override
-    public String getErrorInfo(@Nullable JEIPokemonWrapper ingredient) {
+    public String getErrorInfo(@Nullable PokemonIngredient ingredient) {
         return getResourceId(ingredient);
     }
 }
