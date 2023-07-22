@@ -128,8 +128,8 @@ public class PokeLootRecipeCategory implements IRecipeCategory<PokeLootPool> {
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
         this.pokeballs[recipe.getTier() - 1].draw(matrixStack, x - 20, 0);
-        //PokemonWrapperIngredientRenderer.renderItem(matrixStack, recipe.getTierIcon(), x - 12, 4, 1.0F);
-        //PokemonWrapperIngredientRenderer.renderItem(matrixStack, recipe.getTierIcon(), x - 12, 4, 1.0F);
+        //PokemonIngredientRenderer.renderItem(matrixStack, recipe.getTierIcon(), x - 12, 4, 1.0F);
+        //PokemonIngredientRenderer.renderItem(matrixStack, recipe.getTierIcon(), x - 12, 4, 1.0F);
 
         //String amountString = drop.getMin() + "-" + drop.getMax();
         //Minecraft.getInstance().fontRenderer.drawStringWithShadow(matrixStack, amountString, 8 + (26 * i), 66 + 4, 0xFFFFFF);

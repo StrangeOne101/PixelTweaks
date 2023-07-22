@@ -6,7 +6,7 @@ import com.pixelmonmod.pixelmon.api.pokemon.drops.PokemonDropInformation;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
 import com.strangeone101.pixeltweaks.jei.JEIIntegration;
 import com.strangeone101.pixeltweaks.jei.PokemonIngredient;
-import com.strangeone101.pixeltweaks.jei.PokemonWrapperIngredientRenderer;
+import com.strangeone101.pixeltweaks.jei.PokemonIngredientRenderer;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -25,7 +25,7 @@ import java.util.List;
 public class DropsRecipeCategory implements IRecipeCategory<PokemonDropInformation> {
 
     public static final ResourceLocation UID = new ResourceLocation("pixeltweaks", "drops");
-    private static final PokemonWrapperIngredientRenderer renderer = new PokemonWrapperIngredientRenderer(3F);
+    private static final PokemonIngredientRenderer renderer = new PokemonIngredientRenderer(3F);
 
     private IDrawable bg;
 

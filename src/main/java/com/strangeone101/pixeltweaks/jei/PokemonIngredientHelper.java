@@ -8,7 +8,7 @@ import net.minecraft.client.resources.I18n;
 
 import javax.annotation.Nullable;
 
-public class PokemonWrapperIngredientHelper implements IIngredientHelper<PokemonIngredient> {
+public class PokemonIngredientHelper implements IIngredientHelper<PokemonIngredient> {
 
     @Override
     public IFocus<?> translateFocus(IFocus<PokemonIngredient> focus, IFocusFactory focusFactory) {

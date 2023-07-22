@@ -24,14 +24,14 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PokemonWrapperIngredientRenderer implements IIngredientRenderer<PokemonIngredient> {
+public class PokemonIngredientRenderer implements IIngredientRenderer<PokemonIngredient> {
 
     private float scale;
-    public PokemonWrapperIngredientRenderer(float scale) {
+    public PokemonIngredientRenderer(float scale) {
         this.scale = scale;
     }
 
-    public PokemonWrapperIngredientRenderer() {
+    public PokemonIngredientRenderer() {
         this(1F);
     }
 

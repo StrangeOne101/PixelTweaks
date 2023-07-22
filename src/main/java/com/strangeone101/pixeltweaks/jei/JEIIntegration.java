@@ -50,7 +50,7 @@ public class JEIIntegration implements IModPlugin {
 
     @Override
     public void registerIngredients(IModIngredientRegistration registration) {
-        registration.register(WRAPPED_POKEMON, new HashSet<>(), new PokemonWrapperIngredientHelper(), new PokemonWrapperIngredientRenderer());
+        registration.register(WRAPPED_POKEMON, new HashSet<>(), new PokemonIngredientHelper(), new PokemonIngredientRenderer());
 
     }
 
