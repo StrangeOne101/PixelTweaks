@@ -23,21 +23,17 @@ import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.ModList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import vazkii.ambience.Ambience;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Mixin(BattleMusic.class)
 public abstract class BattleMusicMixin {
@@ -47,8 +43,6 @@ public abstract class BattleMusicMixin {
 
     @Unique
     private static ChainedMusic pixelTweaks$chainedMusic;
-    @Unique
-    private static float pixelTweaks$oldGain;
 
     /**
      * @author StrangeOne101
@@ -198,22 +192,6 @@ public abstract class BattleMusicMixin {
     @Overwrite(remap = false)
     public static boolean isPlaying() {
         return (pixelTweaks$chainedMusic != null && pixelTweaks$chainedMusic.isPlaying()) || (song != null && PixelmonMusic.getSoundHandler().isPlaying(song));
-    }
-
-    @Unique
-    private static void pixelTweaks$pauseAmbienceMod() {
-        if (ModList.get().isLoaded("ambience") && Ambience.thread != null) {
-            pixelTweaks$oldGain = Ambience.thread.getGain();
-            Ambience.thread.setGain(0F);
-            Ambience.thread.resetPlayer();
-        }
-    }
-
-    @Unique
-    private static void pixelTweaks$unpauseAmbienceMod() {
-        if (ModList.get().isLoaded("ambience")  && Ambience.thread != null) {
-            Ambience.thread.setGain(pixelTweaks$oldGain);
-        }
     }
 
 }

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.7.1
+- Fixed crashing when you level up a pokemon with a rare candy
+- Added 3 config options for Zygarde cell spawning
+  - Including the spawn times, lucky spawn chance, and stormy weather core boost rate
+- Zygarde spawning now ensures the chunk is loaded before trying anything
+- Fixed some debug left in on startup
+
 ## 1.7
 - Added JEI recipes for Infusers
 - Added anti-crop trampling setting to prevent pokemon from trampling crops. Configurable.

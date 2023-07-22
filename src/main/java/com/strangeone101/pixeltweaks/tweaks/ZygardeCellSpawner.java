@@ -13,6 +13,7 @@ import com.pixelmonmod.pixelmon.blocks.tileentity.ZygardeCellTileEntity;
 import com.pixelmonmod.pixelmon.items.ZygardeCubeItem;
 import com.pixelmonmod.pixelmon.listener.ZygardeCellsListener;
 import com.strangeone101.pixeltweaks.PixelTweaks;
+import com.strangeone101.pixeltweaks.TweaksConfig;
 import com.strangeone101.pixeltweaks.mixin.ZygardeListenerMixin;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -32,6 +33,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -43,6 +45,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -64,6 +67,9 @@ public class ZygardeCellSpawner {
     private static ITag<Block> LEAVES;
     private static ITag<Block> GRASS;
 
+    private static Map<UUID, Integer> SPAWNINGS = new HashMap<>();
+
+    @Deprecated
     private static Set<UUID> CLOSE_SPAWN_COOLDOWN = new HashSet<>();
 
     public ZygardeCellSpawner() {
@@ -99,6 +105,11 @@ public class ZygardeCellSpawner {
                     return; //If spawning is disabled, don't do anything else
                 }
 
+                if (TweaksConfig.zygardeSpawnTime.get() == 0) {
+                    PixelTweaks.LOGGER.info("Zygarde cell spawning disabled!");
+                    return; //If spawning is disabled, don't do anything else
+                }
+
                 Scheduling.schedule(20 * 5, (task) -> {
                     MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
                     if (server != null && server.isServerRunning()) {
@@ -110,7 +121,8 @@ public class ZygardeCellSpawner {
                     }
                 }, true);
 
-                Scheduling.schedule(20 * 15, spawnZygardeTask(), true);
+                int spawnTime = TweaksConfig.zygardeSpawnTime.get(); //Default is 30
+                Scheduling.schedule(20 * spawnTime, spawnZygardeTask(), true);
                 PixelTweaks.LOGGER.info("Zygarde cell spawner initialized!");
 
             } catch (NoSuchFieldException | IllegalAccessException e) {
@@ -144,6 +156,7 @@ public class ZygardeCellSpawner {
                     for(int x = x1; x >= x2; --x) {
                         for(int z = z1; z >= z2; --z) {
                             if (x < player.chunkCoordX - 1 || x > player.chunkCoordX + 1 || z < player.chunkCoordZ - 1 || z > player.chunkCoordZ + 1) {
+                                if (!player.getServerWorld().getChunkProvider().isChunkLoaded(new ChunkPos(x, z))) continue;
                                 Chunk chunk = player.getServerWorld().getChunkProvider().getChunkNow(x, z);
                                 if (chunk != null) {
                                     chunks.add(chunk);
@@ -162,7 +175,10 @@ public class ZygardeCellSpawner {
                         });
                         int n = RandomHelper.getRandom().nextInt(chunks.size());
 
-                        if (!CLOSE_SPAWN_COOLDOWN.contains(random)) { //If the player hasn't had a cell spawn near them recently, spawn it close
+                        SPAWNINGS.putIfAbsent(random, 0);
+
+
+                        if (TweaksConfig.zygardeLuckyAttemptRate.get() != 0 && SPAWNINGS.get(random) % TweaksConfig.zygardeLuckyAttemptRate.get() == 0) { //If the player hasn't had a cell spawn near them recently, spawn it close
                             n = (int)Math.sqrt((chunks.size() * chunks.size()) - RandomHelper.getRandom().nextInt(chunks.size() * chunks.size()));
                         }
                         Chunk chunk = chunks.get(n);
@@ -171,8 +187,9 @@ public class ZygardeCellSpawner {
                         PixelTweaks.LOGGER.debug("Spawning cell " + i + ", " + j + " chunks away");
 
                         if (trySpawnInChunk(chunk, true)) { //If a cell spawned
-                            CLOSE_SPAWN_COOLDOWN.add(random); //Add the player to the cooldown list
-                            Scheduling.schedule(20 * 60, () -> CLOSE_SPAWN_COOLDOWN.remove(random), false); //Remove them after 1 minutes
+                            //CLOSE_SPAWN_COOLDOWN.add(random); //Add the player to the cooldown list
+                            SPAWNINGS.put(random, SPAWNINGS.get(random) + 1);
+                            //Scheduling.schedule(20 * 60, () -> CLOSE_SPAWN_COOLDOWN.remove(random), false); //Remove them after 1 minutes
                         }
                     }
                 }
@@ -307,7 +324,7 @@ public class ZygardeCellSpawner {
                 Direction rotation = facing.getAxis() == Direction.Axis.Y ? Direction.byHorizontalIndex(RandomHelper.getRandom().nextInt(4)) : (RandomHelper.getRandomChance() ? Direction.UP : Direction.DOWN);
 
                 int coreChance = 20;
-                if (((Chunk) chunk).getWorld().isThundering()) coreChance = 7;
+                if (((Chunk) chunk).getWorld().isThundering() && TweaksConfig.zygardeStormCoreRate.get() != 0) coreChance = TweaksConfig.zygardeStormCoreRate.get();
 
                 Block block = RandomHelper.getRandom().nextInt(coreChance) == 0 ? PixelmonBlocks.zygarde_core : PixelmonBlocks.zygarde_cell;
                 BlockState state = (BlockState)((BlockState)block.getDefaultState().with(ZygardeCellBlock.ORIENTATION_PROPERTY, facing)).with(ZygardeCellBlock.ROTATION_PROPERTY, rotation);

@@ -76,9 +76,9 @@ public class JEIIntegration implements IModPlugin {
     @Override
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
         IRecipeCategory<?> category = jeiRuntime.getRecipeManager().getRecipeCategory(DropsRecipeCategory.UID);
-        PixelTweaks.LOGGER.info("Debug category " + category);
+        PixelTweaks.LOGGER.debug("Debug category " + category);
 
-        PixelTweaks.LOGGER.info("Debug nums " + DropItemRegistry.pokemonDrops.keySet().size());
+        PixelTweaks.LOGGER.debug("Debug nums " + DropItemRegistry.pokemonDrops.keySet().size());
 
         Set<PokemonDropInformation> drops = new HashSet<>();
 
