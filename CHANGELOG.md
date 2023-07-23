@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.2
+- Fixed crash when viewing items in a language without localization for that item (#7)
+- Fixed infuser recipes not being registered when you log into a server with JEI installed
+- Made unknown moves no longer spam the console
+
 ## 1.7.1
 - Fixed crashing when you level up a pokemon with a rare candy
 - Added 3 config options for Zygarde cell spawning
