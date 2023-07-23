@@ -20,7 +20,7 @@ plugins {
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'com.strangeone101'
-version = '1.7.1'
+version = '1.7.2'
 
 java {
     archivesBaseName = 'PixelTweaks'
@@ -146,7 +146,7 @@ dependencies {
     //implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
 
     //AmbienceExtras for muting their music in battles
-    implementation fg.deobf('vazkii.ambience.ambience:Ambience-1.16.5-1.0.0:1.0.0')
+    compileOnly fg.deobf('vazkii.ambience.ambience:Ambience-1.16.5-1.0.0:1.0.0')
 
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
