@@ -46,7 +46,6 @@ public abstract class PixelmonItemMixin extends Item {
     {
         Pattern p = Pattern.compile("\\G\\s*(.{1,"+length+"})(?=\\s|$)", Pattern.DOTALL);
         Matcher m = p.matcher(string);
-        if (m.hitEnd()) return new ArrayList<>(); //Fix for blank strings
         List<String> l = new ArrayList<>();
         char lastColor = '7';
         while (m.find())
@@ -58,6 +57,11 @@ public abstract class PixelmonItemMixin extends Item {
             }
 
         }
+        if (l.isEmpty()) { //It can't be split with regex
+            l.add(string);
+            return l;
+        }
+
         l.set(0, l.get(0).substring(2)); //Take off the extra white color at the front
         return l;
     }
