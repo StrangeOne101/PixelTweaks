@@ -1,4 +1,4 @@
-package com.strangeone101.pixeltweaks.mixin;
+package com.strangeone101.pixeltweaks.mixin.ability;
 
 import com.pixelmonmod.api.registry.RegistryValue;
 import com.pixelmonmod.pixelmon.api.pokemon.ability.AbstractAbility;

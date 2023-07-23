@@ -1,4 +1,4 @@
-package com.strangeone101.pixeltweaks.mixin;
+package com.strangeone101.pixeltweaks.mixin.block;
 
 import com.pixelmonmod.pixelmon.api.util.helpers.BlockHelper;
 import com.pixelmonmod.pixelmon.blocks.GenericModelBlock;

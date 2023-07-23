@@ -29,7 +29,7 @@ public abstract class PixelmonItemMixin extends Item {
      */
     @Overwrite(remap = false)
     public String getTooltipText() {
-        return I18n.hasKey(this.getTranslationKey() + ".tooltip") ?
+        return I18n.hasKey(this.getTranslationKey() + ".tooltip") && !I18n.format(this.getTranslationKey() + ".tooltip").isEmpty() ?
                 (TweaksConfig.autoWrapLoreLength.get() > 0 ?
                         String.join("\n", pixelTweaks$splitString(I18n.format(this.getTranslationKey() + ".tooltip"), TweaksConfig.autoWrapLoreLength.get()))
                         : I18n.format(this.getTranslationKey() + ".tooltip"))
@@ -46,7 +46,8 @@ public abstract class PixelmonItemMixin extends Item {
     {
         Pattern p = Pattern.compile("\\G\\s*(.{1,"+length+"})(?=\\s|$)", Pattern.DOTALL);
         Matcher m = p.matcher(string);
-        List<String> l = new ArrayList<String>();
+        if (m.hitEnd()) return new ArrayList<>(); //Fix for blank strings
+        List<String> l = new ArrayList<>();
         char lastColor = '7';
         while (m.find())
         {
