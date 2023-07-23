@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashSet;
+import java.util.Set;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(PixelTweaks.MODID)
@@ -40,6 +42,8 @@ public class PixelTweaks {
 
     // Directly reference a log4j logger.
     public static final Logger LOGGER = LogManager.getLogger("PixelTweaks");
+
+    public static Set<String> UNKNOWN_MOVES = new HashSet<>();
 
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, MODID);
     public static final RegistryObject<Feature<?>> FEATURE_OBJECT = PixelTweaks.FEATURES.register("zygarde_cell", ZygardeCellFeature::new);;
