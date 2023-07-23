@@ -3,6 +3,7 @@ package com.strangeone101.pixeltweaks.jei;
 import com.pixelmonmod.pixelmon.api.pokemon.drops.PokemonDropInformation;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
+import com.pixelmonmod.pixelmon.api.recipe.InfuserRecipe;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
 import com.pixelmonmod.pixelmon.client.gui.machines.infuser.InfuserScreen;
 import com.pixelmonmod.pixelmon.entities.npcs.registry.DropItemRegistry;
@@ -17,9 +18,12 @@ import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
+import net.minecraft.client.Minecraft;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -69,7 +73,16 @@ public class JEIIntegration implements IModPlugin {
             drops.addAll(DropItemRegistry.pokemonDrops.get(species));
         }
         registration.addRecipes(drops, DropsRecipeCategory.UID);*/
-        registration.addRecipes(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getRecipesForType(RecipeTypeRegistration.INFUSER_RECIPE_TYPE), InfuserRecipeCategory.UID);
+
+        IRecipeType<InfuserRecipe> type = RecipeTypeRegistration.INFUSER_RECIPE_TYPE;
+        if (Minecraft.getInstance().world == null) {
+            PixelTweaks.LOGGER.warn("World is null! JEI recipes will not be registered!");
+            return;
+        }
+
+        Collection<InfuserRecipe> infuserRecipes = Minecraft.getInstance().world.getRecipeManager().getRecipesForType(type);
+        registration.addRecipes(infuserRecipes, InfuserRecipeCategory.UID);
+        PixelTweaks.LOGGER.info("Registered " + infuserRecipes.size() + " infuser recipes to JEI!");
     }
 
     @Override
