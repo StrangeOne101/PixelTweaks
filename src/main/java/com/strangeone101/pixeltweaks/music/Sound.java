@@ -9,7 +9,7 @@ public class Sound {
 
     public ResourceLocation sound;
 
-    public Fade fade = new Fade();
+    public Fade fade = new Fade(0, 0);
 
     public float volume = 1.0F;
     public float pitch = 1.0F;

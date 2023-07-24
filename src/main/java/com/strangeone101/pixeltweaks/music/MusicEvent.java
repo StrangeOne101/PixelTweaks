@@ -1,11 +1,20 @@
 package com.strangeone101.pixeltweaks.music;
 
+import com.google.common.collect.Sets;
 import com.strangeone101.pixeltweaks.pixelevents.Event;
+import com.strangeone101.pixeltweaks.pixelevents.EventListener;
+import com.strangeone101.pixeltweaks.pixelevents.EventRegistry;
 import com.strangeone101.pixeltweaks.pixelevents.IValidator;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class MusicEvent extends Event implements IValidator {
 
     public Music music;
+    public Sound sound;
 
     @Override
     public boolean isClientSide() {
@@ -14,15 +23,50 @@ public class MusicEvent extends Event implements IValidator {
 
     @Override
     public boolean validate() {
-        return music != null;
+        return (music == null) != (sound == null); //One of them HAS to be null, but not both
     }
 
     @Override
     public String getError() {
-        return "Music must be provided!";
+        return "Music or Sound must be provided!";
     }
 
     public static class BGM extends MusicEvent {}
 
     public static class Battle extends MusicEvent {}
+
+    public static class BattleAction extends MusicEvent implements EventListener {
+
+        public static Map<Action, Set<BattleAction>> REGISTRY = new HashMap<>();
+
+        public Action action;
+
+        public enum Action {
+            HIT, FAINT, CATCH, RUN, START, END, WIPEOUT, SWITCH, THROW_BALL,
+            SUPER_EFFECTIVE_HIT, NOT_VERY_EFFECTIVE_HIT, EFFECTIVE_HIT, STATS_UP, STATS_DOWN,
+            STATS_UP_HARSH, STATS_DOWN_HARSH, BERRY_EAT, POTION, REVIVE,
+            WRAP, BURN, SLEEP, FREEZE, PARALYZE, POISON
+        }
+
+        @Override
+        public boolean validate() {
+            return super.validate() && action != null;
+        }
+
+        @Override
+        public String getError() {
+            return "Music or sound music be provided with a battle action!";
+        }
+
+        @Override
+        public void onRegister() {
+            REGISTRY.putIfAbsent(this.action, Sets.newTreeSet(
+                    (e1, e2) -> {
+                        if (e1.getPriority() == e2.getPriority()) return e2.hashCode() - e1.hashCode();
+                        return e2.getPriority() - e1.getPriority();
+                    }));
+
+            REGISTRY.get(this.action).add(this);
+        }
+    }
 }
