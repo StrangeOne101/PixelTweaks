@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.3
+- Fixed crash when opening the game in zh_tw locale (#7)
+- Optimized Zygarde spawning a little, and fixed minor bugs with it
+
 ## 1.7.2
 - Fixed crash when viewing items in a language without localization for that item (#7)
 - Fixed infuser recipes not being registered when you log into a server with JEI installed

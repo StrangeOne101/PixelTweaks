@@ -1,7 +1,7 @@
 <img src="src/main/resources/logo.png" height="150px"/>
 
 # Description
-A slice of life mod for Pixelmon Reforged! Adds a bunch of tweaks to pixelmon!
+A quality of life mod for Pixelmon Reforged! Adds a bunch of tweaks to pixelmon!
 
 This mod works can be added to clients or servers, but does not require the opposite one to be compatible! E.g. You can add this to your server, and clients won't need it to join.
 

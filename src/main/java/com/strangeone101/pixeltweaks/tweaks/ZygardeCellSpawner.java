@@ -34,6 +34,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -68,9 +69,6 @@ public class ZygardeCellSpawner {
     private static ITag<Block> GRASS;
 
     private static Map<UUID, Integer> SPAWNINGS = new HashMap<>();
-
-    @Deprecated
-    private static Set<UUID> CLOSE_SPAWN_COOLDOWN = new HashSet<>();
 
     public ZygardeCellSpawner() {
 
@@ -133,6 +131,7 @@ public class ZygardeCellSpawner {
 
     public Consumer<Scheduling.ScheduledTask> spawnZygardeTask() {
         return (task) -> {
+            long time = System.currentTimeMillis();
             if (PixelmonConfigProxy.getSpawning().isSpawnZygardeCells()) {
                 MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
                 if (server != null && server.isServerRunning()) {
@@ -166,19 +165,20 @@ public class ZygardeCellSpawner {
                     }
 
                     if (!chunks.isEmpty()) {
-                        chunks.sort((c1, c2) -> {
-                            int i = Math.abs(c1.getPos().x - player.chunkCoordX);
-                            int j = Math.abs(c1.getPos().z - player.chunkCoordZ);
-                            int k = Math.abs(c2.getPos().x - player.chunkCoordX);
-                            int l = Math.abs(c2.getPos().z - player.chunkCoordZ);
-                            return (k * k + l * l) - (i * i + j * j);
-                        });
                         int n = RandomHelper.getRandom().nextInt(chunks.size());
 
                         SPAWNINGS.putIfAbsent(random, 0);
 
 
                         if (TweaksConfig.zygardeLuckyAttemptRate.get() != 0 && SPAWNINGS.get(random) % TweaksConfig.zygardeLuckyAttemptRate.get() == 0) { //If the player hasn't had a cell spawn near them recently, spawn it close
+                            chunks.sort((c1, c2) -> {
+                                int i = Math.abs(c1.getPos().x - player.chunkCoordX);
+                                int j = Math.abs(c1.getPos().z - player.chunkCoordZ);
+                                int k = Math.abs(c2.getPos().x - player.chunkCoordX);
+                                int l = Math.abs(c2.getPos().z - player.chunkCoordZ);
+                                return (k * k + l * l) - (i * i + j * j);
+                            });
+
                             n = (int)Math.sqrt((chunks.size() * chunks.size()) - RandomHelper.getRandom().nextInt(chunks.size() * chunks.size()));
                         }
                         Chunk chunk = chunks.get(n);
@@ -192,6 +192,8 @@ public class ZygardeCellSpawner {
                             //Scheduling.schedule(20 * 60, () -> CLOSE_SPAWN_COOLDOWN.remove(random), false); //Remove them after 1 minutes
                         }
                     }
+
+                    PixelTweaks.LOGGER.debug("Zygarde cell spawning took " + (System.currentTimeMillis() - time) + "ms");
                 }
 
             }
@@ -202,41 +204,58 @@ public class ZygardeCellSpawner {
         IWorld world = chunk.getWorldForge();
         int x = RandomHelper.getRandomNumberBetween(1, 14);
         int z = RandomHelper.getRandomNumberBetween(1, 14);
-        BlockPos pos = new BlockPos(x, 62, z);
+        BlockPos posWithinChunk = new BlockPos(x, 62, z);
+        BlockPos realPos = chunk.getPos().asBlockPos().add(posWithinChunk);
 
-        if (!checkTiles || !tileEntityExistsWithin(ZygardeCellTileEntity.class, pos, ((Chunk)chunk).getWorld(), 72.0)) {
+        Chunk chunk1 = (Chunk) chunk;
+
+        long time = System.currentTimeMillis();
+
+        if (!checkTiles || !tileEntityExistsWithin(ZygardeCellTileEntity.class, realPos, ((Chunk)chunk).getWorld(), 40.0)) {
             int y = chunk.getTopBlockY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z);
             if (y != 120) {
+                long time2 = System.currentTimeMillis();
                 Multimap<Block, BlockPos> map = MultimapBuilder.hashKeys().hashSetValues().build();
-                pos = new BlockPos(x, y, z);
-                int x1 = pos.getX() + 1;
-                int y1 = pos.getY() + 5;
-                int z1 = pos.getZ() + 1;
-                int x2 = pos.getX() - 1;
-                int y2 = pos.getY() - 4;
-                int z2 = pos.getZ() - 1;
+                List<BlockPos> leaves = new ArrayList<>();
+                List<BlockPos> logs = new ArrayList<>();
+                List<BlockPos> grass = new ArrayList<>();
+
+                posWithinChunk = new BlockPos(x, y, z);
+                int x1 = posWithinChunk.getX() + 1;
+                int y1 = posWithinChunk.getY() + 5;
+                int z1 = posWithinChunk.getZ() + 1;
+                int x2 = posWithinChunk.getX() - 1;
+                int y2 = posWithinChunk.getY() - 4;
+                int z2 = posWithinChunk.getZ() - 1;
 
                 for (int lx = x1; lx >= x2; --lx) {
                     for (int ly = y1; ly >= y2; --ly) {
                         for (int lz = z1; lz >= z2; --lz) {
-                            pos = new BlockPos(lx, ly, lz);
-                            Block b = chunk.getBlockState(pos).getBlock();
+                            posWithinChunk = new BlockPos(lx, ly, lz);
+                            Block b = chunk.getBlockState(posWithinChunk).getBlock();
                             if (ZygardeListenerMixin.getSpawnableBlocks().contains(b)) {
-                                map.put(b, pos);
+                                map.put(b, posWithinChunk);
+
+                                if (LOGS.contains(b)) {
+                                    logs.add(logs.size() == 0 ? 0 : RandomHelper.getRandomNumberBetween(1, logs.size()) - 1, posWithinChunk);
+                                } else if (LEAVES.contains(b)) {
+                                    leaves.add(leaves.size() == 0 ? 0 : RandomHelper.getRandomNumberBetween(1, leaves.size()) - 1, posWithinChunk);
+                                } else if (GRASS.contains(b)) {
+                                    grass.add(grass.size() == 0 ? 0 : RandomHelper.getRandomNumberBetween(1, grass.size()) - 1, posWithinChunk);
+                                }
                             }
                         }
                     }
                 }
 
+                PixelTweaks.LOGGER.debug("Zygarde cell spawning took " + (System.currentTimeMillis() - time2) + "ms (finding blocks)");
+
                 if (!map.isEmpty()) {
                     Direction facing = null;
 
-                    boolean hasLogs = map.keys().stream().anyMatch((b) -> LOGS.contains(b));
+                    boolean hasLogs = logs.size() > 0;
 
                     if (hasLogs) {
-                        List<BlockPos> logs = map.keys().stream().filter((b) -> LOGS.contains(b)).flatMap((b) -> map.get(b).stream()).collect(Collectors.toList());
-                        Collections.shuffle(logs);
-
                         for (BlockPos pos1 : logs) {
                             BlockState state = chunk.getBlockState(pos1);
                             if (state.hasProperty(BlockStateProperties.AXIS)) {
@@ -244,48 +263,33 @@ public class ZygardeCellSpawner {
                                     facing = hasAirPocket(chunk, pos1, Direction.DOWN, Direction.UP, Direction.WEST, Direction.EAST);
                                     if (facing != null) {
                                         spawnOn(chunk, pos1.offset(facing), facing.getOpposite());
+                                        PixelTweaks.LOGGER.debug("Zygarde cell spawning took " + (System.currentTimeMillis() - time) + "ms (logs)");
                                         return true;
                                     }
                                 } else if (state.get(BlockStateProperties.AXIS) == Direction.Axis.Z) {
                                     facing = hasAirPocket(chunk, pos1, Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH);
                                     if (facing != null) {
                                         spawnOn(chunk, pos1.offset(facing), facing.getOpposite());
+                                        PixelTweaks.LOGGER.debug("Zygarde cell spawning took " + (System.currentTimeMillis() - time) + "ms (logs2)");
                                         return true;
                                     }
                                 }
                             }
-                            facing = hasAirPocket(chunk, pos1, Direction.byHorizontalIndex(RandomHelper.getRandom().nextInt(4)));
+                            facing = hasAirPocket(chunk, pos1, Direction.values());
                             if (facing != null) {
                                 spawnOn(chunk, pos1.offset(facing), facing.getOpposite());
+                                PixelTweaks.LOGGER.debug("Zygarde cell spawning took " + (System.currentTimeMillis() - time) + "ms (logs3)");
                                 return true;
                             }
                         }
                     }
 
-                    List<BlockPos> leaves = map.keys().stream().filter((b) -> LEAVES.contains(b)).flatMap((b) -> map.get(b).stream()).collect(Collectors.toList());
-                    Collections.shuffle(leaves);
-                    List<BlockPos> grass =  map.keys().stream().filter((b) -> GRASS.contains(b)).flatMap((b) -> map.get(b).stream()).collect(Collectors.toList());
-                    Collections.shuffle(grass);
-
                     Predicate<List<BlockPos>> doLeaves = (list) -> {
-                        Iterator<BlockPos> it = list.iterator();
-                        BlockPos pos1;
-                        BlockState state;
-
-                        exit:
-                        while (true) {
-                            do {
-                                if (!it.hasNext()) {
-                                    break exit;
-                                }
-
-                                pos1 = it.next();
-                                state = chunk.getBlockState(pos1);
-                            } while (state.hasProperty(BlockStateProperties.UNSTABLE) && state.get(BlockStateProperties.UNSTABLE));
-
-                            Direction facing2 = hasAirPocket(chunk, pos1, Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST);
+                        for (BlockPos pos1 : list) {
+                            Direction facing2 = hasAirPocket(chunk, pos1, Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST, Direction.UP);
                             if (facing2 != null) {
                                 spawnOn(chunk, pos1.offset(facing2), facing2.getOpposite());
+                                PixelTweaks.LOGGER.debug("Zygarde cell spawning took " + (System.currentTimeMillis() - time) + "ms (leaves)");
                                 return true;
                             }
                         }
@@ -298,16 +302,17 @@ public class ZygardeCellSpawner {
                             Direction facing2 = hasAirPocket(chunk, pos1, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST);
                             if (facing2 != null) {
                                 spawnOn(chunk, pos1, Direction.DOWN);
+                                PixelTweaks.LOGGER.debug("Zygarde cell spawning took " + (System.currentTimeMillis() - time) + "ms (grass)");
                                 return true;
                             }
                         }
                         return false;
                     };
 
-                    if (RandomHelper.getRandom().nextFloat() >= 0.35) { //Do grass first most of the time
+                    if (RandomHelper.getRandom().nextFloat() >= 0.7) { //Do leaves first most of the time
                         return doGrass.test(grass) || doLeaves.test(leaves);
                     } else { //Do leaves for 35% of the time first
-                        return doLeaves.test(grass) || doGrass.test(leaves);
+                        return doLeaves.test(leaves) || doGrass.test(grass);
                     }
                 }
             }
@@ -319,7 +324,7 @@ public class ZygardeCellSpawner {
 
     private static void spawnOn(IChunk chunk, BlockPos pos, Direction facing) {
         if (chunk instanceof Chunk) {
-            BlockState currentState = ((Chunk)chunk).getWorld().getBlockState(pos);
+            BlockState currentState = ((Chunk)chunk).getBlockState(pos);
             if (currentState.isAir() || (!currentState.isSolid() && currentState.getFluidState().getFluid() == Fluids.EMPTY && (!currentState.hasProperty(BlockStateProperties.WATERLOGGED) || !currentState.get(BlockStateProperties.WATERLOGGED)))) {
                 Direction rotation = facing.getAxis() == Direction.Axis.Y ? Direction.byHorizontalIndex(RandomHelper.getRandom().nextInt(4)) : (RandomHelper.getRandomChance() ? Direction.UP : Direction.DOWN);
 
@@ -328,18 +333,16 @@ public class ZygardeCellSpawner {
 
                 Block block = RandomHelper.getRandom().nextInt(coreChance) == 0 ? PixelmonBlocks.zygarde_core : PixelmonBlocks.zygarde_cell;
                 BlockState state = (BlockState)((BlockState)block.getDefaultState().with(ZygardeCellBlock.ORIENTATION_PROPERTY, facing)).with(ZygardeCellBlock.ROTATION_PROPERTY, rotation);
-                ZygardeCellTileEntity tileEntity = new ZygardeCellTileEntity();
-                tileEntity.setPos(pos);
-                tileEntity.setCoreType(ZygardeCubeItem.CoreType.RANDOM);
                 BlockPos realPos = chunk.getPos().asBlockPos().add(pos.getX(), pos.getY(), pos.getZ());
+                ZygardeCellTileEntity tileEntity = new ZygardeCellTileEntity();
+                tileEntity.setPos(realPos);
+                tileEntity.setCoreType(ZygardeCubeItem.CoreType.RANDOM);
 
                 ((Chunk)chunk).getWorld().setBlockState(realPos, state);
                 ((Chunk)chunk).getWorld().addTileEntity(tileEntity);
-                ((Chunk)chunk).getWorld().markAndNotifyBlock(realPos, (Chunk)chunk, state, state, 3, 0);
+                //((Chunk)chunk).getWorld().markAndNotifyBlock(realPos, (Chunk)chunk, state, state, 3, 0);
                 //((Chunk)chunk).addTileEntity(tileEntity);
                 //PixelTweaks.LOGGER.debug("Spawned via chunk method: " + (((Chunk)chunk).getWorld().getServer().getExecutionThread() == Thread.currentThread()));
-
-                chunk.setModified(true);
                 PixelTweaks.LOGGER.debug("Spawned Zygarde Cell at " + realPos);
             }
         }
@@ -364,6 +367,7 @@ public class ZygardeCellSpawner {
     }
 
     public static <T extends TileEntity> boolean tileEntityExistsWithin(Class<T> tileEntity, BlockPos pos, World world, double range) {
+        long time = System.currentTimeMillis();
         int chunkXPos = pos.getX() >> 4;
         int chunkZPos = pos.getZ() >> 4;
         int chunkRange = Math.max((int) (range / 16.0), 1) + 1;
@@ -375,6 +379,7 @@ public class ZygardeCellSpawner {
                     for (BlockPos pos2 : chunk.getTileEntityMap().keySet()) {
                         TileEntity tile = chunk.getTileEntityMap().get(pos2);
                         if (tileEntity.isAssignableFrom(tile.getClass()) && pos.distanceSq(pos2) <= range) {
+                            PixelTweaks.LOGGER.debug("Found tile entity in " + (System.currentTimeMillis() - time) + "ms");
                             return true;
                         }
                     }
@@ -382,6 +387,7 @@ public class ZygardeCellSpawner {
             }
         }
 
+        PixelTweaks.LOGGER.debug("Found no tile entity in " + (System.currentTimeMillis() - time) + "ms");
         return false;
     }
 
