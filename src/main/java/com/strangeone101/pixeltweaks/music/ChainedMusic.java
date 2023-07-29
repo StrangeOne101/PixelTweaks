@@ -132,4 +132,11 @@ public class ChainedMusic {
         return Objects.hash(music, intro, loop, end, finished);
     }
 
+    public TrackableSound getPlaying() {
+        if (this.intro != null && this.intro.isPlaying()) return this.intro;
+        if (this.loop != null && this.loop.isPlaying()) return this.loop;
+        if (this.end != null && this.end.isPlaying()) return this.end;
+        return null;
+    }
+
 }

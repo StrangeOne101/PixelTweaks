@@ -9,6 +9,7 @@ import com.pixelmonmod.api.pokemon.PokemonSpecification;
 import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.client.overlay.OverlayLayer;
+import com.strangeone101.pixeltweaks.music.Sound;
 import com.strangeone101.pixeltweaks.struct.SpecificTime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IReloadableResourceManager;
@@ -80,6 +81,7 @@ public class EventRegistry implements ISelectiveResourceReloadListener {
                 .registerTypeAdapter(PokemonSpecification.class, (JsonDeserializer<PokemonSpecification>)(json, type, context) -> PokemonSpecificationProxy.create(json.getAsString()))
                 .registerTypeAdapter(SpecificTime.class, new SpecificTime.Deserializer())
                 .registerTypeAdapter(OverlayLayer.class, new OverlayLayer.Deserializer())
+                .registerTypeAdapter(Sound.class, new Sound.Deserializer())
                 .create();
 
         int loadedSuccessfully = 0;

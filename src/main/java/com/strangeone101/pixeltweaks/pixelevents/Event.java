@@ -9,13 +9,14 @@ import com.strangeone101.pixeltweaks.client.overlay.PokemonOverlay;
 import com.strangeone101.pixeltweaks.music.MusicEvent;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public abstract class Event {
 
     public String type;
-    public List<Condition> conditions;
+    public List<Condition> conditions = new ArrayList<>();
 
     public int priority = 0;
 
@@ -41,6 +42,8 @@ public abstract class Event {
                 event = context.deserialize(json, MusicEvent.Battle.class);
             } else if ("pokemon_overlay".equals(eventType)) {
                 event = context.deserialize(json, PokemonOverlay.class);
+            } else if ("battle_action".equals(eventType)) {
+                event = context.deserialize(json, MusicEvent.BattleAction.class);
             } else {
                 throw new JsonParseException("Invalid event type: " + eventType);
             }

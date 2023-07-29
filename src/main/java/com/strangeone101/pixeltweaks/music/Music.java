@@ -2,6 +2,8 @@ package com.strangeone101.pixeltweaks.music;
 
 import com.strangeone101.pixeltweaks.struct.Fade;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Music {
@@ -29,5 +31,13 @@ public class Music {
     @Override
     public int hashCode() {
         return Objects.hash(start, loop, end, fade, volume, pitch, cutOtherMusic);
+    }
+
+    @Override
+    public String toString() {
+        return "Music[" + String.join(",", Arrays.asList(
+                (start == null ? "" : start.toString()),
+                (loop == null ? "" : loop.toString()),
+                (end == null ? "" : end.toString()))) + "]";
     }
 }
