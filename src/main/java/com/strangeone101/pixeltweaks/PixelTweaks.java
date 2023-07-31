@@ -85,6 +85,7 @@ public class PixelTweaks {
         new TridentDrops();
         new FoxImmunity();
         new AntiPokeTrample();
+        new UsefulBackpacksIntegration();
 
         Lazy<ZygardeCellFeature> lazyFeature = Lazy.of(() -> ZygardeCellFeature.FEATURE);
         event.enqueueWork(() -> {

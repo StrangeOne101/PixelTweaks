@@ -114,18 +114,15 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 repositories {
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
-
-    maven {
-        // location of the maven that hosts JEI files
-        name = "Progwml6 maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
-        content { includeGroup "mezz.jei" }
-    }
     maven {
         // location of a maven mirror for JEI files, as a fallback
         name = "ModMaven"
         url = "https://modmaven.dev"
         content { includeGroup "mezz.jei" }
+    }
+    maven {
+        name = "U-Team Repository"
+        url = "https://repo.u-team.info"
     }
 
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
@@ -147,6 +144,10 @@ dependencies {
 
     //AmbienceExtras for muting their music in battles
     compileOnly fg.deobf('vazkii.ambience.ambience:Ambience-1.16.5-1.0.0:1.0.0')
+
+    //UsefulBackpacks Integration
+    implementation fg.deobf("info.u-team:u_team_core-1.16.5:3.2.1.258")
+    implementation fg.deobf("info.u-team:useful_backpacks-1.16.5:1.12.1.102")
 
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html

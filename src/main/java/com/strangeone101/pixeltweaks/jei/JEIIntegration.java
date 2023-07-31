@@ -19,6 +19,8 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -95,7 +97,12 @@ public class JEIIntegration implements IModPlugin {
         Set<PokemonDropInformation> drops = new HashSet<>();
 
         for (Species species : DropItemRegistry.pokemonDrops.keySet()) {
-            drops.addAll(DropItemRegistry.pokemonDrops.get(species));
+            for (PokemonDropInformation info : DropItemRegistry.pokemonDrops.get(species)) {
+                if (info.getDrops().removeIf(itemWithChance -> itemWithChance.getItemStack() == null || itemWithChance.getItemStack() == ItemStack.EMPTY)) {
+                    PixelTweaks.LOGGER.warn("Pokemon '" + info.getPokemonSpec().toString() + "' has an air item in its drops! Are the drop items correct?");
+                }
+                drops.add(info);
+            }
         }
         drops.forEach(drop -> jeiRuntime.getRecipeManager().addRecipe(drop, DropsRecipeCategory.UID));
         PixelTweaks.LOGGER.info("Registered " + drops.size() + " drop recipes to JEI!");

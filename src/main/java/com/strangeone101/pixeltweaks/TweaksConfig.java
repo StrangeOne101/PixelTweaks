@@ -17,6 +17,7 @@ public class TweaksConfig {
     public static ForgeConfigSpec.ConfigValue<Integer> zygardeSpawnTime;
     public static ForgeConfigSpec.ConfigValue<Integer> zygardeLuckyAttemptRate;
     public static ForgeConfigSpec.ConfigValue<Integer> zygardeStormCoreRate;
+    public static ForgeConfigSpec.ConfigValue<Boolean> usefulBackpacksIntegration;
     public static ForgeConfigSpec.ConfigValue<Double> catchMultiplier;
     public static ForgeConfigSpec.ConfigValue<Double> legendaryCatchMultiplier;
     public static ForgeConfigSpec.ConfigValue<Boolean> includeMythicals;
@@ -29,7 +30,7 @@ public class TweaksConfig {
     public TweaksConfig() {
         BUILDER.comment("All features that require being on the client").push("Client Features");;
 
-        shinySparkleRange = BUILDER.comment("The range in which shinies will sparkle. Set to -1 to disable. Default: 20.0")
+        shinySparkleRange = BUILDER.comment("The range in which shinies will sparkle. Set to -1 to disable. Default: 25.0")
                 .defineInRange("shinySparkleRange", 25.0, -1.0F, 500.0F);
 
         shinySparkleVolume = BUILDER.comment("The volume of the shiny sparkle sound. Set to 0 to disable. Default and maximum: 1.0")
@@ -63,6 +64,9 @@ public class TweaksConfig {
 
         zygardeStormCoreRate = BUILDER.comment("The rate in which Zygarde Cores should spawn when it's stormy. Rate is 1/<rate>. Set to 0 to disable. Default: 7")
                 .defineInRange("zygardeStormCoreRate", 7, 0, 9999);
+
+        usefulBackpacksIntegration = BUILDER.comment("If UsefulBackpacks integration should be enabled. Default: true")
+                .define("usefulBackpacksIntegration", true);
 
         BUILDER.pop();
         /*BUILDER.comment("All catch related features").push("Server Features - Catching");
