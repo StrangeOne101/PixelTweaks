@@ -2,6 +2,7 @@ package com.strangeone101.pixeltweaks.particle;
 
 import com.google.common.base.Charsets;
 import com.strangeone101.pixeltweaks.PixelTweaks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.particle.TexturesParticle;
@@ -32,6 +33,12 @@ public abstract class FakeParticle extends SpriteTexturedParticle {
     public abstract ResourceLocation getResourceLocation();
 
     public static IAnimatedSprite loadTexture(ResourceLocation location) {
+
+        if (atlasTexture == null) {
+            PixelTweaks.LOGGER.warn("Particle atlas is null! Do you have Optifine installed?");
+
+            atlasTexture = Minecraft.getInstance().particles.atlas;
+        }
 
         String fileLoc = "particles/" + location.getPath() + ".json";
 
