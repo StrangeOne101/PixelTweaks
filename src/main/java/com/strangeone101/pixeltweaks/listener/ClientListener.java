@@ -5,7 +5,6 @@ import com.strangeone101.pixeltweaks.ClientScheduler;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.ShinyTracker;
 import com.strangeone101.pixeltweaks.TweaksConfig;
-import com.strangeone101.pixeltweaks.music.BattleListener;
 import com.strangeone101.pixeltweaks.particle.FakeParticle;
 import com.strangeone101.pixeltweaks.pixelevents.EventRegistry;
 import net.minecraft.client.Minecraft;
@@ -40,7 +39,6 @@ public class ClientListener {
         MinecraftForge.EVENT_BUS.addListener(this::onRenderWorldLastEvent);
 
         new EventRegistry();
-        new BattleListener();
 
     }
 

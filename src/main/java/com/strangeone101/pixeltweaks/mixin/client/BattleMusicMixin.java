@@ -14,6 +14,7 @@ import com.pixelmonmod.pixelmon.sounds.BattleMusicType;
 import com.pixelmonmod.pixelmon.sounds.PixelmonSounds;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.music.ChainedMusic;
+import com.strangeone101.pixeltweaks.music.SoundManager;
 import com.strangeone101.pixeltweaks.pixelevents.EventRegistry;
 import com.strangeone101.pixeltweaks.music.MusicEvent;
 import net.minecraft.client.Minecraft;
@@ -34,15 +35,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Mixin(BattleMusic.class)
 public abstract class BattleMusicMixin {
 
     @Shadow(remap = false)
     private static LocatableSound song;
-
-    @Unique
-    private static ChainedMusic pixelTweaks$chainedMusic;
 
     /**
      * @author StrangeOne101
@@ -117,23 +116,8 @@ public abstract class BattleMusicMixin {
                 MusicEvent.Battle event = optional.get();
                 PixelTweaks.LOGGER.debug("Playing sound event " + event.getFile());
                 pixelTweaks$pause();
-                pixelTweaks$chainedMusic = new ChainedMusic(event.music);
 
-                if (pixelTweaks$chainedMusic.shouldTick()) {
-                    PixelmonMusic.EXECUTOR.submit(() -> {
-                        try {
-                            Thread.sleep(20);
-
-                            while (pixelTweaks$chainedMusic != null && pixelTweaks$chainedMusic.shouldTick()) {
-                                pixelTweaks$chainedMusic.tick();
-                                Thread.sleep(20);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
-                }
-
+                SoundManager.playEvent(event);
                 return;
             }
         }
@@ -160,29 +144,44 @@ public abstract class BattleMusicMixin {
     public static void endBattleMusic() {
         Minecraft mc = Minecraft.getInstance();
         if (isPlaying()) {
-            if (pixelTweaks$chainedMusic != null) {
-                pixelTweaks$chainedMusic.finish(BattleMusicMixin::pixelTweaks$unpause);
-            } else {
+            if (pixelTweaks$isPixelmonSongPlaying()) {
                 PixelmonMusic.fadeSoundToStop(song, 2000L, BattleMusicMixin::pixelTweaks$unpause);
+            } else {
+                CompletableFuture[] futures = new CompletableFuture[SoundManager.BATTLE_MUSIC.size()];
+                int num = 0;
+
+                for (ChainedMusic music : SoundManager.BATTLE_MUSIC) {
+                    CompletableFuture<Void> future = new CompletableFuture<>();
+                    music.finish(() -> {
+                        future.complete(null);
+                        SoundManager.ALL_MUSIC.remove(music);
+                    });
+                    futures[num++] = future;
+                }
+                SoundManager.BATTLE_MUSIC.clear();
+                CompletableFuture.allOf(futures).thenAccept((v) -> {
+                    pixelTweaks$unpause();
+                });
             }
         } else if (mc.getMusicTicker() instanceof VoidMusicTicker) {
             pixelTweaks$unpause();
         }
 
         song = null;
-        pixelTweaks$chainedMusic = null;
     }
 
     @Unique
     private static void pixelTweaks$unpause() {
-        VoidMusicTicker.replaceMusicTicker();
+        VoidMusicTicker.restoreMusicTicker();
         //pixelTweaks$unpauseAmbienceMod();
+        SoundManager.resumeAllMusic();
     }
 
     @Unique
     private static void pixelTweaks$pause() {
         VoidMusicTicker.replaceMusicTicker();
         //pixelTweaks$pauseAmbienceMod();
+        SoundManager.pauseAllMusic();
     }
 
     /**
@@ -191,7 +190,12 @@ public abstract class BattleMusicMixin {
      */
     @Overwrite(remap = false)
     public static boolean isPlaying() {
-        return (pixelTweaks$chainedMusic != null && pixelTweaks$chainedMusic.isPlaying()) || (song != null && PixelmonMusic.getSoundHandler().isPlaying(song));
+        return (SoundManager.BATTLE_MUSIC.size() > 0 && SoundManager.BATTLE_MUSIC.stream().anyMatch(ChainedMusic::isPlaying)) || (pixelTweaks$isPixelmonSongPlaying());
+    }
+
+    @Unique
+    private static boolean pixelTweaks$isPixelmonSongPlaying() {
+        return song != null && PixelmonMusic.getSoundHandler().isPlaying(song);
     }
 
 }

@@ -3,11 +3,9 @@ package com.strangeone101.pixeltweaks.music;
 import com.google.common.collect.Sets;
 import com.strangeone101.pixeltweaks.pixelevents.Event;
 import com.strangeone101.pixeltweaks.pixelevents.EventListener;
-import com.strangeone101.pixeltweaks.pixelevents.EventRegistry;
 import com.strangeone101.pixeltweaks.pixelevents.IValidator;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,10 +40,11 @@ public class MusicEvent extends Event implements IValidator {
         public Action action;
 
         public enum Action {
-            HIT, FAINT, CATCH, RUN, START, WIN, WIPEOUT, SWITCH, THROW_POKEBALL,
-            SUPER_EFFECTIVE_HIT, NOT_VERY_EFFECTIVE_HIT, EFFECTIVE_HIT, HIT_MISS, HIT_NO_EFFECT, HIT_CRITICAL, FLINCH,
+            HIT, FAINT, CATCH, CATCH_FAIL, RUN, START, WIN, WIPEOUT, SWITCH, THROW_POKEBALL,
+            SUPER_EFFECTIVE_HIT, NOT_VERY_EFFECTIVE_HIT, EFFECTIVE_HIT, HIT_MISS, HIT_NO_EFFECT, HIT_CRITICAL, HIT_FAIL, FLINCH,
             STATS_UP, STATS_DOWN, STATS_UP_HARSH, STATS_DOWN_HARSH, BERRY_EAT, POTION, REVIVE,
-            WRAP, BURN, SLEEP, FREEZE, PARALYZE, POISON, CONFUSION, DROWSY, GETTING_PUMPED, LOVE, SPIKES,
+            WRAP, BURN, SLEEP, FREEZE, PARALYZE, POISON, CONFUSION, DROWSY, GETTING_PUMPED, LOVE,
+            SPIKES, WEATHER_SUNNY, WEATHER_RAINY, WEATHER_SNOW, WEATHER_SANDSTORM, WEATHER_HAIL, WEATHER_VERY_SUNNY, WEATHER_VERY_RAINY,
             MEGA_EVOLVE, DYNAMAX, DYNAMAX_LOST, ZMOVE, TERASTALLIZE
         }
 

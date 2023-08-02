@@ -25,6 +25,7 @@
     "client.PixelmonEntity_OverlayMixin",
     "client.PokemonShimLayerMixin",
     "client.WorldHelperMixin",
-    "client.PixelmonItemMixin"
+    "client.PixelmonItemMixin",
+    "client.network.BattleMessagePacketMixin"
   ]
 }
