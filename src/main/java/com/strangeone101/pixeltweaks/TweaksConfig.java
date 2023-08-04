@@ -17,7 +17,7 @@ public class TweaksConfig {
     public static ForgeConfigSpec.ConfigValue<Integer> zygardeSpawnTime;
     public static ForgeConfigSpec.ConfigValue<Integer> zygardeLuckyAttemptRate;
     public static ForgeConfigSpec.ConfigValue<Integer> zygardeStormCoreRate;
-    public static ForgeConfigSpec.ConfigValue<Boolean> usefulBackpacksIntegration;
+    public static ForgeConfigSpec.ConfigValue<Boolean> backpacksIntegration;
     public static ForgeConfigSpec.ConfigValue<Double> catchMultiplier;
     public static ForgeConfigSpec.ConfigValue<Double> legendaryCatchMultiplier;
     public static ForgeConfigSpec.ConfigValue<Boolean> includeMythicals;
@@ -65,8 +65,8 @@ public class TweaksConfig {
         zygardeStormCoreRate = BUILDER.comment("The rate in which Zygarde Cores should spawn when it's stormy. Rate is 1/<rate>. Set to 0 to disable. Default: 7")
                 .defineInRange("zygardeStormCoreRate", 7, 0, 9999);
 
-        usefulBackpacksIntegration = BUILDER.comment("If UsefulBackpacks integration should be enabled. Default: true")
-                .define("usefulBackpacksIntegration", true);
+        backpacksIntegration = BUILDER.comment("If UsefulBackpacks/SimplyBackpacks integration should be enabled. Default: true")
+                .define("backpacksIntegration", true);
 
         BUILDER.pop();
         /*BUILDER.comment("All catch related features").push("Server Features - Catching");

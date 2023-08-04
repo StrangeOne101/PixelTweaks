@@ -1,7 +1,6 @@
 package com.strangeone101.pixeltweaks.tweaks;
 
 import com.pixelmonmod.pixelmon.api.battles.BattleItemScanner;
-import com.pixelmonmod.pixelmon.items.PokeBagItem;
 import com.strangeone101.pixeltweaks.ModIntegration;
 import info.u_team.useful_backpacks.item.BackpackItem;
 import net.minecraft.inventory.IInventory;
@@ -10,7 +9,7 @@ import net.minecraft.item.ItemStack;
 public class UsefulBackpacksIntegration {
 
     public UsefulBackpacksIntegration() {
-        if (ModIntegration.backpacks()) {
+        if (ModIntegration.usefulBackpacks()) {
             BattleItemScanner.addScanner(new BattleItemScanner.InventoryScanner((stack) -> {
                 return stack.getItem() instanceof BackpackItem;
             }, (player, section, inventory, stack, items) -> {

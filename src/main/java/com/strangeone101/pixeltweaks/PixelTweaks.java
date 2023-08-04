@@ -63,7 +63,7 @@ public class PixelTweaks {
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::initializeTweaks);
 
-        FEATURES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        //FEATURES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
     public static InputStream getResource(String filename) throws IOException {
@@ -86,12 +86,13 @@ public class PixelTweaks {
         new FoxImmunity();
         new AntiPokeTrample();
         new UsefulBackpacksIntegration();
+        new SimplyBackpacksIntegration();
 
-        Lazy<ZygardeCellFeature> lazyFeature = Lazy.of(() -> ZygardeCellFeature.FEATURE);
+        /*Lazy<ZygardeCellFeature> lazyFeature = Lazy.of(() -> ZygardeCellFeature.FEATURE);
         event.enqueueWork(() -> {
             ZygardeCellFeature feature = lazyFeature.get();
             ZygardeCellFeature.CONFIGURED_FEATURE = Registry.register(WorldGenRegistries.CONFIGURED_FEATURE,
                     new ResourceLocation(MODID, "zygarde_cell"), feature.withConfiguration(new NoFeatureConfig()));
-        });
+        });*/
     }
 }

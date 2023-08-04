@@ -149,6 +149,9 @@ dependencies {
     implementation fg.deobf("info.u-team:u_team_core-1.16.5:3.2.1.258")
     implementation fg.deobf("info.u-team:useful_backpacks-1.16.5:1.12.1.102")
 
+    //SimplyBackpacks Integration
+    implementation fg.deobf("flanks255.simplybackpacks:simplybackpacks-1.16.5-2.1.2-build.49:1.0.0")
+
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html

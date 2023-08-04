@@ -4,8 +4,16 @@ import net.minecraftforge.fml.ModList;
 
 public class ModIntegration {
 
-    public static boolean backpacks() {
-        return isLoaded("usefulbackpacks") && TweaksConfig.usefulBackpacksIntegration.get();
+    public static boolean usefulBackpacks() {
+        return isLoaded("usefulbackpacks") && TweaksConfig.backpacksIntegration.get();
+    }
+
+    public static boolean simplyBackpacks() {
+        return isLoaded("simplybackpacks") && TweaksConfig.backpacksIntegration.get();
+    }
+
+    public static boolean jei() {
+        return isLoaded("jei");
     }
 
     static boolean isLoaded(String modid) {
