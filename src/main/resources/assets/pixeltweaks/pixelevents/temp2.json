@@ -1,0 +1,8 @@
+{
+  "type": "battle_action",
+  "action": "STATS_UP",
+  "sound": "pixeltweaks:battle/2",
+  "priority": 100
+}
+
+

@@ -1,7 +1,6 @@
 package com.strangeone101.pixeltweaks.jei;
 
 import com.pixelmonmod.pixelmon.api.pokemon.drops.PokemonDropInformation;
-import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
 import com.pixelmonmod.pixelmon.api.recipe.InfuserRecipe;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
@@ -12,6 +11,7 @@ import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.jei.category.DropsRecipeCategory;
 import com.strangeone101.pixeltweaks.jei.category.InfuserRecipeCategory;
 import com.strangeone101.pixeltweaks.jei.category.PokeLootRecipeCategory;
+import com.strangeone101.pixeltweaks.jei.recipe.DropsRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.ingredients.IIngredientType;
@@ -19,11 +19,8 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -36,6 +33,12 @@ public class JEIIntegration implements IModPlugin {
 
     public static final IIngredientType<Stats> POKEMON = () -> Stats.class;
     public static final IIngredientType<PokemonIngredient> WRAPPED_POKEMON = () -> PokemonIngredient.class;
+
+    public JEIIntegration() {
+        //JEIServerIntegration.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        //Registry.register(Registry.RECIPE_TYPE, "drops", JEIServerIntegration.DROPS_RECIPE_TYPE);
+    }
+
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
@@ -85,6 +88,10 @@ public class JEIIntegration implements IModPlugin {
         Collection<InfuserRecipe> infuserRecipes = Minecraft.getInstance().world.getRecipeManager().getRecipesForType(type);
         registration.addRecipes(infuserRecipes, InfuserRecipeCategory.UID);
         PixelTweaks.LOGGER.info("Registered " + infuserRecipes.size() + " infuser recipes to JEI!");
+
+        Collection<DropsRecipe> dropsRecipes = Minecraft.getInstance().world.getRecipeManager().getRecipesForType(JEIServerIntegration.DROPS_RECIPE_TYPE);
+
+        registration.addRecipes(dropsRecipes, DropsRecipeCategory.UID);
     }
 
     @Override
@@ -96,16 +103,18 @@ public class JEIIntegration implements IModPlugin {
 
         Set<PokemonDropInformation> drops = new HashSet<>();
 
-        for (Species species : DropItemRegistry.pokemonDrops.keySet()) {
+        /*for (Species species : DropItemRegistry.pokemonDrops.keySet()) {
             for (PokemonDropInformation info : DropItemRegistry.pokemonDrops.get(species)) {
                 if (info.getDrops().removeIf(itemWithChance -> itemWithChance.getItemStack() == null || itemWithChance.getItemStack() == ItemStack.EMPTY)) {
                     PixelTweaks.LOGGER.warn("Pokemon '" + info.getPokemonSpec().toString() + "' has an air item in its drops! Are the drop items correct?");
                 }
                 drops.add(info);
+
+
             }
         }
         drops.forEach(drop -> jeiRuntime.getRecipeManager().addRecipe(drop, DropsRecipeCategory.UID));
-        PixelTweaks.LOGGER.info("Registered " + drops.size() + " drop recipes to JEI!");
+        PixelTweaks.LOGGER.info("Registered " + drops.size() + " drop recipes to JEI!");*/
 
         PokeLootPool tier1 = new PokeLootPool(1, DropItemRegistry.tier1);
         PokeLootPool tier2 = new PokeLootPool(2, DropItemRegistry.tier2);

@@ -18,5 +18,41 @@
       "name": "pixeltweaks:music/arceus/loop",
       "stream": true
     }]
-  }
+  },
+  "battle/1": {
+    "sounds": [{
+      "name": "pixeltweaks:temp/1",
+      "stream": false
+    }]
+  },
+    "battle/2": {
+        "sounds": [{
+        "name": "pixeltweaks:temp/2",
+        "stream": false
+        }]
+    },
+    "battle/3": {
+        "sounds": [{
+        "name": "pixeltweaks:temp/3",
+        "stream": false
+        }]
+    },
+    "battle/4": {
+        "sounds": [{
+        "name": "pixeltweaks:temp/4",
+        "stream": false
+        }]
+    },
+    "battle/5": {
+        "sounds": [{
+        "name": "pixeltweaks:temp/5",
+        "stream": false
+        }]
+    },
+    "battle/6": {
+        "sounds": [{
+        "name": "pixeltweaks:temp/6",
+        "stream": false
+        }]
+    }
 }

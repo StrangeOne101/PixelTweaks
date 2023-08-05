@@ -20,7 +20,7 @@ plugins {
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'com.strangeone101'
-version = '1.8-B1'
+version = '1.8-B3'
 
 java {
     archivesBaseName = 'PixelTweaks'

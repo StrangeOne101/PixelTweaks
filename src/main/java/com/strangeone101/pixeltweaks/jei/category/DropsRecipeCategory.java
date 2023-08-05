@@ -2,11 +2,11 @@ package com.strangeone101.pixeltweaks.jei.category;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.pixelmonmod.pixelmon.api.pokemon.drops.ItemWithChance;
-import com.pixelmonmod.pixelmon.api.pokemon.drops.PokemonDropInformation;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
 import com.strangeone101.pixeltweaks.jei.JEIIntegration;
 import com.strangeone101.pixeltweaks.jei.PokemonIngredient;
 import com.strangeone101.pixeltweaks.jei.PokemonIngredientRenderer;
+import com.strangeone101.pixeltweaks.jei.recipe.DropsRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -22,7 +22,7 @@ import net.minecraft.util.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DropsRecipeCategory implements IRecipeCategory<PokemonDropInformation> {
+public class DropsRecipeCategory implements IRecipeCategory<DropsRecipe> {
 
     public static final ResourceLocation UID = new ResourceLocation("pixeltweaks", "drops");
     private static final PokemonIngredientRenderer renderer = new PokemonIngredientRenderer(3F);
@@ -46,8 +46,8 @@ public class DropsRecipeCategory implements IRecipeCategory<PokemonDropInformati
     }
 
     @Override
-    public Class<? extends PokemonDropInformation> getRecipeClass() {
-        return PokemonDropInformation.class;
+    public Class<? extends DropsRecipe> getRecipeClass() {
+        return DropsRecipe.class;
     }
 
     @Override
@@ -66,30 +66,30 @@ public class DropsRecipeCategory implements IRecipeCategory<PokemonDropInformati
     }
 
     @Override
-    public void setIngredients(PokemonDropInformation recipe, IIngredients ingredients) {
-        ingredients.setInput(JEIIntegration.WRAPPED_POKEMON, new PokemonIngredient(recipe.getPokemonSpec()));
+    public void setIngredients(DropsRecipe recipe, IIngredients ingredients) {
+        ingredients.setInput(JEIIntegration.WRAPPED_POKEMON, new PokemonIngredient(recipe.getInfo().getPokemonSpec()));
 
         List<ItemStack> items = new ArrayList<>();
-        for (ItemWithChance drop : recipe.getDrops()) {
+        for (ItemWithChance drop : recipe.getInfo().getDrops()) {
             items.add(drop.getItemStack());
         }
         ingredients.setOutputs(VanillaTypes.ITEM, items);
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, PokemonDropInformation recipe, IIngredients ingredients) {
+    public void setRecipe(IRecipeLayout recipeLayout, DropsRecipe recipe, IIngredients ingredients) {
         recipeLayout.getIngredientsGroup(JEIIntegration.WRAPPED_POKEMON).init(0, true, renderer, 14 - 8, 6, 48, 48, 0, 0);
         recipeLayout.getIngredientsGroup(JEIIntegration.WRAPPED_POKEMON).set(0, ingredients.getInputs(JEIIntegration.WRAPPED_POKEMON).get(0));
-        for (int i = 0; i < recipe.getDrops().size(); i++) {
+        for (int i = 0; i < recipe.getInfo().getDrops().size(); i++) {
             recipeLayout.getItemStacks().init(i + 1, false, 8 + (26 * i), 65);
-            recipeLayout.getItemStacks().set(i + 1, recipe.getDrops().get(i).getItemStack());
+            recipeLayout.getItemStacks().set(i + 1, recipe.getInfo().getDrops().get(i).getItemStack());
         }
     }
 
     @Override
-    public void draw(PokemonDropInformation recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
-        for (int i = 0; i < recipe.getDrops().size(); i++) {
-            ItemWithChance drop = recipe.getDrops().get(i);
+    public void draw(DropsRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+        for (int i = 0; i < recipe.getInfo().getDrops().size(); i++) {
+            ItemWithChance drop = recipe.getInfo().getDrops().get(i);
             double chance = drop.getChance() * 100;
             String chanceString = String.format("%.0f", chance) + "%";
             int w = Minecraft.getInstance().fontRenderer.getStringWidth(chanceString);

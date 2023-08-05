@@ -8,6 +8,7 @@
   "mixins": [
     "InteractionBottleCapMixin",
     "PixelmonEntityMixin",
+    "RecipeManagerMixin",
     "ZygardeListenerMixin",
     "ability.MixinAegislashAbility",
     "ability.MixinMimikyuAbility",

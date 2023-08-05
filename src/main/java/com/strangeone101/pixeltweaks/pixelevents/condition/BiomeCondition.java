@@ -11,8 +11,10 @@ import net.minecraft.world.biome.Biome;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class BiomeCondition extends Condition<ResourceLocation> {
     public BiomeCondition() {
@@ -26,11 +28,18 @@ public class BiomeCondition extends Condition<ResourceLocation> {
     @Override
     public boolean conditionMet(ResourceLocation item) {
         if (cachedBiomes == null) {
-            this.cachedBiomes = BetterSpawnerConfig.INSTANCE.cachedBiomeCategories.entrySet().stream()
+            Stream<Map.Entry<String, Set<Biome>>> s = BetterSpawnerConfig.INSTANCE.cachedBiomeCategories.entrySet().stream()
+                    .filter(entry -> biomes.contains(entry.getKey()));
+            Stream<Biome> s1 = s.flatMap(entry -> entry.getValue().stream());
+            //Set<Biome> collectTemp = s1.collect(Collectors.toSet());
+            Stream<ResourceLocation> s2 = s1.map(BiomeCondition::getBiome);
+            cachedBiomes = s2.collect(Collectors.toSet());
+
+            /*this.cachedBiomes = BetterSpawnerConfig.INSTANCE.cachedBiomeCategories.entrySet().stream()
                     .filter(entry -> biomes.contains(entry.getKey())) //Filter categories the list contains
                     .flatMap(entry -> entry.getValue().stream()) //Combine the sets together
                     .map(BiomeCondition::getBiome) //Convert to resource locations
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toSet());*/
 
             for (String biome : biomes) {
                 if (biome.contains(":")) {

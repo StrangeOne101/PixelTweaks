@@ -289,7 +289,7 @@ public abstract class BattleMessagePacketMixin extends BattleTaskPacket {
             PixelTweaks.LOGGER.debug("Playing action " + action + " for " + nickname);
             SoundManager.playBattleAction(BattleHelper.getFromNickname(nickname), action);
         }
-
+        PixelTweaks.LOGGER.debug("All format args: " + Arrays.toString(tcomponent.getFormatArgs()));
 
     }
 }

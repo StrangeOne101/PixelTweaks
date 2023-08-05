@@ -1,0 +1,8 @@
+{
+  "type": "battle_action",
+  "action": "BURN",
+  "sound": "pixeltweaks:battle/1",
+  "priority": 100
+}
+
+
