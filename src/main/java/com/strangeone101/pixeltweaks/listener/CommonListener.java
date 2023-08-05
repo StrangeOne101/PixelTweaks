@@ -7,14 +7,13 @@ import com.pixelmonmod.pixelmon.api.events.spawning.SpawnEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Element;
 import com.pixelmonmod.pixelmon.entities.npcs.NPCTrainer;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
+import com.strangeone101.pixeltweaks.integration.ModIntegration;
 import com.strangeone101.pixeltweaks.PixelTweaks;
+import com.strangeone101.pixeltweaks.jei.JEIServerIntegration;
 import com.strangeone101.pixeltweaks.tweaks.NewGamerules;
 import com.strangeone101.pixeltweaks.tweaks.ZygardeCellSpawner;
-import com.strangeone101.pixeltweaks.worldgen.ZygardeCellFeature;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.GameRules;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
@@ -32,6 +31,11 @@ public class CommonListener {
         MinecraftForge.EVENT_BUS.addListener(this::onTagReload);
 
         new ZygardeCellSpawner();
+
+        if (ModIntegration.jei()) {
+            new JEIServerIntegration();
+            PixelTweaks.LOGGER.info("Added JEI Server Integration");
+        }
 
         TYPE_COLORS.put(Element.BUG, 0x9DC130);
         TYPE_COLORS.put(Element.DARK, 0x5F606D);

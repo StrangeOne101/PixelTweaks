@@ -4,7 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
-import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.jei.PokeLootPool;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
