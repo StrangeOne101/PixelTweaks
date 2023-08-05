@@ -1,16 +1,12 @@
 package com.strangeone101.pixeltweaks;
 
+import com.strangeone101.pixeltweaks.integration.ModIntegration;
 import com.strangeone101.pixeltweaks.listener.ClientListener;
 import com.strangeone101.pixeltweaks.listener.CommonListener;
 import com.strangeone101.pixeltweaks.tweaks.*;
 import com.strangeone101.pixeltweaks.worldgen.ZygardeCellFeature;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.RegistryObject;
@@ -85,8 +81,7 @@ public class PixelTweaks {
         new TridentDrops();
         new FoxImmunity();
         new AntiPokeTrample();
-        new UsefulBackpacksIntegration();
-        new SimplyBackpacksIntegration();
+        ModIntegration.registerBackpackIntegrations();
 
         /*Lazy<ZygardeCellFeature> lazyFeature = Lazy.of(() -> ZygardeCellFeature.FEATURE);
         event.enqueueWork(() -> {

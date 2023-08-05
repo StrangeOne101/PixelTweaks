@@ -1,7 +1,7 @@
-package com.strangeone101.pixeltweaks.tweaks;
+package com.strangeone101.pixeltweaks.integration.backpack;
 
 import com.pixelmonmod.pixelmon.api.battles.BattleItemScanner;
-import com.strangeone101.pixeltweaks.ModIntegration;
+import com.strangeone101.pixeltweaks.integration.ModIntegration;
 import info.u_team.useful_backpacks.item.BackpackItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;

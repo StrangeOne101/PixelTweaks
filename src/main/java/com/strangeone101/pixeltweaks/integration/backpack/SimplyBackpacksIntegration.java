@@ -1,9 +1,9 @@
-package com.strangeone101.pixeltweaks.tweaks;
+package com.strangeone101.pixeltweaks.integration.backpack;
 
 import com.flanks255.simplybackpacks.inventory.BackpackData;
 import com.flanks255.simplybackpacks.items.BackpackItem;
 import com.pixelmonmod.pixelmon.api.battles.BattleItemScanner;
-import com.strangeone101.pixeltweaks.ModIntegration;
+import com.strangeone101.pixeltweaks.integration.ModIntegration;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
