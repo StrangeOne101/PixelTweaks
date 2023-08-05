@@ -1,4 +1,4 @@
-package com.strangeone101.pixeltweaks.jei;
+package com.strangeone101.pixeltweaks.integration.jei;
 
 import mezz.jei.api.ingredients.IIngredientHelper;
 import mezz.jei.api.ingredients.subtypes.UidContext;

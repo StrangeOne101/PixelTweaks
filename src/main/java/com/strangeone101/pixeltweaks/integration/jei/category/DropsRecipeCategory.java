@@ -1,12 +1,12 @@
-package com.strangeone101.pixeltweaks.jei.category;
+package com.strangeone101.pixeltweaks.integration.jei.category;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.pixelmonmod.pixelmon.api.pokemon.drops.ItemWithChance;
 import com.pixelmonmod.pixelmon.api.pokemon.drops.PokemonDropInformation;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
-import com.strangeone101.pixeltweaks.jei.JEIIntegration;
-import com.strangeone101.pixeltweaks.jei.PokemonIngredient;
-import com.strangeone101.pixeltweaks.jei.PokemonIngredientRenderer;
+import com.strangeone101.pixeltweaks.integration.jei.JEIIntegration;
+import com.strangeone101.pixeltweaks.integration.jei.PokemonIngredient;
+import com.strangeone101.pixeltweaks.integration.jei.PokemonIngredientRenderer;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;

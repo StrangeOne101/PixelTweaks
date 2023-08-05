@@ -1,4 +1,4 @@
-package com.strangeone101.pixeltweaks.jei;
+package com.strangeone101.pixeltweaks.integration.jei;
 
 import com.pixelmonmod.pixelmon.api.pokemon.drops.PokemonDropInformation;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
@@ -9,9 +9,9 @@ import com.pixelmonmod.pixelmon.client.gui.machines.infuser.InfuserScreen;
 import com.pixelmonmod.pixelmon.entities.npcs.registry.DropItemRegistry;
 import com.pixelmonmod.pixelmon.init.registry.RecipeTypeRegistration;
 import com.strangeone101.pixeltweaks.PixelTweaks;
-import com.strangeone101.pixeltweaks.jei.category.DropsRecipeCategory;
-import com.strangeone101.pixeltweaks.jei.category.InfuserRecipeCategory;
-import com.strangeone101.pixeltweaks.jei.category.PokeLootRecipeCategory;
+import com.strangeone101.pixeltweaks.integration.jei.category.DropsRecipeCategory;
+import com.strangeone101.pixeltweaks.integration.jei.category.InfuserRecipeCategory;
+import com.strangeone101.pixeltweaks.integration.jei.category.PokeLootRecipeCategory;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.ingredients.IIngredientType;
@@ -20,10 +20,8 @@ import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.Collection;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package com.strangeone101.pixeltweaks.jei;
+package com.strangeone101.pixeltweaks.integration.jei;
 
 import com.pixelmonmod.api.pokemon.PokemonSpecification;
 import com.pixelmonmod.api.pokemon.requirement.impl.GenderRequirement;

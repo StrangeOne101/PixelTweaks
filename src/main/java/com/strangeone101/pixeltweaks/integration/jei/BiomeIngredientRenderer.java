@@ -1,4 +1,4 @@
-package com.strangeone101.pixeltweaks.jei;
+package com.strangeone101.pixeltweaks.integration.jei;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.pixelmonmod.pixelmon.api.config.BetterSpawnerConfig;

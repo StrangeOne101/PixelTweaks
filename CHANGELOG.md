@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.8
+- Added backpack mod integrations for the following mods
+  - SimplyBackpacks
+  - UsefulBackpacks
+  - SophisticatedBackpacks
+  - TravelersBackpack
+- Added battle action sound event
+  - Allows resource packs to play sound or music events when certain things happen in battle
+  - Including super effective hits, status effects, crits, catching, defeat, and lots more
+- All music events now support playing a sound instead of music
+
 ## 1.7.3
 - Fixed crash when opening the game in zh_tw locale (#7)
 - Optimized Zygarde spawning a little, and fixed minor bugs with it
