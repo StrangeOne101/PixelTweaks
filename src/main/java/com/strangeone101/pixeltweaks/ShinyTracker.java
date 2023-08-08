@@ -34,7 +34,7 @@ public class ShinyTracker {
     private float volume = Math.min(TweaksConfig.shinySparkleVolume.get().floatValue(), 2F);
 
     public boolean shouldTrackShiny(PixelmonEntity entity) {
-        if (entity.isUncatachable() || !entity.isAlive() || entity.isBossPokemon()
+        if (entity.isUncatchable() || !entity.isAlive() || entity.isBossPokemon()
                 || entity.getOwner() != null || !entity.getPokemon().isShiny()
                 || shinyMap.contains(entity.getPokemon()) || shinyTracking.contains(entity)) {
             return false;

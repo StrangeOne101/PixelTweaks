@@ -20,7 +20,7 @@ plugins {
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'com.strangeone101'
-version = '1.8'
+version = '1.8.1'
 
 java {
     archivesBaseName = 'PixelTweaks'
@@ -169,7 +169,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-    implementation fg.deobf('com.pixelmonmod.pixelmon:Pixelmon-1.16.5-9.1.5-universal:9.1.5')
+    implementation fg.deobf('com.pixelmonmod.pixelmon:Pixelmon-1.16.5-9.1.6-universal:9.1.6')
 }
 
 mixin {

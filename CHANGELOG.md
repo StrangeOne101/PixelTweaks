@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.8.1
+- Updated PixelTweaks to Pixelmon 9.1.6
+
 ## 1.8
 - Added backpack mod integrations for the following mods
   - SimplyBackpacks
