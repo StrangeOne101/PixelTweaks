@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.8.3
+- Fixed crash that occurred when you had SophisticatedBackpacks but not CuriosAPI
+
 ## 1.8.2
 - Fixed Sophisticated Backpack only getting items from the first backpack
 - Fixed Sophisticated Backpacks in the CuriousAPI backpack slot not being able to be accessed in battle

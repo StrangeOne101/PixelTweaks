@@ -21,6 +21,10 @@ public class ModIntegration {
         return isLoaded("sophisticatedbackpacks") && TweaksConfig.backpacksIntegration.get();
     }
 
+    public static boolean curiosApi() {
+        return isLoaded("curios");
+    }
+
     public static boolean travelersBackpack() {
         return isLoaded("travelersbackpack") && TweaksConfig.backpacksIntegration.get();
     }
