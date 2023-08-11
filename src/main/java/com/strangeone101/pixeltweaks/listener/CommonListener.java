@@ -8,6 +8,7 @@ import com.pixelmonmod.pixelmon.api.pokemon.Element;
 import com.pixelmonmod.pixelmon.entities.npcs.NPCTrainer;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.PixelTweaks;
+import com.strangeone101.pixeltweaks.pixellang.LangRegistry;
 import com.strangeone101.pixeltweaks.tweaks.NewGamerules;
 import com.strangeone101.pixeltweaks.tweaks.ZygardeCellSpawner;
 import com.strangeone101.pixeltweaks.worldgen.ZygardeCellFeature;
@@ -32,6 +33,7 @@ public class CommonListener {
         MinecraftForge.EVENT_BUS.addListener(this::onTagReload);
 
         new ZygardeCellSpawner();
+        new LangRegistry();
 
         TYPE_COLORS.put(Element.BUG, 0x9DC130);
         TYPE_COLORS.put(Element.DARK, 0x5F606D);
