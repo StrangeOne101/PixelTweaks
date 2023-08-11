@@ -165,6 +165,12 @@ dependencies {
     implementation fg.deobf("curse.maven:curios-309927:4419403")
     //TravelersBackpack Integration
     compileOnly fg.deobf("travelersbackpack:TravelersBackpack-1.16.5-5.4.43:1.16.5")
+
+    //FTB Quests and Library
+    implementation fg.deobf("curse.maven:ftb-library-forge-404465:3553840")
+    implementation fg.deobf("curse.maven:ftb-quests-forge-289412:4297999")
+    implementation fg.deobf("curse.maven:architectury-api-419699:4521290")
+
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html

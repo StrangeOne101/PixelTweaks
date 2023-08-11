@@ -33,6 +33,10 @@ public class ModIntegration {
         return isLoaded("jei");
     }
 
+    public static boolean ftbQuests() {
+        return isLoaded("ftbquests");
+    }
+
     static boolean isLoaded(String modid) {
         return ModList.get().isLoaded(modid);
     }
