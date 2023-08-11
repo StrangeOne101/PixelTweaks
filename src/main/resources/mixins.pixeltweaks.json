@@ -14,6 +14,7 @@
     "block.ApriconLeavesBlockMixin",
     "block.BerryLeavesBlockMixin",
     "block.ZygardeCellBlockMixin",
+    "integration.SophisticatedBackpackMixin",
     "spam.AttackBaseTypeAdapterMixin",
     "spam.AttackTypeAdapterMixin",
     "spam.ImmutableAttackTypeAdapterMixin"

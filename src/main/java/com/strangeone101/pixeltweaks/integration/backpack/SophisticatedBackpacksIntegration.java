@@ -21,17 +21,18 @@ public class SophisticatedBackpacksIntegration {
     public SophisticatedBackpacksIntegration() {
         if (ModIntegration.sophisticatedBackpacks()) {
             BattleItemScanner.addScanner(new BattleItemScanner.InventoryScanner((stack) -> stack.getItem() instanceof BackpackItem
-                    , (player, section, inventory, stack, items) -> {
-                SophisticatedBackpacks.PROXY.getPlayerInventoryProvider().runOnBackpacks(player, (backpack, inventoryName, identifier, slot) -> {
-                    BackpackContext.Item backpackContext = new BackpackContext.Item(inventoryName, identifier, slot);
+                , (player, section, inventory, stack, items) -> {
+
+                LazyOptional<IBackpackWrapper> backpackWrapper = stack.getCapability((CapabilityBackpackWrapper.getCapabilityInstance()));
+                if (backpackWrapper.isPresent()) {
+                    IBackpackWrapper realWrapper = backpackWrapper.orElse(NoopBackpackWrapper.INSTANCE);
+                    IItemHandler handler = realWrapper.getInventoryHandler();
                     List<ItemStack> invStacks = new ArrayList<>();
-                    BackpackInventoryHandler handler = backpackContext.getBackpackWrapper(player).getInventoryHandler();
                     for (int i = 0; i < handler.getSlots(); i++) {
                         invStacks.add(handler.getStackInSlot(i));
                     }
-                    BattleItemScanner.checkInventory(player, section, invStacks, items);
-                    return false;
-                });
+                    BattleItemScanner.checkInventory(player, section, invStacks, false, items);
+                }
             }, (player, stack, toMatch) -> {
                 LazyOptional<IBackpackWrapper> backpackWrapper = stack.getCapability((CapabilityBackpackWrapper.getCapabilityInstance()));
                 if (backpackWrapper.isPresent()) {

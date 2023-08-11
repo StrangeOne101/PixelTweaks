@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.8.2
+- Fixed Sophisticated Backpack only getting items from the first backpack
+- Fixed Sophisticated Backpacks in the CuriousAPI backpack slot not being able to be accessed in battle
+
 ## 1.8.1
 - Updated PixelTweaks to Pixelmon 9.1.6
 
