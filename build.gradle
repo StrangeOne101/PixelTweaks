@@ -169,7 +169,9 @@ dependencies {
     //FTB Quests and Library
     implementation fg.deobf("curse.maven:ftb-library-forge-404465:3553840")
     implementation fg.deobf("curse.maven:ftb-quests-forge-289412:4297999")
+    implementation fg.deobf("curse.maven:ftb-teams-forge-404468:3535953")
     implementation fg.deobf("curse.maven:architectury-api-419699:4521290")
+    runtimeOnly fg.deobf("curse.maven:item-filters-309674:3376819")
 
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html

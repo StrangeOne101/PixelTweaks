@@ -10,5 +10,17 @@
   "jei.pixeltweaks.pokeloot.subtitle.2": "Tier 2 Loot",
   "jei.pixeltweaks.pokeloot.subtitle.3": "Tier 3 Loot",
   "jei.pixeltweaks.pokeloot.subtitle.4": "Ultraspace Loot",
-  "jei.pixeltweaks.infuser.title": "Infuser Recipes"
+  "jei.pixeltweaks.infuser.title": "Infuser Recipes",
+  "ftbquests.task.pixelmon.catch_pokemon": "Catch Pokemon",
+  "ftbquests.task.pixelmon.catch_pokemon.pokemon": "Pokemon Specification",
+  "ftbquests.task.pixelmon.catch_pokemon.count": "Amount",
+  "ftbquests.task.pixelmon.defeat_pokemon": "Defeat Pokemon",
+  "ftbquests.task.pixelmon.defeat_pokemon.pokemon": "Pokemon Specification",
+  "ftbquests.task.pixelmon.defeat_pokemon.count": "Amount",
+  "ftbquests.task.pixelmon.defeat_pokemon.wild": "Wild Pokemon Only",
+  "ftbquests.task.pixelmon.defeat_trainer": "Defeat Pokemon Trainer",
+  "ftbquests.task.pixelmon.hatch_egg": "Hatch Pokemon",
+    "ftbquests.task.pixelmon.hatch_egg.pokemon": "Pokemon Specification",
+    "ftbquests.task.pixelmon.hatch_egg.count": "Amount"
+
 }

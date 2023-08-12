@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonBlocks;
 import com.pixelmonmod.pixelmon.api.util.Scheduling;
@@ -72,6 +73,8 @@ public class ZygardeCellSpawner {
 
     public ZygardeCellSpawner() {
 
+        //Do not activate on 9.1.7 and above
+        if (PixelTweaks.getPixelmonVersion() >= 9107) return;
 
         Scheduling.schedule(1, () -> {
             try {

@@ -88,6 +88,8 @@ public class ClientListener {
             event.addSprite(new ResourceLocation(PixelTweaks.MODID, "particle/stars_0"));
             event.addSprite(new ResourceLocation(PixelTweaks.MODID, "particle/stars_1"));
             FakeParticle.atlasTexture = event.getMap();
+        } else if (event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
+            event.addSprite(new ResourceLocation(PixelTweaks.MODID, "gui/egg"));
         }
     }
 

@@ -1,15 +1,9 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests;
 
-import dev.ftb.mods.ftbquests.quest.Quest;
-import dev.ftb.mods.ftbquests.quest.task.Task;
 import dev.ftb.mods.ftbquests.quest.task.TaskType;
 import dev.ftb.mods.ftbquests.quest.task.TaskTypes;
 import net.minecraft.util.ResourceLocation;
 import dev.ftb.mods.ftblibrary.icon.Icon;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.function.Supplier;
 
 public class PokemonTaskTypes {
 
@@ -21,23 +15,26 @@ public class PokemonTaskTypes {
     public static TaskType BREED_POKEMON;
     public static TaskType DEFEAT_TRAINER;
     public static TaskType LEVEL_POKEMON;
+    public static TaskType POKEDEX_AMOUNT;
+    public static TaskType POKEDEX_PERCENTAGE;
+    public static TaskType POKEDOLLARS;
 
 
     public static void register() {
         try {
-            Method registerMethod = TaskTypes.class.getDeclaredMethod("register", ResourceLocation.class, TaskType.Provider.class, Supplier.class);
-            registerMethod.setAccessible(true);
+            CATCH_POKEMON = TaskTypes.register(new ResourceLocation("pixelmon", "catch_pokemon"),
+                    CatchTask::new, () -> Icon.getIcon("pixelmon:items/pokeballs/poke_ball"));
 
-            CATCH_POKEMON = (TaskType) registerMethod.invoke(null, new ResourceLocation("ftbquests", "catch_pokemon"), (TaskType.Provider) CatchTask::new, (Supplier<Icon>)() -> {
-                return Icon.getIcon("pixelmon:item/poke_ball");
-            });
+            HATCH_EGG = TaskTypes.register(new ResourceLocation("pixelmon", "hatch_egg"),
+                    HatchTask::new, () -> Icon.getIcon("pixeltweaks:gui/egg"));
 
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            DEFEAT_POKEMON = TaskTypes.register(new ResourceLocation("pixelmon", "defeat_pokemon"),
+                    DefeatTask::new, () -> Icon.getIcon("pixelmon:items/healingitems/m_exp_candy"));
+
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-
     }
 
 

@@ -1,5 +1,6 @@
 package com.strangeone101.pixeltweaks;
 
+import com.pixelmonmod.pixelmon.Pixelmon;
 import com.strangeone101.pixeltweaks.integration.ModIntegration;
 import com.strangeone101.pixeltweaks.listener.ClientListener;
 import com.strangeone101.pixeltweaks.listener.CommonListener;
@@ -82,6 +83,7 @@ public class PixelTweaks {
         new FoxImmunity();
         new AntiPokeTrample();
         ModIntegration.registerBackpackIntegrations();
+        ModIntegration.registerFTBQuestsIntegration();
 
         /*Lazy<ZygardeCellFeature> lazyFeature = Lazy.of(() -> ZygardeCellFeature.FEATURE);
         event.enqueueWork(() -> {
@@ -89,5 +91,24 @@ public class PixelTweaks {
             ZygardeCellFeature.CONFIGURED_FEATURE = Registry.register(WorldGenRegistries.CONFIGURED_FEATURE,
                     new ResourceLocation(MODID, "zygarde_cell"), feature.withConfiguration(new NoFeatureConfig()));
         });*/
+    }
+
+    public static int getPixelmonVersion() {
+        String version = Pixelmon.getVersion();
+
+        String[] split = version.split("\\.", 3);
+
+        int major = Integer.parseInt(split[0]);
+        int minor = 0;
+        int fix = 0;
+
+        if (split.length > 1) {
+            minor = Integer.parseInt(split[1]);
+
+            if (split.length > 2) {
+                fix = Integer.parseInt(split[2]);
+            }
+        }
+        return major * 1000 + minor * 100 + fix; //9.1.5 -> 9105
     }
 }

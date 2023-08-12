@@ -2,31 +2,23 @@ package com.strangeone101.pixeltweaks.integration.ftbquests;
 
 import com.pixelmonmod.api.pokemon.PokemonSpecification;
 import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
-import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
+import dev.ftb.mods.ftblibrary.config.Tristate;
 import dev.ftb.mods.ftbquests.quest.Quest;
-import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.Task;
 import dev.ftb.mods.ftbquests.quest.task.TaskType;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class CatchTask extends Task {
+public abstract class PokemonTask extends Task {
 
     public int count = 1;
     public String pokemonSpec = "";
     public transient PokemonSpecification cachedSpec;
-
-    public CatchTask(Quest q) {
+    public PokemonTask(Quest q) {
         super(q);
-    }
-
-    @Override
-    public TaskType getType() {
-        return PokemonTaskTypes.CATCH_POKEMON;
     }
 
     @Override
@@ -74,11 +66,5 @@ public class CatchTask extends Task {
             this.cachedSpec = PokemonSpecificationProxy.create(this.pokemonSpec);
         }, "");
         config.addInt("count", this.count, v -> this.count = v, 1, 1, Integer.MAX_VALUE);
-    }
-
-    public void catchPokemon(TeamData team, Pokemon pokemon) {
-        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon))) {
-            team.addProgress(this, 1L);
-        }
     }
 }
