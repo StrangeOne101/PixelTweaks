@@ -1,5 +1,7 @@
-package com.strangeone101.pixeltweaks.integration.ftbquests;
+package com.strangeone101.pixeltweaks.integration.ftbquests.tasks;
 
+import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTaskTypes;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.config.NameMap;
 import dev.ftb.mods.ftblibrary.icon.Icon;

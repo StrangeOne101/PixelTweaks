@@ -2,13 +2,14 @@ package com.strangeone101.pixeltweaks.integration.ftbquests;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
-import com.pixelmonmod.pixelmon.api.events.PixelmonFaintEvent;
 import com.pixelmonmod.pixelmon.api.events.PokemonReceivedEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.AttackEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.CatchTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.TradeTask;
 import dev.ftb.mods.ftbquests.quest.ServerQuestFile;
 import dev.ftb.mods.ftbquests.quest.TeamData;
 import net.minecraftforge.eventbus.api.EventPriority;

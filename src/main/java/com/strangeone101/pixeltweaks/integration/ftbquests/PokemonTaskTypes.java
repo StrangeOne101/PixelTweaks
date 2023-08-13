@@ -1,5 +1,11 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests;
 
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.BreedTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.CatchTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.EvolutionTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.HatchTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.TradeTask;
 import dev.ftb.mods.ftbquests.quest.task.TaskType;
 import dev.ftb.mods.ftbquests.quest.task.TaskTypes;
 import net.minecraft.util.ResourceLocation;
