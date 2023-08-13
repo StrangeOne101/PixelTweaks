@@ -1,14 +1,22 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.daycare.event.DayCareEvent;
+import com.pixelmonmod.pixelmon.api.economy.EconomyEvent;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
+import com.pixelmonmod.pixelmon.api.events.EggHatchEvent;
+import com.pixelmonmod.pixelmon.api.events.EvolveEvent;
 import com.pixelmonmod.pixelmon.api.events.PokemonReceivedEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.AttackEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.BreedTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.CatchTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.EvolutionTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.HatchTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokeDollarsTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.TradeTask;
 import dev.ftb.mods.ftbquests.quest.ServerQuestFile;
 import dev.ftb.mods.ftbquests.quest.TeamData;
@@ -24,11 +32,20 @@ public class TaskListener {
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::betterOnCatch);
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onDefeatPokemon);
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onRaidCatch);
+        Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onBalanceSet);
+        Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onBalanceChange);
+        Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onEvolve);
+        Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onHatch);
+        Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onBreed);
     }
 
     private List<CatchTask> catchTasks = null;
     private List<DefeatTask> defeatTasks = null;
     private List<TradeTask> tradeTasks = null;
+    private List<PokeDollarsTask> pokeDollarsTasks = null;
+    private List<EvolutionTask> evolutionTasks = null;
+    private List<HatchTask> hatchTasks = null;
+    private List<BreedTask> breedTasks = null;
 
     public void betterOnCatch(PokemonReceivedEvent event) {
         if (catchTasks == null) {
@@ -109,6 +126,86 @@ public class TaskListener {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    public void onBalanceSet(EconomyEvent.SetBalance event) {
+        moneyThing(event);
+    }
+
+    public void onBalanceChange(EconomyEvent.PostTransaction event) {
+        moneyThing(event);
+    }
+
+    private void moneyThing(EconomyEvent event) {
+        if (pokeDollarsTasks == null) {
+            pokeDollarsTasks = ServerQuestFile.INSTANCE.collect(PokeDollarsTask.class);
+        }
+
+        if (pokeDollarsTasks.isEmpty()) {
+            return;
+        }
+
+        TeamData data = ServerQuestFile.INSTANCE.getData(event.getPlayer());
+
+        for (PokeDollarsTask task : pokeDollarsTasks) {
+            if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
+                task.updateMoney(data, event.getPlayer());
+            }
+        }
+    }
+
+    public void onEvolve(EvolveEvent.Post event) {
+        if (evolutionTasks == null) {
+            evolutionTasks = ServerQuestFile.INSTANCE.collect(EvolutionTask.class);
+        }
+
+        if (evolutionTasks.isEmpty()) {
+            return;
+        }
+
+        TeamData data = ServerQuestFile.INSTANCE.getData(event.getPlayer());
+
+        for (EvolutionTask task : evolutionTasks) {
+            if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
+                task.evolvePokemon(data, event.getPlayer(), event.getPokemon(), event.getEvolution());
+            }
+        }
+    }
+
+    public void onHatch(EggHatchEvent event) {
+        if (hatchTasks == null) {
+            hatchTasks = ServerQuestFile.INSTANCE.collect(HatchTask.class);
+        }
+
+        if (hatchTasks.isEmpty()) {
+            return;
+        }
+
+        TeamData data = ServerQuestFile.INSTANCE.getData(event.getPlayer());
+
+        for (HatchTask task : hatchTasks) {
+            if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
+                task.onHatch(data, event.getPokemon());
+            }
+        }
+    }
+
+    public void onBreed(DayCareEvent.PostTimerBegin event) {
+        if (breedTasks == null) {
+            breedTasks = ServerQuestFile.INSTANCE.collect(BreedTask.class);
+        }
+
+        if (breedTasks.isEmpty()) {
+            return;
+        }
+
+        TeamData data = ServerQuestFile.INSTANCE.getData(event.getPlayer());
+
+        for (BreedTask task : breedTasks) {
+            if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
+                task.onBreed(data, event.getBox().getParentOne(), event.getBox().getParentTwo());
             }
         }
     }

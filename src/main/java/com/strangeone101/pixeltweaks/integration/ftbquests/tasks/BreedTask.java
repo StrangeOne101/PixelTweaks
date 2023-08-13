@@ -2,10 +2,12 @@ package com.strangeone101.pixeltweaks.integration.ftbquests.tasks;
 
 import com.pixelmonmod.api.pokemon.PokemonSpecification;
 import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.egg.impl.AbstractEggGroup;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTaskTypes;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftbquests.quest.Quest;
+import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.Task;
 import dev.ftb.mods.ftbquests.quest.task.TaskType;
 import net.minecraft.nbt.CompoundNBT;
@@ -86,5 +88,25 @@ public class BreedTask extends Task {
             this.parent2 = PokemonSpecificationProxy.create(this.parent2Specs);
         }, "");
         config.addInt("count", this.count, v -> this.count = v, 1, 1, Integer.MAX_VALUE);
+    }
+
+    public void onBreed(TeamData data, Pokemon parentOne, Pokemon parentTwo) {
+        if (data.isCompleted(this)) return;
+
+        if (!this.parent1Specs.isEmpty() && !this.parent2Specs.isEmpty()) {
+            if (this.parent1.matches(parentOne) && this.parent2.matches(parentTwo)) {
+                data.addProgress(this, 1);
+            } else if (this.parent1.matches(parentTwo) && this.parent2.matches(parentOne)) {
+                data.addProgress(this, 1);
+            }
+        } else if (!this.parent1Specs.isEmpty()) {
+            if (this.parent1.matches(parentOne) || this.parent1.matches(parentTwo)) {
+                data.addProgress(this, 1);
+            }
+        } else if (!this.parent2Specs.isEmpty()) {
+            if (this.parent2.matches(parentOne) || this.parent2.matches(parentTwo)) {
+                data.addProgress(this, 1);
+            }
+        }
     }
 }

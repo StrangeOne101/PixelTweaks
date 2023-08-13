@@ -1,13 +1,18 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests.tasks;
 
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.pokemon.stats.evolution.Evolution;
+import com.pixelmonmod.pixelmon.api.pokemon.stats.evolution.types.InteractEvolution;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTaskTypes;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.config.NameMap;
 import dev.ftb.mods.ftblibrary.icon.Icon;
 import dev.ftb.mods.ftbquests.quest.Quest;
+import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.TaskType;
 import dev.ftb.mods.ftbquests.util.NBTUtils;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -91,5 +96,30 @@ public class EvolutionTask extends PokemonTask {
                     return Icon.getIcon(new ResourceLocation(icon));
                 }).create(), EvolutionType.ANY);
         config.addItemStack("item", item, v -> item = v, ItemStack.EMPTY, true, true);
+    }
+
+    public void evolvePokemon(TeamData team, ServerPlayerEntity player, Pokemon pokemon, Evolution evolution) {
+        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon)) && matches(evolution)) {
+            team.addProgress(this, 1L);
+        }
+    }
+
+    private boolean matches(Evolution evolution) {
+        String evoType = evolution.evoType;
+        if (this.evoType == EvolutionType.ANY || evoType == null) return true;
+        switch (evoType) {
+            case "leveling":
+                return this.evoType == EvolutionType.LEVELING;
+            case "trade":
+                return this.evoType == EvolutionType.TRADING;
+            case "interact":
+                return this.evoType == EvolutionType.ITEM && evolution instanceof InteractEvolution
+                        && ((InteractEvolution) evolution).item.getItemStack().isItemEqualIgnoreDurability(item);
+            case "ticking":
+                return this.evoType == EvolutionType.TICKING;
+            default:
+                return false;
+        }
+
     }
 }
