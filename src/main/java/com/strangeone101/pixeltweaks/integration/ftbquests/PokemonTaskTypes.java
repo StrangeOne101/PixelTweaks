@@ -18,6 +18,7 @@ public class PokemonTaskTypes {
     public static TaskType POKEDEX_AMOUNT;
     public static TaskType POKEDEX_PERCENTAGE;
     public static TaskType POKEDOLLARS;
+    public static TaskType TRADE_POKEMON;
 
 
     public static void register() {
@@ -25,11 +26,20 @@ public class PokemonTaskTypes {
             CATCH_POKEMON = TaskTypes.register(new ResourceLocation("pixelmon", "catch_pokemon"),
                     CatchTask::new, () -> Icon.getIcon("pixelmon:items/pokeballs/poke_ball"));
 
+            DEFEAT_POKEMON = TaskTypes.register(new ResourceLocation("pixelmon", "defeat_pokemon"),
+                    DefeatTask::new, () -> Icon.getIcon("pixelmon:items/healingitems/m_exp_candy"));
+
+            EVOLVE_POKEMON = TaskTypes.register(new ResourceLocation("pixelmon", "evolve_pokemon"),
+                    EvolutionTask::new, () -> Icon.getIcon("pixelmon:items/healingitems/rarecandy"));
+
+            TRADE_POKEMON = TaskTypes.register(new ResourceLocation("pixelmon", "trade_pokemon"),
+                    TradeTask::new, () -> Icon.getIcon("pixelmon:items/linking_cord"));
+
             HATCH_EGG = TaskTypes.register(new ResourceLocation("pixelmon", "hatch_egg"),
                     HatchTask::new, () -> Icon.getIcon("pixeltweaks:gui/egg"));
 
-            DEFEAT_POKEMON = TaskTypes.register(new ResourceLocation("pixelmon", "defeat_pokemon"),
-                    DefeatTask::new, () -> Icon.getIcon("pixelmon:items/healingitems/m_exp_candy"));
+            BREED_POKEMON = TaskTypes.register(new ResourceLocation("pixelmon", "breed_pokemon"),
+                    BreedTask::new, () -> Icon.getIcon("pixeltweaks:gui/egg"));
 
 
         } catch (Exception e) {

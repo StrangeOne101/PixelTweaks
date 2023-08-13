@@ -4,6 +4,7 @@ import com.pixelmonmod.api.pokemon.PokemonSpecification;
 import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
+import dev.ftb.mods.ftblibrary.config.Tristate;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.Task;
@@ -14,11 +15,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class CatchTask extends Task {
-
-    public int count = 1;
-    public String pokemonSpec = "";
-    public transient PokemonSpecification cachedSpec;
+public class CatchTask extends PokemonTask {
+    public Tristate fromRaid = Tristate.DEFAULT;
 
     public CatchTask(Quest q) {
         super(q);
@@ -30,54 +28,46 @@ public class CatchTask extends Task {
     }
 
     @Override
-    public long getMaxProgress() {
-        return this.count;
-    }
-
-    @Override
     public void writeData(CompoundNBT nbt) {
         super.writeData(nbt);
-        nbt.putString("pokemon", this.pokemonSpec);
-        nbt.putInt("count", this.count);
+        fromRaid.write(nbt, "from_raid");
     }
 
     @Override
     public void readData(CompoundNBT nbt) {
         super.readData(nbt);
-        this.pokemonSpec = nbt.getString("pokemon");
-        this.cachedSpec = PokemonSpecificationProxy.create(this.pokemonSpec);
-        this.count = nbt.getInt("count");
+        fromRaid = Tristate.read(nbt, "from_raid");
     }
 
     @Override
     public void writeNetData(PacketBuffer buffer) {
         super.writeNetData(buffer);
-        buffer.writeString(this.pokemonSpec);
-        buffer.writeVarInt(this.count);
+        fromRaid.write(buffer);
     }
 
     @Override
     public void readNetData(PacketBuffer buffer) {
         super.readNetData(buffer);
-        this.pokemonSpec = buffer.readString();
-        this.cachedSpec = PokemonSpecificationProxy.create(this.pokemonSpec);
-        this.count = buffer.readVarInt();
+        fromRaid = Tristate.read(buffer);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void getConfig(ConfigGroup config) {
         super.getConfig(config);
-
-        config.addString("pokemon", this.pokemonSpec, (v) -> {
-            this.pokemonSpec = v;
-            this.cachedSpec = PokemonSpecificationProxy.create(this.pokemonSpec);
-        }, "");
-        config.addInt("count", this.count, v -> this.count = v, 1, 1, Integer.MAX_VALUE);
+        config.addTristate("from_raid", fromRaid, v -> fromRaid = v, Tristate.DEFAULT);
     }
 
     public void catchPokemon(TeamData team, Pokemon pokemon) {
-        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon))) {
+        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon))
+                && (fromRaid == Tristate.DEFAULT || fromRaid.isFalse())) { //If it isn't from raids
+            team.addProgress(this, 1L);
+        }
+    }
+
+    public void catchRaidPokemon(TeamData team, Pokemon pokemon) {
+        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon))
+                && (fromRaid == Tristate.DEFAULT || fromRaid.isTrue())) { //If it IS from raids
             team.addProgress(this, 1L);
         }
     }
