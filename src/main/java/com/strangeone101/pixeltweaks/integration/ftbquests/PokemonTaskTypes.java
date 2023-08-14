@@ -5,6 +5,9 @@ import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.CatchTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.EvolutionTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.HatchTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokeDollarsTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokedexAmountTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokedexPercentageTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.TradeTask;
 import dev.ftb.mods.ftbquests.quest.task.TaskType;
 import dev.ftb.mods.ftbquests.quest.task.TaskTypes;
@@ -42,10 +45,19 @@ public class PokemonTaskTypes {
                     TradeTask::new, () -> Icon.getIcon("pixelmon:items/linking_cord"));
 
             HATCH_EGG = TaskTypes.register(new ResourceLocation("pixelmon", "hatch_egg"),
-                    HatchTask::new, () -> Icon.getIcon("pixeltweaks:gui/egg"));
+                    HatchTask::new, () -> Icon.getIcon("pixeltweaks:textures/gui/egg.png"));
 
             BREED_POKEMON = TaskTypes.register(new ResourceLocation("pixelmon", "breed_pokemon"),
-                    BreedTask::new, () -> Icon.getIcon("pixeltweaks:gui/egg"));
+                    BreedTask::new, () -> Icon.getIcon("pixeltweaks:textures/gui/egg.png"));
+
+            POKEDEX_AMOUNT = TaskTypes.register(new ResourceLocation("pixelmon", "pokedex_amount"),
+                    PokedexAmountTask::new, () -> Icon.getIcon("pixelmon:textures/items/pokedex.png"));
+
+            POKEDEX_PERCENTAGE = TaskTypes.register(new ResourceLocation("pixelmon", "pokedex_percentage"),
+                    PokedexPercentageTask::new, () -> Icon.getIcon("pixelmon:textures/items/pokedex.png"));
+
+            POKEDOLLARS = TaskTypes.register(new ResourceLocation("pixelmon", "pokedollars"),
+                    PokeDollarsTask::new, () -> Icon.getIcon("pixelmon:textures/gui/pokedollar.png"));
 
 
         } catch (Exception e) {

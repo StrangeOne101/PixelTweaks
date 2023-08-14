@@ -2,6 +2,7 @@ package com.strangeone101.pixeltweaks.integration.ftbquests.tasks;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
+import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTaskTypes;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.config.Tristate;
@@ -93,13 +94,15 @@ public class PokeDollarsTask extends Task {
         }
 
         int m = StorageProxy.getParty(player).getBalance().intValue();
+        if (m <= 0) return;
+        PixelTweaks.LOGGER.debug("Player has " + m + " PokeDollars");
         boolean complete = m >= this.amount;
         m = complete ? this.amount : m;
 
         if (teamData.file.isServerSide()) {
-            teamData.addProgress(this, m);
+            teamData.setProgress(this, m);
 
-            if (consumesResources()) {
+            if (consumesResources() && complete) {
                 StorageProxy.getParty(player).setBalance(m - this.amount);
             }
         }
