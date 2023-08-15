@@ -4,6 +4,7 @@ import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTaskTypes;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
+import dev.ftb.mods.ftblibrary.util.StringUtils;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.TaskType;
@@ -59,7 +60,21 @@ public class PokedexPercentageTask extends PokedexTask {
     @Override
     public void getConfig(ConfigGroup config) {
         super.getConfig(config);
-        config.addDouble("percentage", this.percentage, v -> this.percentage = v, 0.0, 0.001, 100.00);
+        config.addDouble("percentage", this.percentage, v -> {
+            this.percentage = v;
+            doMath();
+        }, 0.0, 0.01, 100.00);
+    }
+
+    @Override
+    public String formatProgress(TeamData teamData, long progress) {
+        double p = ((double) progress / (double) getMaxProgress()) * 100.0;
+        return StringUtils.formatDouble(p) + "%";
+    }
+
+    @Override
+    public String formatMaxProgress() {
+        return StringUtils.formatDouble(percentage) + "%";
     }
 
     @Override
@@ -69,7 +84,7 @@ public class PokedexPercentageTask extends PokedexTask {
     }
 
     private void doMath() {
-        this.count = (int) (Math.ceil(this.percentage / 100) * (this.maxPokedexSize));
+        this.count = (int) (Math.ceil(this.percentage / 100.0) * ((double)this.maxPokedexSize));
     }
 
 

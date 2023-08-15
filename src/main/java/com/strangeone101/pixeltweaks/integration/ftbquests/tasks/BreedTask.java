@@ -93,7 +93,7 @@ public class BreedTask extends Task {
     public void onBreed(TeamData data, Pokemon parentOne, Pokemon parentTwo) {
         if (data.isCompleted(this)) return;
 
-        if (!this.parent1Specs.isEmpty() && !this.parent2Specs.isEmpty()) {
+        if (!this.parent1Specs.isEmpty() && !this.parent2Specs.isEmpty()) { //When both parents are specified
             if (this.parent1.matches(parentOne) && this.parent2.matches(parentTwo)) {
                 data.addProgress(this, 1);
             } else if (this.parent1.matches(parentTwo) && this.parent2.matches(parentOne)) {
@@ -107,6 +107,8 @@ public class BreedTask extends Task {
             if (this.parent2.matches(parentOne) || this.parent2.matches(parentTwo)) {
                 data.addProgress(this, 1);
             }
+        } else {
+            data.addProgress(this, 1); //If no parents are specified, just add progress
         }
     }
 }

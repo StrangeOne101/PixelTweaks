@@ -162,11 +162,9 @@ public abstract class PokedexTask extends Task {
         if (teamData.isCompleted(this)) return;
 
         int ordinalToCheck = this.caught ? 2 : 1;
-        long time = System.currentTimeMillis();
         int progress = (int) StorageProxy.getParty(player).playerPokedex.getSeenMap().entrySet().parallelStream()
                 .filter(entry -> this.filteredPokedex.contains(entry.getKey()) && entry.getValue().ordinal() >= ordinalToCheck
                 ).count();
-        PixelTweaks.LOGGER.debug("Took " + (System.currentTimeMillis() - time) + "ms to calculate pokedex progress for " + player.getDisplayName().getString() + " for task " + this.toString());
 
         teamData.setProgress(this, progress);
     }
