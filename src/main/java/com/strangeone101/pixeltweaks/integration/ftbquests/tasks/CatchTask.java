@@ -69,7 +69,7 @@ public class CatchTask extends PokemonTask {
     }
 
     public void catchRaidPokemon(TeamData team, Pokemon pokemon) {
-        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon))
+        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon) != this.invert)
                 && (fromRaid == Tristate.DEFAULT || fromRaid.isTrue())) { //If it IS from raids
             team.addProgress(this, 1L);
         }

@@ -13,6 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class PokemonTask extends Task {
 
     public int count = 1;
+    public boolean invert = false;
     public String pokemonSpec = "";
     public transient PokemonSpecification cachedSpec;
     public PokemonTask(Quest q) {
@@ -29,6 +30,7 @@ public abstract class PokemonTask extends Task {
         super.writeData(nbt);
         nbt.putString("pokemon", this.pokemonSpec);
         nbt.putInt("count", this.count);
+        nbt.putBoolean("invert", this.invert);
     }
 
     @Override
@@ -37,6 +39,7 @@ public abstract class PokemonTask extends Task {
         this.pokemonSpec = nbt.getString("pokemon");
         this.cachedSpec = PokemonSpecificationProxy.create(this.pokemonSpec);
         this.count = nbt.getInt("count");
+        this.invert = nbt.getBoolean("invert");
     }
 
     @Override
@@ -44,6 +47,7 @@ public abstract class PokemonTask extends Task {
         super.writeNetData(buffer);
         buffer.writeString(this.pokemonSpec);
         buffer.writeVarInt(this.count);
+        buffer.writeBoolean(this.invert);
     }
 
     @Override
@@ -52,6 +56,7 @@ public abstract class PokemonTask extends Task {
         this.pokemonSpec = buffer.readString();
         this.cachedSpec = PokemonSpecificationProxy.create(this.pokemonSpec);
         this.count = buffer.readVarInt();
+        this.invert = buffer.readBoolean();
     }
 
     @Override
@@ -64,5 +69,6 @@ public abstract class PokemonTask extends Task {
             this.cachedSpec = PokemonSpecificationProxy.create(this.pokemonSpec);
         }, "");
         config.addInt("count", this.count, v -> this.count = v, 1, 1, Integer.MAX_VALUE);
+        config.addBool("invert", this.invert, v -> this.invert = v, false);
     }
 }

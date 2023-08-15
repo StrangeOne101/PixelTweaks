@@ -20,7 +20,7 @@ public class TradeTask extends PokemonTask {
     }
 
     public void tradePokemon(TeamData team, Pokemon pokemon) {
-        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon))) {
+        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon) != this.invert)) {
             team.addProgress(this, 1L);
         }
     }

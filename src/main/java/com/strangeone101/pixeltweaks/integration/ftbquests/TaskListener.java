@@ -1,40 +1,50 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.battles.BattleResults;
 import com.pixelmonmod.pixelmon.api.daycare.event.DayCareEvent;
 import com.pixelmonmod.pixelmon.api.economy.EconomyEvent;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.events.EggHatchEvent;
 import com.pixelmonmod.pixelmon.api.events.EvolveEvent;
+import com.pixelmonmod.pixelmon.api.events.LevelUpEvent;
 import com.pixelmonmod.pixelmon.api.events.PokedexEvent;
 import com.pixelmonmod.pixelmon.api.events.PokemonReceivedEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.AttackEvent;
+import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.util.Scheduling;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
+import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
+import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
+import com.pixelmonmod.pixelmon.battles.controller.participants.TrainerParticipant;
+import com.pixelmonmod.pixelmon.entities.npcs.NPCTrainer;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.BreedTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.CatchTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatPlayersTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatTrainerTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.EvolutionTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.HatchTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.LevelTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokeDollarsTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokedexAmountTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokedexPercentageTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokedexTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.TradeTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.WipeoutTask;
 import dev.ftb.mods.ftbquests.quest.ServerQuestFile;
 import dev.ftb.mods.ftbquests.quest.TeamData;
-import dev.ftb.mods.ftbteams.event.PlayerLoggedInAfterTeamEvent;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -49,9 +59,11 @@ public class TaskListener {
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onEvolve);
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onHatch);
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onBreed);
-        Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onPokedexUpdate);
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOW, this::onPokedexUpdate);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, this::onPokedexUpdate);
+        Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onLevelUp);
+        Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onWipeout);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, this::onLogin);
+
     }
 
     private List<CatchTask> catchTasks = null;
@@ -62,8 +74,14 @@ public class TaskListener {
     private List<HatchTask> hatchTasks = null;
     private List<BreedTask> breedTasks = null;
     private List<PokedexTask> pokedexTasks = null;
+    private List<LevelTask> levelTasks = null;
+    private List<WipeoutTask> wipeoutTasks = null;
+    private List<DefeatTrainerTask> defeatTrainerTasks = null;
+    private List<DefeatPlayersTask> defeatPlayersTasks = null;
 
+    @Deprecated
     private Set<UUID> antiOverflow = new HashSet<>();
+    private Set<UUID> hatchCommandFix = new HashSet<>();
 
     public void betterOnCatch(PokemonReceivedEvent event) {
         if (catchTasks == null) {
@@ -200,6 +218,8 @@ public class TaskListener {
     }
 
     public void onHatch(EggHatchEvent.Post event) {
+        if (hatchCommandFix.contains(event.getPokemon().getUUID())) return;
+
         if (hatchTasks == null) {
             hatchTasks = ServerQuestFile.INSTANCE.collect(HatchTask.class);
         }
@@ -215,6 +235,9 @@ public class TaskListener {
                 task.onHatch(data, event.getPokemon());
             }
         }
+
+        hatchCommandFix.add(event.getPokemon().getUUID());
+        Scheduling.schedule(1, () -> hatchCommandFix.remove(event.getPokemon().getUUID()), false);
     }
 
     public void onBreed(DayCareEvent.PostTimerBegin event) {
@@ -259,7 +282,82 @@ public class TaskListener {
         updatePokedex(event.getPlayer());
     }
 
-    public void onLogin(PlayerLoggedInAfterTeamEvent event) {
-        updatePokedex(event.getPlayer());
+    public void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getPlayer() instanceof ServerPlayerEntity)
+            updatePokedex((ServerPlayerEntity) event.getPlayer());
+    }
+
+    public void onLevelUp(LevelUpEvent.Post event) {
+        if (levelTasks == null) {
+            levelTasks = ServerQuestFile.INSTANCE.collect(LevelTask.class);
+        }
+
+        if (levelTasks.isEmpty()) {
+            return;
+        }
+
+        TeamData data = ServerQuestFile.INSTANCE.getData(event.getPlayer());
+
+        for (LevelTask task : levelTasks) {
+            if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
+                task.onLevel(data, event.getPokemon(), event.getCause());
+            }
+        }
+    }
+
+    public void onWipeout(BattleEndEvent event) {
+        if (wipeoutTasks == null) {
+            wipeoutTasks = ServerQuestFile.INSTANCE.collect(WipeoutTask.class);
+        }
+        if (defeatPlayersTasks == null) {
+            defeatPlayersTasks = ServerQuestFile.INSTANCE.collect(DefeatPlayersTask.class);
+        }
+        if (defeatTrainerTasks == null) {
+            defeatTrainerTasks = ServerQuestFile.INSTANCE.collect(DefeatTrainerTask.class);
+        }
+
+        if (wipeoutTasks.isEmpty() && defeatPlayersTasks.isEmpty() && defeatTrainerTasks.isEmpty()) {
+            return;
+        }
+
+        if (event.getBattleController().isRaid() || event.getBattleController().isSimulation()
+                || event.getBattleController().getPlayers().isEmpty()) return;
+
+        boolean pvp = event.getBattleController().isPvP();
+        boolean trainer = event.getBattleController().participants.stream().anyMatch(p -> p instanceof TrainerParticipant);
+
+        for (Map.Entry<BattleParticipant, BattleResults> entry : event.getResults().entrySet()) {
+            if (entry.getKey() instanceof PlayerParticipant) {
+                ServerPlayerEntity player = ((PlayerParticipant) entry.getKey()).player;
+                TeamData data = ServerQuestFile.INSTANCE.getData(player);
+
+                if (entry.getValue() == BattleResults.DEFEAT) {
+
+
+                    for (WipeoutTask task : wipeoutTasks) {
+                        if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
+                            task.onWipeout(data, player);
+                        }
+                    }
+                } else if (entry.getValue() == BattleResults.VICTORY) {
+                    if (pvp) {
+                        ServerPlayerEntity other = event.getPlayers().stream().filter(p -> p != player).findFirst().get();
+                        for (DefeatPlayersTask task : defeatPlayersTasks) {
+                            if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
+                                task.onDefeat(data, other);
+                            }
+                        }
+                    } else if (trainer) {
+                        TrainerParticipant participant = (TrainerParticipant) event.getBattleController().participants.stream().filter(p -> p instanceof TrainerParticipant).findFirst().get();
+                        NPCTrainer trainerNPC = participant.trainer;
+                        for (DefeatTrainerTask task : defeatTrainerTasks) {
+                            if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
+                                task.defeatTrainer(data, trainerNPC);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
