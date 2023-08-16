@@ -1,5 +1,6 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests;
 
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.BattleMoveTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.BreedTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.CatchTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatPlayersTask;
@@ -33,6 +34,8 @@ public class PokemonTaskTypes {
     public static TaskType POKEDEX_PERCENTAGE;
     public static TaskType POKEDOLLARS;
     public static TaskType TRADE_POKEMON;
+    public static TaskType BATTLE_MOVE;
+    public static TaskType BATTLE_ITEM;
 
 
     public static void register() {
@@ -75,6 +78,9 @@ public class PokemonTaskTypes {
 
             DEFEAT_TRAINER = TaskTypes.register(new ResourceLocation("pixelmon", "defeat_trainer"),
                     DefeatTrainerTask::new, () -> Icon.getIcon("ftblibrary:textures/icons/player.png"));
+
+            BATTLE_MOVE = TaskTypes.register(new ResourceLocation("pixelmon", "battle_move"),
+                    BattleMoveTask::new, () -> Icon.getIcon("pixelmon:items/tms/tmfire"));
 
 
         } catch (Exception e) {

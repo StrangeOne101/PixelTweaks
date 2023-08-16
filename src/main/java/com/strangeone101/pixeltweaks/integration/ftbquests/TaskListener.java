@@ -20,6 +20,8 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.TrainerParticipant;
 import com.pixelmonmod.pixelmon.entities.npcs.NPCTrainer;
+import com.strangeone101.pixeltweaks.PixelTweaks;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.BattleMoveTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.BreedTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.CatchTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatPlayersTask;
@@ -62,6 +64,7 @@ public class TaskListener {
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOW, this::onPokedexUpdate);
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onLevelUp);
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onWipeout);
+        Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onBattleMove);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, this::onLogin);
 
     }
@@ -78,6 +81,7 @@ public class TaskListener {
     private List<WipeoutTask> wipeoutTasks = null;
     private List<DefeatTrainerTask> defeatTrainerTasks = null;
     private List<DefeatPlayersTask> defeatPlayersTasks = null;
+    private List<BattleMoveTask> battleMoveTasks = null;
 
     @Deprecated
     private Set<UUID> antiOverflow = new HashSet<>();
@@ -98,16 +102,25 @@ public class TaskListener {
         TeamData data = ServerQuestFile.INSTANCE.getData(event.getPlayer());
         Pokemon pokemon = event.getPokemon();
 
-        if (event.getCause().equals(PokemonReceivedEvent.Constants.POKE_BALL) || event.getCause().equals(PokemonReceivedEvent.Constants.FOSSIL)) {
-            for (CatchTask task : catchTasks) {
-                if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
-                    task.catchPokemon(data, pokemon);
-                }
-            }
-        } else if (event.getCause().equals(PokemonReceivedEvent.Constants.TRADE)) {
+        if (event.getCause().equals(PokemonReceivedEvent.Constants.TRADE)) {
             for (TradeTask task : tradeTasks) {
                 if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
                     task.tradePokemon(data, pokemon);
+                }
+            }
+        } else {
+            for (CatchTask task : catchTasks) {
+                if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
+                    if (event.getCause().equals(PokemonReceivedEvent.Constants.POKE_BALL)) {
+                        task.catchPokemon(data, pokemon);
+                    } else if (event.getCause().equals(PokemonReceivedEvent.Constants.FOSSIL)) {
+                        task.onFossil(data, pokemon);
+                    } else if (event.getCause().equals(PokemonReceivedEvent.Constants.CHRISTMAS)) {
+                        task.onChristmas(data, pokemon);
+                    } else if (event.getCause().equals(PokemonReceivedEvent.Constants.COMMAND)
+                            || event.getCause().equals(PokemonReceivedEvent.Constants.GIFT_COMMAND)) {
+                        task.onCommand(data, pokemon);
+                    }
                 }
             }
         }
@@ -357,6 +370,26 @@ public class TaskListener {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    public void onBattleMove(AttackEvent.Use event) {
+        if (battleMoveTasks == null) {
+            battleMoveTasks = ServerQuestFile.INSTANCE.collect(BattleMoveTask.class);
+        }
+        if (battleMoveTasks.isEmpty()) {
+            return;
+        }
+
+        if (event.user.getPlayerOwner() == null) return;
+
+        TeamData data = ServerQuestFile.INSTANCE.getData(event.user.getPlayerOwner());
+
+        for (BattleMoveTask task : battleMoveTasks) {
+            if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
+                PixelTweaks.LOGGER.debug("Battle move task for move: " + event.attack.getAttackName());
+                task.onBattleMove(data, event.user.pokemon, event.getAttack());
             }
         }
     }

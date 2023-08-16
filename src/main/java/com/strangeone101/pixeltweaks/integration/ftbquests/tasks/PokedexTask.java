@@ -7,12 +7,14 @@ import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.config.NameMap;
+import dev.ftb.mods.ftblibrary.icon.Icon;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.Task;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -115,7 +117,9 @@ public abstract class PokedexTask extends Task {
             type = v;
             calculateAmount();
         }, NameMap.of(Element.NORMAL, Element.getElements().toArray(new Element[0]))
-                .nameKey(v -> "type." + v.name().toLowerCase()).create(), Element.NORMAL);
+                .nameKey(v -> "type." + v.name().toLowerCase())
+                .icon(v -> Icon.getIcon(new ResourceLocation("pixeltweaks:textures/gui/types/" + v.name().toLowerCase() + ".png")))
+                .create(), Element.NORMAL);
 
         config.addInt("genMin", genMinFilter, v -> {
             genMinFilter = v.byteValue();

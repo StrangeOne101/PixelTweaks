@@ -10,7 +10,7 @@
 ## 1.8.1
 - Updated PixelTweaks to Pixelmon 9.1.6
 
-## 1.8
+# 1.8
 - Added backpack mod integrations for the following mods
   - SimplyBackpacks
   - UsefulBackpacks
@@ -37,7 +37,7 @@
 - Zygarde spawning now ensures the chunk is loaded before trying anything
 - Fixed some debug left in on startup
 
-## 1.7
+# 1.7
 - Added JEI recipes for Infusers
 - Added anti-crop trampling setting to prevent pokemon from trampling crops. Configurable.
 - Made Zygarde cell spawning obey the pixelmon config setting (in spawning.yml)
@@ -47,13 +47,13 @@
 - Fixed viewing an item in a pokeloot chest recipe from filling every single slot
 - Attempted to fix Zygarde cell placement bug (#6)
 
-## 1.6
+# 1.6
 - Added pokemon drops and poke loot chests recipes to JEI
   - Shows all the possible drops for pokemon in JEI
   - Shows all the possible drops for poke loot chests in JEI
 - Added English (GB) and Japanese lang files
 
-## 1.5
+# 1.5
 - Added JEI Integration
   - Makes Pokeballs, Pokeball lids, TMs and TRs show in JEI.
   - Can now be looked up for recipes easily
@@ -70,7 +70,7 @@
 - Added invert property to pokemon conditions
 - Added is_raid condition type
 
-## 1.4
+# 1.4
 - Added Zygarde cell spawning
   - Cells now spawn again
   - Cells will spawn in chunks closer to you more often than not when they decide to spawn
@@ -95,7 +95,7 @@
 - Made Mimikyu and Aegislash support custom forms
 - Fixed Aegislash not reverting to Shield form
 
-## 1.3 (Berry Update)
+# 1.3 (Berry Update)
 - Added apricorns (and berries) dropping naturally
   - Configurable (defaults to enabled).
   - They take 20x longer to drop naturally than they do to ripen
@@ -105,7 +105,7 @@
 - Added new Weather condition for events (for battle music resource packs)
 - Added new "invert" property to some conditions (for battle music resource packs)
 
-## 1.2 (Battle Music Update)
+# 1.2 (Battle Music Update)
 - Added battle music events!
   - Allows music to play when you battle specific pokemon/players/trainers
   - Configurable via resource packs!
@@ -113,7 +113,7 @@
   - See wiki for how this works
 - Made tridents spawn in water related loot chests (and drop from pokemon like Feraligator)
 
-## 1.1 (Config Update)
+# 1.1 (Config Update)
 - Added a config to the mod
   - Made the range of the sparkle effect configurable
   - Made the volume of the sparkle effect configurable
@@ -122,7 +122,7 @@
   - The last update had a serious issue due to me not understanding how the `allow-vanilla-mobs` config entry in pixelmon works. So this fixes the issues that came up because of that
 - Added an option to configure the required level for Hypertraining. Defaults to 50, Pixelmon defaults to 100
 
-## 1.0 (Initial Release)
+# 1.0 (Initial Release)
 - Makes healers drop themselves
 - Makes shiny pokemon sparkle with the particles and sound effect from Legends Arceus
 - Pokemon no longer spawn when doMobSpawning gamerule is false
