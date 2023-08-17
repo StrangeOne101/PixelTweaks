@@ -1,6 +1,7 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests.tasks;
 
 import com.pixelmonmod.pixelmon.api.pokemon.Element;
+import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
@@ -8,6 +9,7 @@ import com.strangeone101.pixeltweaks.PixelTweaks;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.config.NameMap;
 import dev.ftb.mods.ftblibrary.icon.Icon;
+import dev.ftb.mods.ftblibrary.math.Bits;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.Task;
@@ -39,6 +41,7 @@ public abstract class PokedexTask extends Task {
     public Element type = Element.NORMAL;
     public byte genMinFilter = 1;
     public byte genMaxFilter = 9;
+    public boolean allowUndexable = false;
 
     public PokedexTask(Quest q) {
         super(q);
@@ -54,6 +57,7 @@ public abstract class PokedexTask extends Task {
         super.writeData(nbt);
         nbt.putByte("filter", (byte) filter.ordinal());
         nbt.putBoolean("caught", caught);
+        nbt.putBoolean("allowUndexable", allowUndexable);
         if (filter == PokedexFilter.TYPE) {
             nbt.putByte("type", (byte) type.ordinal());
         } else if (filter == PokedexFilter.GENERATION) {
@@ -67,6 +71,7 @@ public abstract class PokedexTask extends Task {
         super.readData(nbt);
         filter = PokedexFilter.values()[nbt.getByte("filter")];
         caught = nbt.getBoolean("caught");
+        allowUndexable = nbt.getBoolean("allowUndexable");
         if (filter == PokedexFilter.TYPE) {
             type = Element.values()[nbt.getByte("type")];
         } else if (filter == PokedexFilter.GENERATION) {
@@ -81,6 +86,7 @@ public abstract class PokedexTask extends Task {
         super.writeNetData(buffer);
         buffer.writeByte(filter.ordinal());
         buffer.writeBoolean(caught);
+        buffer.writeBoolean(allowUndexable);
         if (filter == PokedexFilter.TYPE) {
             buffer.writeByte(type.ordinal());
         } else if (filter == PokedexFilter.GENERATION) {
@@ -94,6 +100,7 @@ public abstract class PokedexTask extends Task {
         super.readNetData(buffer);
         filter = PokedexFilter.values()[buffer.readByte()];
         caught = buffer.readBoolean();
+        allowUndexable = buffer.readBoolean();
         if (filter == PokedexFilter.TYPE) {
             type = Element.values()[buffer.readByte()];
         } else if (filter == PokedexFilter.GENERATION) {
@@ -129,34 +136,75 @@ public abstract class PokedexTask extends Task {
             genMaxFilter = v.byteValue();
             calculateAmount();
         }, (byte) 9, (byte) 1, (byte) 9);
+        config.addBool("allowUndexable", allowUndexable, v -> {
+            allowUndexable = v;
+            calculateAmount();
+        }, false);
     }
 
     protected void calculateAmount() {
         Set<Integer> all = new HashSet<>();
-        if (this.filter == PokedexFilter.TYPE) {
+        if (this.allowUndexable) {
+            if (this.filter == PokedexFilter.TYPE) {
+                PixelmonSpecies.getAll().parallelStream().forEach(species -> {
+                    Stats form = species.getDefaultForm();
+                    if (form.getTypes().contains(this.type)) {
+                        all.add(species.getDex());
+                    }
+                });
+            } else if (this.filter == PokedexFilter.GENERATION) {
+                for (int current = this.genMinFilter; current <= this.genMaxFilter; current++) {
+                    all.addAll(PixelmonSpecies.getGenerationDex(current));
+                }
+            } else if (this.filter == PokedexFilter.LEGEND) {
+                all.addAll(PixelmonSpecies.getLegendaries(true));
+            } else if (this.filter == PokedexFilter.MYTHICAL) {
+                all.addAll(PixelmonSpecies.getMythicals());
+            } else if (this.filter == PokedexFilter.LEGEND_AND_MYTHICAL) {
+                all.addAll(PixelmonSpecies.getLegendaries(false));
+            } else if (this.filter == PokedexFilter.ULTRA_BEAST) {
+                all.addAll(PixelmonSpecies.getUltraBeasts());
+            } else {
+                for (int gen : PixelmonSpecies.getGenerations()) {
+                    all.addAll(PixelmonSpecies.getGenerationDex(gen));
+                }
+            }
+        } else {
             PixelmonSpecies.getAll().parallelStream().forEach(species -> {
                 Stats form = species.getDefaultForm();
-                if (form.getTypes().contains(this.type)) {
+
+                if (!form.hasTag("undexable")) return;
+
+                if (this.filter == PokedexFilter.TYPE) {
+                    if (form.getTypes().contains(this.type)) {
+                        all.add(species.getDex());
+                    }
+                } else if (this.filter == PokedexFilter.GENERATION) {
+                    if (species.getDex() >= this.genMinFilter && species.getDex() <= this.genMaxFilter) {
+                        all.add(species.getDex());
+                    }
+                } else if (this.filter == PokedexFilter.LEGEND) {
+                    if (form.getTags().isLegendary(true)) {
+                        all.add(species.getDex());
+                    }
+                } else if (this.filter == PokedexFilter.MYTHICAL) {
+                    if (form.getTags().isMythical()) {
+                        all.add(species.getDex());
+                    }
+                } else if (this.filter == PokedexFilter.LEGEND_AND_MYTHICAL) {
+                    if (form.getTags().isLegendary(false)) {
+                        all.add(species.getDex());
+                    }
+                } else if (this.filter == PokedexFilter.ULTRA_BEAST) {
+                    if (form.getTags().isUltraBeast()) {
+                        all.add(species.getDex());
+                    }
+                } else {
                     all.add(species.getDex());
                 }
             });
-        } else if (this.filter == PokedexFilter.GENERATION) {
-            for (int current = this.genMinFilter; current <= this.genMaxFilter; current++) {
-                all.addAll(PixelmonSpecies.getGenerationDex(current));
-            }
-        } else if (this.filter == PokedexFilter.LEGEND) {
-            all.addAll(PixelmonSpecies.getLegendaries(true));
-        } else if (this.filter == PokedexFilter.MYTHICAL) {
-            all.addAll(PixelmonSpecies.getMythicals());
-        } else if (this.filter == PokedexFilter.LEGEND_AND_MYTHICAL) {
-            all.addAll(PixelmonSpecies.getLegendaries(false));
-        } else if (this.filter == PokedexFilter.ULTRA_BEAST) {
-            all.addAll(PixelmonSpecies.getUltraBeasts());
-        } else {
-            for (int gen : PixelmonSpecies.getGenerations()) {
-                all.addAll(PixelmonSpecies.getGenerationDex(gen));
-            }
         }
+
 
         this.filteredPokedex = all;
         this.maxPokedexSize = all.size();
