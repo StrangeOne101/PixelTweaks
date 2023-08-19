@@ -1,5 +1,6 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests;
 
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.BattleItemTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.BattleMoveTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.BreedTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.CatchTask;
@@ -81,6 +82,9 @@ public class PokemonTaskTypes {
 
             BATTLE_MOVE = TaskTypes.register(new ResourceLocation("pixelmon", "battle_move"),
                     BattleMoveTask::new, () -> Icon.getIcon("pixelmon:items/tms/tmfire"));
+
+            //BATTLE_ITEM = TaskTypes.register(new ResourceLocation("pixelmon", "battle_item"),
+                 //   BattleItemTask::new, () -> Icon.getIcon("pixelmon:items/healingitems/maxrevive"));
 
 
         } catch (Exception e) {

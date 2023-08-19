@@ -103,7 +103,7 @@ public class PokeDollarsTask extends Task {
             teamData.setProgress(this, m);
 
             if (consumesResources() && complete) {
-                StorageProxy.getParty(player).setBalance(m - this.amount);
+                StorageProxy.getParty(player).take(this.amount);
             }
         }
     }

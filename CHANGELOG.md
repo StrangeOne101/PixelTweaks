@@ -1,5 +1,26 @@
 # Changelog
 
+# 1.9 (FTB Quests Integration)
+- Added FTB Quests Integration for Pixelmon
+- Includes the following FTB Tasks
+  - Catching Pokemon
+  - Defeating Pokemon
+  - Trading Pokemon
+  - Evolving Pokemon
+  - Leveling Pokemon
+  - Breeding Pokemon
+  - Hatching Pokemon
+  - Pokedex Progress (Amount)
+  - Pokedex Progress (Percentage)
+  - Defeating Trainers in Battle
+  - Defeating Players in Battle
+  - Using a Move in battle
+  - Whiting Out
+  - Pokedollars
+- Includes the following FTB Reward types
+  - PokeLoot Chest Drops
+  - PokeDollars
+
 ## 1.8.3
 - Fixed crash that occurred when you had SophisticatedBackpacks but not CuriosAPI
 
@@ -10,7 +31,7 @@
 ## 1.8.1
 - Updated PixelTweaks to Pixelmon 9.1.6
 
-# 1.8
+# 1.8 (Backpacks & Battle Sounds)
 - Added backpack mod integrations for the following mods
   - SimplyBackpacks
   - UsefulBackpacks
@@ -37,7 +58,7 @@
 - Zygarde spawning now ensures the chunk is loaded before trying anything
 - Fixed some debug left in on startup
 
-# 1.7
+# 1.7 (Infusers & Tweaks)
 - Added JEI recipes for Infusers
 - Added anti-crop trampling setting to prevent pokemon from trampling crops. Configurable.
 - Made Zygarde cell spawning obey the pixelmon config setting (in spawning.yml)
@@ -47,13 +68,13 @@
 - Fixed viewing an item in a pokeloot chest recipe from filling every single slot
 - Attempted to fix Zygarde cell placement bug (#6)
 
-# 1.6
+# 1.6 (Pokemon Drops & Pokeloot)
 - Added pokemon drops and poke loot chests recipes to JEI
   - Shows all the possible drops for pokemon in JEI
   - Shows all the possible drops for poke loot chests in JEI
 - Added English (GB) and Japanese lang files
 
-# 1.5
+# 1.5 (JEI Integration & Pokemon Overlays)
 - Added JEI Integration
   - Makes Pokeballs, Pokeball lids, TMs and TRs show in JEI.
   - Can now be looked up for recipes easily
@@ -70,7 +91,7 @@
 - Added invert property to pokemon conditions
 - Added is_raid condition type
 
-# 1.4
+# 1.4 (Zygarde Cells)
 - Added Zygarde cell spawning
   - Cells now spawn again
   - Cells will spawn in chunks closer to you more often than not when they decide to spawn

@@ -1,5 +1,7 @@
 package com.strangeone101.pixeltweaks.mixin.client.network;
 
+import com.pixelmonmod.pixelmon.api.battles.AttackCategory;
+import com.pixelmonmod.pixelmon.api.battles.attack.AttackRegistry;
 import com.pixelmonmod.pixelmon.battles.tasks.BattleMessagePacket;
 import com.pixelmonmod.pixelmon.battles.tasks.BattleTaskPacket;
 import com.pixelmonmod.pixelmon.client.gui.battles.ClientBattleManager;
@@ -249,7 +251,13 @@ public abstract class BattleMessagePacketMixin extends BattleTaskPacket {
                     String lastPokemon = pixelTweaks$last != null ? pixelTweaks$last.getFormatArgs()[0].toString() : null;
                     switch (key) {
                         case "pixelmon.battletext.used":
-                            SoundManager.playBattleAction(BattleHelper.getFromNickname(lastPokemon), Action.EFFECTIVE_HIT, Action.HIT);
+                            TranslationTextComponent textComponent = (TranslationTextComponent) pixelTweaks$last.getFormatArgs()[1];
+                            String move = textComponent.getKey().split("\\.", 2)[1];
+                            AttackRegistry.getAttackBase(move).ifPresent(attackBase -> {
+                                if (attackBase.getAttackCategory() != AttackCategory.STATUS) {
+                                    SoundManager.playBattleAction(BattleHelper.getFromNickname(lastPokemon), Action.EFFECTIVE_HIT, Action.HIT);
+                                }
+                            });
                             return false;
                         case "pixelmon.battletext.missedattack":
                             SoundManager.playBattleAction(BattleHelper.getFromNickname(lastPokemon), Action.HIT_MISS);
