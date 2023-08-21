@@ -17,9 +17,12 @@
   - Using a Move in battle
   - Whiting Out
   - Pokedollars
+  - Photograph Pokemon
+  - Using External Move
 - Includes the following FTB Reward types
   - PokeLoot Chest Drops
   - PokeDollars
+- Fixed EFFECTIVE_HIT battle action not playing correctly
 
 ## 1.8.3
 - Fixed crash that occurred when you had SophisticatedBackpacks but not CuriosAPI
