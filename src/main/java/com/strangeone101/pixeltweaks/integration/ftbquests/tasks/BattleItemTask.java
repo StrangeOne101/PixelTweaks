@@ -1,6 +1,5 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests.tasks;
 
-import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
 import static com.pixelmonmod.pixelmon.api.registries.PixelmonItems.*;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTaskTypes;
@@ -13,8 +12,9 @@ import dev.ftb.mods.ftbquests.util.NBTUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -101,6 +101,7 @@ public class BattleItemTask extends PokemonTask {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void getConfig(ConfigGroup config) {
         super.getConfig(config);
         config.addEnum("itemType", type, v -> type = v, NameMap.of(ItemType.REVIVE, ItemType.values())

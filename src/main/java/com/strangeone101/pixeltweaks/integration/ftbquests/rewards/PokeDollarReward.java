@@ -34,6 +34,7 @@ public class PokeDollarReward extends Reward {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void getConfig(ConfigGroup config) {
         super.getConfig(config);
         config.addInt("count", count, v -> count = v, 1, 1, Integer.MAX_VALUE);

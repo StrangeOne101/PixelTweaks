@@ -1,6 +1,5 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests.tasks;
 
-import com.pixelmonmod.api.pokemon.requirement.impl.SpeciesRequirement;
 import com.pixelmonmod.pixelmon.api.moveskills.MoveSkill;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTask;

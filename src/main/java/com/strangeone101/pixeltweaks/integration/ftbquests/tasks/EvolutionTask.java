@@ -17,6 +17,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class EvolutionTask extends PokemonTask {
 
@@ -73,6 +75,7 @@ public class EvolutionTask extends PokemonTask {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void getConfig(ConfigGroup config) {
         super.getConfig(config);
         config.addEnum("evolution_type", evoType, v -> evoType = v, NameMap.of(EvolutionType.ANY, EvolutionType.values())

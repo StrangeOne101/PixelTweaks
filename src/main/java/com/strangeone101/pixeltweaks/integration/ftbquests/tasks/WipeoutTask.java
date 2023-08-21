@@ -9,6 +9,8 @@ import dev.ftb.mods.ftbquests.quest.task.TaskType;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class WipeoutTask extends Task {
 
@@ -53,6 +55,7 @@ public class WipeoutTask extends Task {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void getConfig(ConfigGroup config) {
         super.getConfig(config);
         config.addInt("count", count, v -> count = v, 1, 1, Integer.MAX_VALUE);

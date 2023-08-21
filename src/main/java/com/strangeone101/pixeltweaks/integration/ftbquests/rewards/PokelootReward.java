@@ -7,7 +7,6 @@ import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonRewardTypes;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.config.NameMap;
 import dev.ftb.mods.ftblibrary.icon.Icon;
-import dev.ftb.mods.ftblibrary.util.TooltipList;
 import dev.ftb.mods.ftbquests.net.DisplayRewardToastMessage;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.reward.Reward;
@@ -57,6 +56,7 @@ public class PokelootReward extends Reward {
     }
 
     @OnlyIn(Dist.CLIENT)
+    @Override
     public Icon getAltIcon() {
         return Icon.getIcon("pixeltweaks:textures/gui/pokeloot/" + (lootTier.ordinal() + 1) + ".png");
     }
@@ -75,6 +75,7 @@ public class PokelootReward extends Reward {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void getConfig(ConfigGroup config) {
         super.getConfig(config);
 

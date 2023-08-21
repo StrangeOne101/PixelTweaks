@@ -38,7 +38,7 @@ public abstract class BattleMessagePacketMixin extends BattleTaskPacket {
 
     @Inject(method = "process", at = @At("HEAD"), cancellable = true, remap = false)
     public void onProcess(ClientBattleManager bm, CallbackInfoReturnable<Boolean> cir) {
-        if (!(component instanceof TranslationTextComponent)) {
+        if (!(component instanceof TranslationTextComponent) || MusicEvent.BattleAction.REGISTRY.isEmpty()) {
             return;
         }
 

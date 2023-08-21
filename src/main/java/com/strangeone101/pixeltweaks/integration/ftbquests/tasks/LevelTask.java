@@ -11,6 +11,8 @@ import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.TaskType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class LevelTask extends PokemonTask {
 
@@ -77,6 +79,7 @@ public class LevelTask extends PokemonTask {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void getConfig(ConfigGroup config) {
         super.getConfig(config);
         config.addEnum("cause", cause, v -> cause = v, NameMap.of(ExperienceCause.ANY, ExperienceCause.values())

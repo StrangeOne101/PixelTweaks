@@ -1,15 +1,13 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests.tasks;
 
-import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
-import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTaskTypes;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftbquests.quest.Quest;
-import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.TaskType;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class PokedexAmountTask extends PokedexTask {
 
@@ -60,6 +58,7 @@ public class PokedexAmountTask extends PokedexTask {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void getConfig(ConfigGroup config) {
         super.getConfig(config);
 

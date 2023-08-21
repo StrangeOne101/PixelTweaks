@@ -5,7 +5,6 @@ import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTaskTypes;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.TeamData;
-import dev.ftb.mods.ftbquests.quest.task.Task;
 import dev.ftb.mods.ftbquests.quest.task.TaskType;
 
 public class HatchTask extends PokemonTask {
