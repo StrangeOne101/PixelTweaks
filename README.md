@@ -6,9 +6,10 @@ A quality of life mod for Pixelmon Reforged! Adds a bunch of tweaks to pixelmon!
 This mod works can be added to clients or servers, but does not require the opposite one to be compatible! E.g. You can add this to your server, and clients won't need it to join.
 
 # Features
-As of version 1.8, there is the following:
+As of version 1.9, there is the following:
 - Shiny pokemon sparkle and have a sound effect when they spawn. Inspired by Legends Arceus! (see clip below for footage)
 - Zygarde cells now spawn again in 1.16!
+- Added FTB Quests Integration!
 - Added JEI Integration, including all pokemon drops, pokeloot and infuser recipes showing in JEI!
 - Added the ability for resource packs to make battle music for specific pokemon, and sound effects for battle actions! By default, the battle music from Legends Arceus to Arceus has been implemented!
 - Added backpack mod integration, so items in backpacks from other mods can be used in battle
