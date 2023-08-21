@@ -81,11 +81,12 @@ public class BattleMoveTask extends PokemonTask {
     @Override
     @OnlyIn(Dist.CLIENT)
     public ITextComponent getAltTitle() {
-        TranslationTextComponent title = new TranslationTextComponent("ftbquests.task.pixelmon.battle_move.title", this.attack);
+        TranslationTextComponent title = new TranslationTextComponent("ftbquests.task.pixelmon.battle_move.title",
+                new TranslationTextComponent("attack." + this.attack));
         if (this.attack.isEmpty()) title = new TranslationTextComponent("ftbquests.task.pixelmon.battle_move");
 
-        title.appendString(" ");
         if (count > 1) {
+            title.appendString(" ");
             title.appendString(count + "x ");
         }
         if (!this.pokemonSpec.isEmpty()) {

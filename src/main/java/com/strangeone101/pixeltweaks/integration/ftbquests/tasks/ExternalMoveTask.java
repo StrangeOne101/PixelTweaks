@@ -73,11 +73,13 @@ public class ExternalMoveTask extends PokemonTask {
     public ITextComponent getAltTitle() {
         TranslationTextComponent title = new TranslationTextComponent("ftbquests.task.pixelmon.external_move.title",
                 new TranslationTextComponent(MoveSkill.getMoveSkillByID(move).name));
-        title.appendString(" ");
         if (count > 1) {
+            title.appendString(" ");
             title.appendString(count + "x ");
         }
-        title.appendSibling(getPokemon());
+        if (!this.pokemonSpec.isEmpty()) {
+            title.appendSibling(getPokemon());
+        }
         return title;
     }
 
