@@ -2,6 +2,8 @@ package com.strangeone101.pixeltweaks.mixin.client.network;
 
 import com.pixelmonmod.pixelmon.api.battles.AttackCategory;
 import com.pixelmonmod.pixelmon.api.battles.attack.AttackRegistry;
+import com.pixelmonmod.pixelmon.battles.attacks.Attack;
+import com.pixelmonmod.pixelmon.battles.attacks.ImmutableAttack;
 import com.pixelmonmod.pixelmon.battles.tasks.BattleMessagePacket;
 import com.pixelmonmod.pixelmon.battles.tasks.BattleTaskPacket;
 import com.pixelmonmod.pixelmon.client.gui.battles.ClientBattleManager;
@@ -20,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.strangeone101.pixeltweaks.music.MusicEvent.BattleAction.Action;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 @Mixin(BattleMessagePacket.class)
@@ -43,6 +46,7 @@ public abstract class BattleMessagePacketMixin extends BattleTaskPacket {
 
         if (pixelTweaks$future != null) {
             if (pixelTweaks$future.test(tcomponent)) {
+                pixelTweaks$future = null;
                 return;
             }
         }
@@ -244,47 +248,63 @@ public abstract class BattleMessagePacketMixin extends BattleTaskPacket {
                 pixelTweaks$future = null;
                 break;
             case "pixelmon.battletext.used":
-                if (pixelTweaks$future != null) pixelTweaks$future.test(tcomponent);
+                //if (pixelTweaks$future != null) pixelTweaks$future.test(tcomponent);
+                TranslationTextComponent textComponent = (TranslationTextComponent) tcomponent.getFormatArgs()[1];
+                String move = textComponent.getKey().split("\\.", 2)[1].replace('_', ' ');
+                Optional<ImmutableAttack> attack = AttackRegistry.getAttackBase(move);
+                attack.ifPresent(attackBase -> {
+                    boolean statusMove = attackBase.getAttackCategory() == AttackCategory.STATUS;
 
-                pixelTweaks$future = (component) -> {
-                    String key = component.getKey();
-                    String lastPokemon = pixelTweaks$last != null ? pixelTweaks$last.getFormatArgs()[0].toString() : null;
-                    switch (key) {
-                        case "pixelmon.battletext.used":
-                            TranslationTextComponent textComponent = (TranslationTextComponent) pixelTweaks$last.getFormatArgs()[1];
-                            String move = textComponent.getKey().split("\\.", 2)[1];
-                            AttackRegistry.getAttackBase(move).ifPresent(attackBase -> {
-                                if (attackBase.getAttackCategory() != AttackCategory.STATUS) {
+                    PixelTweaks.LOGGER.debug("Move " + move + " is a " + attackBase.getAttackCategory() + " move");
+
+                    pixelTweaks$future = (component) -> {
+                        String key = component.getKey();
+                        String lastPokemon = pixelTweaks$last != null ? pixelTweaks$last.getFormatArgs()[0].toString() : null;
+                        switch (key) {
+                            case "pixelmon.battletext.missedattack":
+                                SoundManager.playBattleAction(BattleHelper.getFromNickname(lastPokemon), Action.HIT_MISS);
+                                return true;
+                            case "pixelmon.battletext.butmovefailed":
+                            case "pixelmon.battletext.movefailed":
+                                SoundManager.playBattleAction(BattleHelper.getFromNickname(lastPokemon), Action.HIT_FAIL);
+                                return true;
+                            case "pixelmon.battletext.noeffect":
+                                SoundManager.playBattleAction(BattleHelper.getFromNickname(lastPokemon), Action.HIT_NO_EFFECT);
+                                return true;
+                            case "pixelmon.battletext.criticalhit":
+                            case "pixelmon.battletext.criticalhittarget":
+                                if (!statusMove) {
+                                    SoundManager.playBattleAction(BattleHelper.getFromNickname(lastPokemon), Action.HIT_CRITICAL, Action.HIT);
+                                }
+                                return true;
+                            case "pixelmon.battletext.wasnoteffective":
+                            case "pixelmon.battletext.wasnoteffectivetarget":
+                                if (!statusMove) {
+                                    SoundManager.playBattleAction(BattleHelper.getFromNickname(lastPokemon), Action.NOT_VERY_EFFECTIVE_HIT, Action.HIT);
+                                }
+                                return true;
+                            case "pixelmon.battletext.supereffective":
+                            case "pixelmon.battletext.supereffectivetarget":
+                                if (!statusMove) {
+                                    SoundManager.playBattleAction(BattleHelper.getFromNickname(lastPokemon), Action.SUPER_EFFECTIVE_HIT, Action.HIT);
+                                }
+                                return true;
+                            case "pixelmon.battletext.used": //Another regular attack came in
+                            default: //Battle log came through for something else, meaning it is a normal hit
+                                if (!statusMove) {
                                     SoundManager.playBattleAction(BattleHelper.getFromNickname(lastPokemon), Action.EFFECTIVE_HIT, Action.HIT);
                                 }
-                            });
-                            return false;
-                        case "pixelmon.battletext.missedattack":
-                            SoundManager.playBattleAction(BattleHelper.getFromNickname(lastPokemon), Action.HIT_MISS);
-                            return true;
-                        case "pixelmon.battletext.butmovefailed":
-                        case "pixelmon.battletext.movefailed":
-                            SoundManager.playBattleAction(BattleHelper.getFromNickname(lastPokemon), Action.HIT_FAIL);
-                            return true;
-                        case "pixelmon.battletext.noeffect":
-                            SoundManager.playBattleAction(BattleHelper.getFromNickname(lastPokemon), Action.HIT_NO_EFFECT);
-                            return true;
-                        case "pixelmon.battletext.criticalhit":
-                        case "pixelmon.battletext.criticalhittarget":
-                            SoundManager.playBattleAction(BattleHelper.getFromNickname(lastPokemon), Action.HIT_CRITICAL, Action.HIT);
-                            return true;
-                        case "pixelmon.battletext.wasnoteffective":
-                        case "pixelmon.battletext.wasnoteffectivetarget":
-                            SoundManager.playBattleAction(BattleHelper.getFromNickname(lastPokemon), Action.NOT_VERY_EFFECTIVE_HIT, Action.HIT);
-                            return true;
-                        case "pixelmon.battletext.supereffective":
-                        case "pixelmon.battletext.supereffectivetarget":
-                            SoundManager.playBattleAction(BattleHelper.getFromNickname(lastPokemon), Action.SUPER_EFFECTIVE_HIT, Action.HIT);
-                            return true;
-                        default:
-                            return false;
-                    }
-                };
+                                return false;
+                        }
+                    };
+                });
+
+                if (!attack.isPresent()) {
+                    PixelTweaks.LOGGER.warn("Could not find attack " + move);
+                }
+
+
+
 
                 pixelTweaks$last = tcomponent;
         }

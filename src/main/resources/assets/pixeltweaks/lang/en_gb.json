@@ -107,6 +107,7 @@
   "ftbquests.task.pixelmon.battle_move.attack": "Move",
   "ftbquests.task.pixelmon.battle_move.attack.tooltip": "Optional. The move to use, in full lowercase english with underscores instead of spaces. If blank, will match any move.",
   "ftbquests.task.pixelmon.battle_move.count": "Amount",
+  "ftbquests.task.pixelmon.battle_move.moveType": "Move Type",
   "ftbquests.task.pixelmon.battle_move.pokemon": "Pokemon Specification",
   "ftbquests.task.pixelmon.battle_move.pokemon.tooltip": "The pokemon spec to match. Can match species, type, ball, etc. Can be blank for any pokemon.\n\nExamples:\n - 'species:Arcanine form:Hisuian'\n - 'shiny type:water'\n - 'legendary ball:master_ball'\n\nFor more information, see https://pixelmonmod.com/wiki/Pokemon_spec",
   "ftbquests.task.pixelmon.battle_move.invert": "Invert Spec",
