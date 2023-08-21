@@ -4,6 +4,7 @@ import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.battles.BattleResults;
 import com.pixelmonmod.pixelmon.api.daycare.event.DayCareEvent;
 import com.pixelmonmod.pixelmon.api.economy.EconomyEvent;
+import com.pixelmonmod.pixelmon.api.events.CameraEvent;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.events.EggHatchEvent;
 import com.pixelmonmod.pixelmon.api.events.EvolveEvent;
@@ -12,6 +13,7 @@ import com.pixelmonmod.pixelmon.api.events.PokedexEvent;
 import com.pixelmonmod.pixelmon.api.events.PokemonReceivedEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.AttackEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
+import com.pixelmonmod.pixelmon.api.events.moveskills.UseMoveSkillEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.util.Scheduling;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
@@ -28,8 +30,10 @@ import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatPlayersTa
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatTrainerTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.EvolutionTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.ExternalMoveTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.HatchTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.LevelTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PhotoTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokeDollarsTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokedexAmountTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokedexPercentageTask;
@@ -65,6 +69,8 @@ public class TaskListener {
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onLevelUp);
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onWipeout);
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onBattleMove);
+        Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onTakePhoto);
+        Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onExternalMove);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, this::onLogin);
 
     }
@@ -82,6 +88,8 @@ public class TaskListener {
     private List<DefeatTrainerTask> defeatTrainerTasks = null;
     private List<DefeatPlayersTask> defeatPlayersTasks = null;
     private List<BattleMoveTask> battleMoveTasks = null;
+    private List<PhotoTask> photoTasks = null;
+    private List<ExternalMoveTask> externalMoveTasks = null;
 
     @Deprecated
     private Set<UUID> antiOverflow = new HashSet<>();
@@ -392,5 +400,45 @@ public class TaskListener {
                 task.onBattleMove(data, event.user.pokemon, event.getAttack());
             }
         }
+    }
+
+    public void onTakePhoto(CameraEvent.TakePhoto event) {
+        if (photoTasks == null) {
+            photoTasks = ServerQuestFile.INSTANCE.collect(PhotoTask.class);
+        }
+
+        if (photoTasks.isEmpty()) {
+            return;
+        }
+
+        TeamData data = ServerQuestFile.INSTANCE.getData(event.player);
+
+        for (PhotoTask task : photoTasks) {
+            if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
+                task.takePhoto(data, event.pixelmon);
+            }
+        }
+    }
+
+    public void onExternalMove(UseMoveSkillEvent event) {
+        if (externalMoveTasks == null) {
+            externalMoveTasks = ServerQuestFile.INSTANCE.collect(ExternalMoveTask.class);
+        }
+
+        if (externalMoveTasks.isEmpty()) {
+            return;
+        }
+
+        if (event.pixelmon.getOwner() instanceof ServerPlayerEntity) {
+            TeamData data = ServerQuestFile.INSTANCE.getData(event.pixelmon.getOwner());
+
+            for (ExternalMoveTask task : externalMoveTasks) {
+                if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
+                    task.onMove(data, event.moveSkill.name, event.pixelmon.getPokemon());
+                }
+            }
+        }
+
+
     }
 }

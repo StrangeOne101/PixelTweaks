@@ -8,8 +8,10 @@ import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatPlayersTa
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatTrainerTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.EvolutionTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.ExternalMoveTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.HatchTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.LevelTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PhotoTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokeDollarsTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokedexAmountTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokedexPercentageTask;
@@ -37,6 +39,8 @@ public class PokemonTaskTypes {
     public static TaskType TRADE_POKEMON;
     public static TaskType BATTLE_MOVE;
     public static TaskType BATTLE_ITEM;
+    public static TaskType TAKE_PHOTO;
+    public static TaskType EXTERNAL_MOVE;
 
 
     public static void register() {
@@ -85,6 +89,12 @@ public class PokemonTaskTypes {
 
             //BATTLE_ITEM = TaskTypes.register(new ResourceLocation("pixelmon", "battle_item"),
                  //   BattleItemTask::new, () -> Icon.getIcon("pixelmon:items/healingitems/maxrevive"));
+
+            TAKE_PHOTO = TaskTypes.register(new ResourceLocation("pixelmon", "take_photo"),
+                    PhotoTask::new, () -> Icon.getIcon("pixelmon:items/camera"));
+
+            EXTERNAL_MOVE = TaskTypes.register(new ResourceLocation("pixelmon", "external_move"),
+                    ExternalMoveTask::new, () -> Icon.getIcon("pixelmon:textures/gui/overlay/externalmoves/cut.png"));
 
 
         } catch (Exception e) {
