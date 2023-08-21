@@ -74,7 +74,8 @@ public class ZygardeCellSpawner {
     public ZygardeCellSpawner() {
 
         //Do not activate on 9.1.7 and above
-        if (PixelTweaks.getPixelmonVersion() >= 9107) return;
+        //EDIT: 9.1.7 only does it in new chunks! We still good to go!
+        //if (PixelTweaks.getPixelmonVersion() >= 9107) return;
 
         Scheduling.schedule(1, () -> {
             try {

@@ -22,6 +22,7 @@
 - Includes the following FTB Reward types
   - PokeLoot Chest Drops
   - PokeDollars
+  - Pokemon
 - Fixed EFFECTIVE_HIT battle action not playing correctly
 
 ## 1.8.3
