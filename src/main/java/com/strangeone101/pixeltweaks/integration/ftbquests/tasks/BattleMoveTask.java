@@ -12,6 +12,10 @@ import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.TaskType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BattleMoveTask extends PokemonTask {
 
@@ -72,6 +76,23 @@ public class BattleMoveTask extends PokemonTask {
         config.addEnum("moveType", moveType, v -> moveType = v, NameMap.of(MoveType.ANY, MoveType.values())
                 .nameKey(v -> "pixeltweaks.battle_move_type." + v.toString().toLowerCase())
                 .create());
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public ITextComponent getAltTitle() {
+        TranslationTextComponent title = new TranslationTextComponent("ftbquests.task.pixelmon.battle_move.title", this.attack);
+        if (this.attack.isEmpty()) title = new TranslationTextComponent("ftbquests.task.pixelmon.battle_move");
+
+        title.appendString(" ");
+        if (count > 1) {
+            title.appendString(count + "x ");
+        }
+        if (!this.pokemonSpec.isEmpty()) {
+            title.appendSibling(getPokemon());
+        }
+
+        return title;
     }
 
     public void onBattleMove(TeamData team, Pokemon pokemon, Attack move) {

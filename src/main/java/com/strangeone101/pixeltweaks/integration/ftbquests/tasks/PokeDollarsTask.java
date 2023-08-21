@@ -13,6 +13,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -88,6 +90,12 @@ public class PokeDollarsTask extends Task {
         }
 
         updateMoney(teamData, player);
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public ITextComponent getAltTitle() {
+        return new TranslationTextComponent("ftbquests.task.pixelmon.pokedollars.title", this.amount);
     }
 
     public void updateMoney(TeamData teamData, ServerPlayerEntity player) {
