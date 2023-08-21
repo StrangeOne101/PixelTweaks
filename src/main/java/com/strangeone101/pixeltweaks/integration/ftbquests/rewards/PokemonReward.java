@@ -1,4 +1,4 @@
-package com.strangeone101.pixeltweaks.integration.ftbquests;
+package com.strangeone101.pixeltweaks.integration.ftbquests.rewards;
 
 import com.pixelmonmod.api.pokemon.PokemonSpecification;
 import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
@@ -7,19 +7,22 @@ import com.pixelmonmod.api.pokemon.requirement.impl.GenderRequirement;
 import com.pixelmonmod.api.pokemon.requirement.impl.GenerationRequirement;
 import com.pixelmonmod.api.pokemon.requirement.impl.LegendaryRequirement;
 import com.pixelmonmod.api.pokemon.requirement.impl.PaletteRequirement;
-import com.pixelmonmod.api.pokemon.requirement.impl.PokeBallRequirement;
-import com.pixelmonmod.api.pokemon.requirement.impl.PokerusRequirement;
 import com.pixelmonmod.api.pokemon.requirement.impl.ShinyRequirement;
 import com.pixelmonmod.api.pokemon.requirement.impl.SpeciesRequirement;
 import com.pixelmonmod.api.pokemon.requirement.impl.TypeRequirement;
 import com.pixelmonmod.api.pokemon.requirement.impl.UltraBeastRequirement;
-import com.pixelmonmod.pixelmon.api.pokemon.PokerusStrain;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
+import com.strangeone101.pixeltweaks.PixelTweaks;
+import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonRewardTypes;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.icon.Icon;
-import dev.ftb.mods.ftbquests.gui.CustomToast;
+import dev.ftb.mods.ftbquests.net.DisplayRewardToastMessage;
 import dev.ftb.mods.ftbquests.quest.Quest;
-import dev.ftb.mods.ftbquests.quest.task.Task;
-import net.minecraft.client.Minecraft;
+import dev.ftb.mods.ftbquests.quest.TeamData;
+import dev.ftb.mods.ftbquests.quest.reward.Reward;
+import dev.ftb.mods.ftbquests.quest.reward.RewardType;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
@@ -31,96 +34,99 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class PokemonTask extends Task {
+public class PokemonReward extends Reward {
 
-    public int count = 1;
-    public boolean invert = false;
-    public String pokemonSpec = "";
+    public String spec = "";
     public transient PokemonSpecification cachedSpec;
-    public PokemonTask(Quest q) {
+    public int count = 1;
+
+    public PokemonReward(Quest q) {
         super(q);
     }
 
     @Override
-    public long getMaxProgress() {
-        return this.count;
+    public RewardType getType() {
+        return PokemonRewardTypes.POKEMON;
     }
 
     @Override
     public void writeData(CompoundNBT nbt) {
         super.writeData(nbt);
-        nbt.putString("pokemon", this.pokemonSpec);
+        nbt.putString("spec", this.spec);
         nbt.putInt("count", this.count);
-        nbt.putBoolean("invert", this.invert);
     }
 
     @Override
     public void readData(CompoundNBT nbt) {
         super.readData(nbt);
-        this.pokemonSpec = nbt.getString("pokemon");
-        this.cachedSpec = PokemonSpecificationProxy.create(this.pokemonSpec);
+        this.spec = nbt.getString("spec");
+        this.cachedSpec = PokemonSpecificationProxy.create(this.spec);
         this.count = nbt.getInt("count");
-        this.invert = nbt.getBoolean("invert");
     }
 
     @Override
     public void writeNetData(PacketBuffer buffer) {
         super.writeNetData(buffer);
-        buffer.writeString(this.pokemonSpec);
+        buffer.writeString(this.spec);
         buffer.writeVarInt(this.count);
-        buffer.writeBoolean(this.invert);
     }
 
     @Override
     public void readNetData(PacketBuffer buffer) {
         super.readNetData(buffer);
-        this.pokemonSpec = buffer.readString();
-        this.cachedSpec = PokemonSpecificationProxy.create(this.pokemonSpec);
+        this.spec = buffer.readString();
+        this.cachedSpec = PokemonSpecificationProxy.create(this.spec);
         this.count = buffer.readVarInt();
-        this.invert = buffer.readBoolean();
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void getConfig(ConfigGroup config) {
         super.getConfig(config);
-
-        config.addString("pokemon", this.pokemonSpec, (v) -> {
-            this.pokemonSpec = v;
-            try {
-                this.cachedSpec = PokemonSpecificationProxy.create(this.pokemonSpec);
-            } catch (Exception e) {
-                CustomToast toast = new CustomToast(new TranslationTextComponent("pixeltweaks.errors.invalid_spec.title"),
-                        Icon.getIcon("minecraft:item/barrier"), new TranslationTextComponent("pixeltweaks.errors.invalid_spec.desc"));
-                this.cachedSpec = null;
-                Minecraft.getInstance().getToastGui().add(toast);
-            }
-
+        config.addString("spec", this.spec, v -> {
+            this.spec = v;
+            this.cachedSpec = PokemonSpecificationProxy.create(this.spec);
         }, "");
         config.addInt("count", this.count, v -> this.count = v, 1, 1, Integer.MAX_VALUE);
-        config.addBool("invert", this.invert, v -> this.invert = v, false);
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public ITextComponent getAltTitle() {
-        TranslationTextComponent title = new TranslationTextComponent("ftbquests.task." + this.getType().id.getNamespace() + '.' + this.getType().id.getPath() + ".title");
-        title.appendString(" ");
-        if (count > 1) {
-            title.appendString(count + "x ");
+    public void claim(ServerPlayerEntity player, boolean notify) {
+        int c = this.count;
+
+        while (c > 0) {
+            Pokemon pokemon = this.cachedSpec.create();
+
+            if (notify) {
+                new DisplayRewardToastMessage(this.id, new TranslationTextComponent("ftbquests.reward.pixelmon.pokemon.toast",
+                        this.getTitle()), Icon.getIcon(pokemon.getSprite())).sendTo(player);
+            }
+            if (!StorageProxy.getParty(player).add(pokemon)) {
+                PixelTweaks.LOGGER.warn("Failed to add pokemon to player's party! Storage full! Reward ID: " + this.id + ", Pokemon: " + pokemon.getDisplayName());
+            }
+            c--;
         }
-        title.appendSibling(getPokemon());
-        return title;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public Icon getAltIcon() {
-        if (cachedSpec.getValue(SpeciesRequirement.class).isPresent()) {
+        if (cachedSpec.getValue(SpeciesRequirement.class).isPresent() && !this.spec.isEmpty() && !this.spec.split(" ")[0].equalsIgnoreCase("random")) {
             return Icon.getIcon(cachedSpec.create().getSprite());
         }
+        return Icon.getIcon("pixelmon:items/pokeballs/poke_ball");
+    }
 
-        return super.getAltIcon();
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public ITextComponent getAltTitle() {
+        return getPokemon();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public String getButtonText() {
+        return this.count > 1 ? this.count + "" : "";
     }
 
     protected ITextComponent getPokemon() {
@@ -129,21 +135,8 @@ public abstract class PokemonTask extends Task {
             return pokemon;
         }
         List<ITextComponent> componentList = new ArrayList<>();
-        if (cachedSpec.getValue(PokeBallRequirement.class).isPresent()) {
-            TranslationTextComponent ball = new TranslationTextComponent("item.pixelmon." +
-                    cachedSpec.getValue(PokeBallRequirement.class).get().getName().toLowerCase());
-            TranslationTextComponent ballText = new TranslationTextComponent("pixeltweaks.lang.ball", ball);
-            componentList.add(ballText);
-        }
-        if (cachedSpec.getValue(PokerusRequirement.class).isPresent()) {
-            boolean pokerus = cachedSpec.getValue(PokerusRequirement.class).get() != PokerusStrain.UNINFECTED;
-            if (pokerus) {
-                TranslationTextComponent pokerusText = new TranslationTextComponent("pixeltweaks.lang.pokerus");
-                componentList.add(pokerusText);
-            }
-        }
 
-        if (cachedSpec.getValue(SpeciesRequirement.class).isPresent()) {
+        if (cachedSpec.getValue(SpeciesRequirement.class).isPresent() && !this.spec.isEmpty() && !this.spec.split(" ")[0].equalsIgnoreCase("random")) {
             TranslationTextComponent species = new TranslationTextComponent("pixelmon." +
                     cachedSpec.getValue(SpeciesRequirement.class).get().getKey().toLowerCase());
             componentList.add(species);
@@ -203,6 +196,10 @@ public abstract class PokemonTask extends Task {
         if (cachedSpec.getValue(ShinyRequirement.class).isPresent()) {
             TranslationTextComponent shiny = new TranslationTextComponent("pixelmon.palette.shiny");
             componentList.add(shiny);
+        }
+        if (!this.spec.isEmpty() && this.spec.split(" ")[0].equalsIgnoreCase("random")) {
+            TranslationTextComponent random = new TranslationTextComponent("pixeltweaks.lang.random");
+            componentList.add(random);
         }
 
         StringTextComponent all = new StringTextComponent("");

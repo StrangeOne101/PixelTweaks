@@ -13,6 +13,7 @@ import dev.ftb.mods.ftbquests.quest.task.TaskType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -82,15 +83,15 @@ public class BattleMoveTask extends PokemonTask {
     @OnlyIn(Dist.CLIENT)
     public ITextComponent getAltTitle() {
         TranslationTextComponent title = new TranslationTextComponent("ftbquests.task.pixelmon.battle_move.title",
-                new TranslationTextComponent("attack." + this.attack));
+                new TranslationTextComponent("attack." + this.attack), new StringTextComponent(this.count > 1 ? " x" + this.count : ""));
+
         if (this.attack.isEmpty()) title = new TranslationTextComponent("ftbquests.task.pixelmon.battle_move");
 
-        if (count > 1) {
-            title.appendString(" ");
-            title.appendString(count + "x ");
-        }
         if (!this.pokemonSpec.isEmpty()) {
-            title.appendSibling(getPokemon());
+            title = new TranslationTextComponent("ftbquests.task.pixelmon.battle_move.title_specific",
+                    new TranslationTextComponent("attack." + this.attack),
+                    new StringTextComponent(this.count > 1 ? " x" + this.count : ""),
+                    getPokemon());
         }
 
         return title;

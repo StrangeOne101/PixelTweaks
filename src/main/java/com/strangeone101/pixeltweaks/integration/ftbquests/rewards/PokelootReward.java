@@ -62,6 +62,7 @@ public class PokelootReward extends Reward {
     }
 
     @OnlyIn(Dist.CLIENT)
+    @Override
     public IFormattableTextComponent getAltTitle() {
         return (new StringTextComponent(this.count + "x ")).appendSibling(
                 new TranslationTextComponent("ftbquests.reward.pixelmon.pokeloot.title",
