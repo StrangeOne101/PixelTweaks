@@ -52,7 +52,9 @@ public class PokelootReward extends Reward {
                     Icon.getIcon("pixeltweaks:textures/gui/pokeloot/" + (lootTier.ordinal() + 1) + ".png")).sendTo(player);
         }
 
-        ItemStackHooks.giveItem(player, RandomHelper.getRandomElementFromCollection(lootTier.getItems()));
+        for (int i = 0; i < count; i++) {
+            ItemStackHooks.giveItem(player, RandomHelper.getRandomElementFromCollection(lootTier.getItems()));
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

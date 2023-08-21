@@ -75,9 +75,10 @@ public class ExternalMoveTask extends PokemonTask {
                 new TranslationTextComponent(MoveSkill.getMoveSkillByID(move).name));
         if (count > 1) {
             title.appendString(" ");
-            title.appendString(count + "x ");
+            title.appendString(count + "x");
         }
         if (!this.pokemonSpec.isEmpty()) {
+            title.appendString(" ");
             title.appendSibling(getPokemon());
         }
         return title;
