@@ -81,7 +81,7 @@ public class EvolutionTask extends PokemonTask {
         config.addEnum("evolution_type", evoType, v -> evoType = v, NameMap.of(EvolutionType.ANY, EvolutionType.values())
                 .nameKey(s -> "pixeltweaks.evolution_type." + s.toString().toLowerCase())
                 .icon(type -> {
-                    String icon = "pixeltweaks:gui/types/unknown";
+                    String icon = "pixeltweaks:textures/gui/types/unknown.png";
                     switch (type) {
                         case ITEM:
                             icon = "pixelmon:items/evolutionstones/firestone";
@@ -93,7 +93,7 @@ public class EvolutionTask extends PokemonTask {
                             icon = "pixelmon:items/healingitems/rarecandy";
                             break;
                         case TICKING:
-                            icon = "pixelmon:items/healingitems/repel";
+                            icon = "pixelmon:textures/items/healingitems/repel.png";
                             break;
                     }
                     return Icon.getIcon(new ResourceLocation(icon));

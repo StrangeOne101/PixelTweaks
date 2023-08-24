@@ -27,6 +27,11 @@ public class DefeatTrainerTask extends Task {
     }
 
     @Override
+    public long getMaxProgress() {
+        return count;
+    }
+
+    @Override
     public void writeData(CompoundNBT nbt) {
         super.writeData(nbt);
         nbt.putInt("count", count);

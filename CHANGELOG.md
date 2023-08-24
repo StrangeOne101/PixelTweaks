@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.9.1-9.1.6
+- Compiled for Pixelmon 9.1.6
+- Same as 1.9.1, but no Zygarde cell changes
+
+## 1.9.1
+- Updated for Pixelmon 9.1.7
+- Fixed Pokedex tasks not working at all
+- Disabled Zygarde cell spawning
+  - Pixelmon has changed how this works recently, and until I can prove that cells don't spawn at all in chunks now, this is disabled
+- Fixed player battle tasks crashing when no UUID is provided
+- Fixed trainer battle tasks not abiding by the amount variable
+- Fixed missing icons and lang node for Evolution task
+
 # 1.9 (FTB Quests Integration)
 - Added FTB Quests Integration for Pixelmon
 - Includes the following FTB Tasks

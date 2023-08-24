@@ -52,7 +52,7 @@ public class DefeatPlayersTask extends Task {
         }
         if (nbt.contains("uuid")) {
             uuid = nbt.getString("uuid");
-            realUUID = UUID.fromString(uuid);
+            if (!uuid.isEmpty()) realUUID = UUID.fromString(uuid);
         }
     }
 
@@ -70,7 +70,7 @@ public class DefeatPlayersTask extends Task {
         count = buffer.readVarInt();
         username = buffer.readString();
         uuid = buffer.readString();
-        realUUID = UUID.fromString(uuid);
+        if (!uuid.isEmpty()) realUUID = UUID.fromString(uuid);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class DefeatPlayersTask extends Task {
         config.addString("username", username, v -> username = v, "");
         config.addString("uuid", uuid, v -> {
             uuid = v;
-            realUUID = UUID.fromString(uuid);
+            if (!uuid.isEmpty()) realUUID = UUID.fromString(uuid);
         }, "");
     }
 
