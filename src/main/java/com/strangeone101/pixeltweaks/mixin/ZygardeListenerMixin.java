@@ -2,6 +2,7 @@ package com.strangeone101.pixeltweaks.mixin;
 
 import com.pixelmonmod.pixelmon.listener.ZygardeCellsListener;
 import net.minecraft.block.Block;
+import net.minecraftforge.common.Tags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
@@ -16,8 +17,8 @@ public interface ZygardeListenerMixin {
         throw new UnsupportedOperationException("Mixin accessor called");
     }
 
-    @Accessor(value = "SPAWNABLE_BLOCKS", remap = false)
-    public static Set<Block> getSpawnableBlocks() {
+    @Accessor(value = "SPAWNABLE_TAG", remap = false)
+    public static Tags.IOptionalNamedTag<Block> getSpawnableBlocks() {
         throw new UnsupportedOperationException("Mixin accessor called");
     }
 }

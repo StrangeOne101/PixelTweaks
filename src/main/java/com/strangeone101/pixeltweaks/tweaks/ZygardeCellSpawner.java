@@ -75,7 +75,8 @@ public class ZygardeCellSpawner {
 
         //Do not activate on 9.1.7 and above
         //EDIT: 9.1.7 only does it in new chunks! We still good to go!
-        //if (PixelTweaks.getPixelmonVersion() >= 9107) return;
+        //EDIT EDIT: Seems they do it in all chunks but didn't mention it in the changelog. Until further testing is done, disabled.
+        if (PixelTweaks.getPixelmonVersion() >= 9107) return;
 
         Scheduling.schedule(1, () -> {
             try {
@@ -96,11 +97,11 @@ public class ZygardeCellSpawner {
                 }
 
                 //Get the list of blocks that it can spawn on
-                ZygardeListenerMixin.getSpawnableBlocks().clear(); //Clear the existing list
+                //ZygardeListenerMixin.getSpawnableBlocks().clear(); //Clear the existing list
 
-                ZygardeListenerMixin.getSpawnableBlocks().addAll(GRASS.getAllElements()); //Add all the blocks from the tag
-                ZygardeListenerMixin.getSpawnableBlocks().addAll(LOGS.getAllElements()); //Add all the blocks from the tag
-                ZygardeListenerMixin.getSpawnableBlocks().addAll(LEAVES.getAllElements()); //Add all the blocks from the tag
+                //ZygardeListenerMixin.getSpawnableBlocks().addAll(GRASS.getAllElements()); //Add all the blocks from the tag
+                //ZygardeListenerMixin.getSpawnableBlocks().addAll(LOGS.getAllElements()); //Add all the blocks from the tag
+                //ZygardeListenerMixin.getSpawnableBlocks().addAll(LEAVES.getAllElements()); //Add all the blocks from the tag
 
                 if (!PixelmonConfigProxy.getSpawning().isSpawnZygardeCells()) {
                     PixelTweaks.LOGGER.info("Zygarde cell spawning disabled! Modify the pixelmon spawning.yml config to change this");

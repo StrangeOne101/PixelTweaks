@@ -63,6 +63,8 @@
   "ftbquests.task.pixelmon.evolve_pokemon.title": "Evolve",
   "ftbquests.task.pixelmon.evolve_pokemon.pokemon": "Pokemon Specification",
   "ftbquests.task.pixelmon.evolve_pokemon.pokemon.tooltip": "The pokemon spec to match. In this case, the pokemon being evolved INTO.\nSo Ivysaur & Venasaur are fine, but not Bulbasaur.\n\nCan match species, type, ball, etc. Can be blank for any pokemon.\n\nFor more information, see https://pixelmonmod.com/wiki/Pokemon_spec",
+  "ftbquests.task.pixelmon.evolve_pokemon.invert": "Invert Specs",
+  "ftbquests.task.pixelmon.evolve_pokemon.invert.tooltip": "Whether to invert the pokemon specification. If true, the task will match all pokemon EXCEPT the ones that match the specification",
   "ftbquests.task.pixelmon.evolve_pokemon.count": "Amount",
   "ftbquests.task.pixelmon.evolve_pokemon.evolution_type": "Evolution Cause",
   "ftbquests.task.pixelmon.evolve_pokemon.item": "Evolution Item",

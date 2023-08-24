@@ -173,7 +173,7 @@ public abstract class PokedexTask extends Task {
             PixelmonSpecies.getAll().parallelStream().forEach(species -> {
                 Stats form = species.getDefaultForm();
 
-                if (!form.hasTag("undexable")) return;
+                if (form.hasTag("undexable")) return;
 
                 if (this.filter == PokedexFilter.TYPE) {
                     if (form.getTypes().contains(this.type)) {
