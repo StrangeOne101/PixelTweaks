@@ -60,7 +60,7 @@ public class DefeatTask extends PokemonTask {
     }
 
     public void defeatPokemon(TeamData team, PixelmonEntity pokemon) {
-        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon.getPokemon()) != this.invert)
+        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon) != this.invert)
         && (wild == Tristate.DEFAULT || (pokemon.getPixelmonWrapper().getParticipant() instanceof WildPixelmonParticipant
                         || pokemon.getPixelmonWrapper().getParticipant() instanceof RaidPixelmonParticipant) == wild.get(true))) {
             team.addProgress(this, 1L);
