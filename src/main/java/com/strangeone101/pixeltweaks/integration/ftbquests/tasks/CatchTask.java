@@ -32,13 +32,13 @@ public class CatchTask extends PokemonTask {
     @Override
     public void writeData(CompoundNBT nbt) {
         super.writeData(nbt);
-        nbt.putByte("type", (byte) getType.ordinal());
+        nbt.putByte("catchType", (byte) getType.ordinal());
     }
 
     @Override
     public void readData(CompoundNBT nbt) {
         super.readData(nbt);
-        getType = GetType.values()[nbt.getByte("type")];
+        getType = GetType.values()[nbt.getByte("catchType")];
     }
 
     @Override

@@ -39,6 +39,7 @@ public class PokemonReward extends Reward {
     public String spec = "";
     public transient PokemonSpecification cachedSpec;
     public int count = 1;
+    public short shinyChance = 4096;
 
     public PokemonReward(Quest q) {
         super(q);
@@ -54,6 +55,7 @@ public class PokemonReward extends Reward {
         super.writeData(nbt);
         nbt.putString("spec", this.spec);
         nbt.putInt("count", this.count);
+        nbt.putShort("shinyChance", this.shinyChance);
     }
 
     @Override
@@ -62,6 +64,7 @@ public class PokemonReward extends Reward {
         this.spec = nbt.getString("spec");
         this.cachedSpec = PokemonSpecificationProxy.create(this.spec);
         this.count = nbt.getInt("count");
+        this.shinyChance = nbt.getShort("shinyChance");
     }
 
     @Override
@@ -69,6 +72,7 @@ public class PokemonReward extends Reward {
         super.writeNetData(buffer);
         buffer.writeString(this.spec);
         buffer.writeVarInt(this.count);
+        buffer.writeVarInt(this.shinyChance);
     }
 
     @Override
@@ -77,6 +81,7 @@ public class PokemonReward extends Reward {
         this.spec = buffer.readString();
         this.cachedSpec = PokemonSpecificationProxy.create(this.spec);
         this.count = buffer.readVarInt();
+        this.shinyChance = (short) buffer.readVarInt();
     }
 
     @Override
@@ -88,6 +93,7 @@ public class PokemonReward extends Reward {
             this.cachedSpec = PokemonSpecificationProxy.create(this.spec);
         }, "");
         config.addInt("count", this.count, v -> this.count = v, 1, 1, Integer.MAX_VALUE);
+        config.addInt("shinyChance", this.shinyChance, v -> this.shinyChance = v.shortValue(), 4096, 0, Short.MAX_VALUE);
     }
 
     @Override
@@ -96,6 +102,11 @@ public class PokemonReward extends Reward {
 
         while (c > 0) {
             Pokemon pokemon = this.cachedSpec.create();
+
+            if (this.shinyChance > 0 && player.getRNG().nextInt(this.shinyChance) == 0
+                    && (pokemon.getPalette().is("none") || pokemon.getPalette().is(""))) {
+                pokemon.setShiny(true);
+            }
 
             if (notify) {
                 new DisplayRewardToastMessage(this.id, new TranslationTextComponent("ftbquests.reward.pixelmon.pokemon.toast",
