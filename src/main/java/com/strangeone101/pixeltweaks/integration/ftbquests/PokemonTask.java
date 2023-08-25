@@ -116,7 +116,7 @@ public abstract class PokemonTask extends Task {
     @Override
     @OnlyIn(Dist.CLIENT)
     public Icon getAltIcon() {
-        if (cachedSpec.getValue(SpeciesRequirement.class).isPresent()) {
+        if (cachedSpec.getValue(SpeciesRequirement.class).isPresent() && !this.pokemonSpec.isEmpty() && !this.pokemonSpec.split(" ")[0].equalsIgnoreCase("random")) {
             return Icon.getIcon(cachedSpec.create().getSprite());
         }
 

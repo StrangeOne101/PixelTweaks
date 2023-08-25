@@ -177,6 +177,8 @@
     "ftbquests.reward.pixelmon.pokemon.spec": "Pokemon Specification",
     "ftbquests.reward.pixelmon.pokemon.spec.tooltip": "The pokemon to give. Can have species, type, ball, original trainer, etc.\n\nExamples:\n - 'species:Arcanine form:Hisuian'\n - 'random shiny type:water'\n - 'random legendary ball:master_ball'\n\nFor more information, see https://pixelmonmod.com/wiki/Pokemon_spec",
     "ftbquests.reward.pixelmon.pokemon.toast": "Claimed %s",
+    "ftbquests.reward.pixelmon.pokemon.shinyChance": "Shiny Chance",
+    "ftbquests.reward.pixelmon.pokemon.shinyChance.tooltip": "The 1 in X chance for the pokemon to be shiny. 0 is none, 100 is 1/100. Default is standard shiny rate (4096)",
     "pixeltweaks.evolution_type.any": "Any",
     "pixeltweaks.evolution_type.trading": "Trade",
     "pixeltweaks.evolution_type.leveling": "Leveling",

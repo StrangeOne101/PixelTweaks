@@ -17,6 +17,7 @@ import com.pixelmonmod.pixelmon.api.events.moveskills.UseMoveSkillEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.util.Scheduling;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
+import com.pixelmonmod.pixelmon.battles.controller.BattleStage;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
@@ -40,6 +41,7 @@ import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokedexPercenta
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokedexTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.TradeTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.WipeoutTask;
+import dev.ftb.mods.ftbquests.events.ClearFileCacheEvent;
 import dev.ftb.mods.ftbquests.quest.ServerQuestFile;
 import dev.ftb.mods.ftbquests.quest.TeamData;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -72,6 +74,7 @@ public class TaskListener {
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onTakePhoto);
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onExternalMove);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, this::onLogin);
+        ClearFileCacheEvent.EVENT.register(this::onFTBCacheClear);
 
     }
 
@@ -170,6 +173,8 @@ public class TaskListener {
 
         PixelmonWrapper wrapper = event.target;
         BattleController controller = event.getBattleController();
+        if (controller.getStage() == BattleStage.PICKACTION) return; //For some reason, this event is called when the battle starts without triggering a move???
+        
         for (PixelmonWrapper opponent : controller.getOpponentPokemon(wrapper)) {
             if (opponent.getPlayerOwner() != null) {
                 TeamData data = ServerQuestFile.INSTANCE.getData(opponent.getPlayerOwner());
@@ -440,5 +445,23 @@ public class TaskListener {
         }
 
 
+    }
+
+    private void onFTBCacheClear(ClearFileCacheEvent event) {
+        if (event.getFile().isServerSide()) {
+            this.catchTasks = null;
+            this.defeatPlayersTasks = null;
+            this.defeatTrainerTasks = null;
+            this.battleMoveTasks = null;
+            this.externalMoveTasks = null;
+            this.levelTasks = null;
+            this.photoTasks = null;
+            this.wipeoutTasks = null;
+            this.pokedexTasks = null;
+            this.breedTasks = null;
+            this.hatchTasks = null;
+            this.tradeTasks = null;
+            this.pokeDollarsTasks = null;
+        }
     }
 }

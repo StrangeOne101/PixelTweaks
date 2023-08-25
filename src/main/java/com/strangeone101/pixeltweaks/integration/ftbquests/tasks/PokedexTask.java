@@ -211,7 +211,7 @@ public abstract class PokedexTask extends Task {
     }
 
     public void updatePokedex(TeamData teamData, ServerPlayerEntity player) {
-        if (teamData.isCompleted(this)) return;
+        if (teamData.isCompleted(this) || !teamData.file.isServerSide()) return;
 
         int ordinalToCheck = this.caught ? 2 : 1;
         int progress = (int) StorageProxy.getParty(player).playerPokedex.getSeenMap().entrySet().parallelStream()
