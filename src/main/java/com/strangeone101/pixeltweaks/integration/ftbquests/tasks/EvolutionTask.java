@@ -117,7 +117,7 @@ public class EvolutionTask extends PokemonTask {
                 return this.evoType == EvolutionType.TRADING;
             case "interact":
                 return this.evoType == EvolutionType.ITEM && evolution instanceof InteractEvolution
-                        && ((InteractEvolution) evolution).item.getItemStack().isItemEqualIgnoreDurability(item);
+                        && (item.isEmpty() || ((InteractEvolution) evolution).item.getItemStack().isItemEqualIgnoreDurability(item));
             case "ticking":
                 return this.evoType == EvolutionType.TICKING;
             default:
