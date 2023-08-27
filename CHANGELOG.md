@@ -8,6 +8,10 @@
 - Fixed creating a task after triggering a task of the same type making the created task be unable to be triggered
 - Made pokedex tasks only able to be updated serverside
 
+## 1.9.1-9.1.6
+- Compiled for Pixelmon 9.1.6
+- Same as 1.9.1, but no Zygarde cell changes
+
 ## 1.9.1
 - Updated for Pixelmon 9.1.7
 - Fixed Pokedex tasks not working at all

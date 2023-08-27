@@ -148,7 +148,6 @@ public class TaskListener {
 
         TeamData data = ServerQuestFile.INSTANCE.getData(event.getPlayer());
         Pokemon pokemon = event.getRaidPokemon();
-        pokemon.setBall(event.getPokeBall().getBallType());
         pokemon.setOriginalTrainer(event.getPlayer());
 
         for (CatchTask task : catchTasks) {
