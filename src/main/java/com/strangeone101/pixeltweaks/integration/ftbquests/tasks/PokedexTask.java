@@ -180,7 +180,7 @@ public abstract class PokedexTask extends Task {
                         all.add(species.getDex());
                     }
                 } else if (this.filter == PokedexFilter.GENERATION) {
-                    if (species.getDex() >= this.genMinFilter && species.getDex() <= this.genMaxFilter) {
+                    if (species.getGeneration() >= this.genMinFilter && species.getGeneration() <= this.genMaxFilter) {
                         all.add(species.getDex());
                     }
                 } else if (this.filter == PokedexFilter.LEGEND) {

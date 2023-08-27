@@ -11,7 +11,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class PokedexAmountTask extends PokedexTask {
 
-    public int count;
+    public int count = 1;
 
     public PokedexAmountTask(Quest q) {
         super(q);

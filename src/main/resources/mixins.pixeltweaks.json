@@ -27,6 +27,7 @@
     "client.PokemonShimLayerMixin",
     "client.WorldHelperMixin",
     "client.PixelmonItemMixin",
-    "client.network.BattleMessagePacketMixin"
+    "client.network.BattleMessagePacketMixin",
+    "integration.FTBQuests_Pokedollar"
   ]
 }

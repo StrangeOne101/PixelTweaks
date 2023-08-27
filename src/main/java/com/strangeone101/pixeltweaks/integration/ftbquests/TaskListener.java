@@ -438,7 +438,7 @@ public class TaskListener {
 
             for (ExternalMoveTask task : externalMoveTasks) {
                 if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
-                    task.onMove(data, event.moveSkill.name, event.pixelmon.getPokemon());
+                    task.onMove(data, event.moveSkill.id, event.pixelmon.getPokemon());
                 }
             }
         }
