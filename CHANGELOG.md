@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.9.3
+- Renamed Whiteout task to Party Wipeout
+- Fixed NPE on catching via raids
+  - Pokeballs can no longer be tested in spec, but there is nothing I can do about this
+- Fixed Ultra Beast lang missing
+- Fixed boss specs not working in defeat tasks
+- Fixed External Moves task not checking the move
+- Fixed Evolve Pokemon task using interact filter not working when you don't specify an item
+- Fixed Pokedex Percentage task having a weird percentage
+- Fixed Pokedex tasks not working for generation filters
+- Attempted to fix Pokedollar tasks not updating on the client
+- Fixed missing Invert config option in the lang file
+
 ## 1.9.2
 - Added shinyChance to pokemon rewards
 - Fixed catch task bugging out
