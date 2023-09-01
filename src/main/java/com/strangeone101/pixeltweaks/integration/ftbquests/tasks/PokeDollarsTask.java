@@ -1,5 +1,6 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests.tasks;
 
+import com.pixelmonmod.pixelmon.api.economy.BankAccountProxy;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTaskTypes;
@@ -113,7 +114,8 @@ public class PokeDollarsTask extends Task {
             teamData.setProgress(this, m);
 
             if (consumesResources() && complete) {
-                StorageProxy.getParty(player).take(this.amount);
+                BankAccountProxy.getBankAccount(player).ifPresent(a -> a.take(this.amount));
+                //StorageProxy.getParty(player).take(this.amount);
             }
         }
     }

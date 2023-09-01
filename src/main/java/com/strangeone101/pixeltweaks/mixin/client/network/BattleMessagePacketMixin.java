@@ -159,6 +159,12 @@ public abstract class BattleMessagePacketMixin extends BattleTaskPacket {
                 action = Action.POISON;
                 subAction = Action.SPIKES;
                 break;
+            case "pixelmon.effect.uplightscreen":
+                action = Action.LIGHT_SCREEN;
+                break;
+            case "pixelmon.effect.reflectraised":
+                action = Action.REFLECT;
+                break;
             case "pixelmon.effect.raining":
                 action = Action.WEATHER_RAINY;
                 break;

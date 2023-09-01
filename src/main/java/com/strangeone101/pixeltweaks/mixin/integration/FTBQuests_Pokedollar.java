@@ -3,6 +3,7 @@ package com.strangeone101.pixeltweaks.mixin.integration;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.clientStorage.UpdateClientPlayerDataPacket;
 import com.strangeone101.pixeltweaks.integration.ModIntegration;
 import com.strangeone101.pixeltweaks.integration.ftbquests.TaskUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.network.NetworkEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -20,7 +21,8 @@ public abstract class FTBQuests_Pokedollar {
 
     @Inject(method = "handlePacket", at = @At(value = "FIELD", target = "Lcom/pixelmonmod/pixelmon/storage/ClientData;playerMoney:Ljava/math/BigDecimal;", ordinal = 0), remap = false)
     public void onHandlePacket(NetworkEvent.Context context, CallbackInfo ci) {
-        if (ModIntegration.ftbQuests()) {
+        //Check if it is single player
+        if (ModIntegration.ftbQuests() && !Minecraft.getInstance().isIntegratedServerRunning()) {
             TaskUtils.updateClientPokedollars(playerMoney);
         }
     }

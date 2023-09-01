@@ -110,7 +110,7 @@ public class PokemonReward extends Reward {
 
             if (notify) {
                 new DisplayRewardToastMessage(this.id, new TranslationTextComponent("ftbquests.reward.pixelmon.pokemon.toast",
-                        this.getTitle()), Icon.getIcon(pokemon.getSprite())).sendTo(player);
+                        this.getPokemon()), Icon.getIcon(pokemon.getSprite())).sendTo(player);
             }
             if (!StorageProxy.getParty(player).add(pokemon)) {
                 PixelTweaks.LOGGER.warn("Failed to add pokemon to player's party! Storage full! Reward ID: " + this.id + ", Pokemon: " + pokemon.getDisplayName());

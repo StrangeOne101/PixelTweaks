@@ -1,5 +1,6 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests.rewards;
 
+import com.pixelmonmod.pixelmon.api.economy.BankAccountProxy;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonRewardTypes;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
@@ -66,7 +67,8 @@ public class PokeDollarReward extends Reward {
 
     @Override
     public void claim(ServerPlayerEntity serverPlayerEntity, boolean b) {
-        StorageProxy.getParty(serverPlayerEntity).add(count);
+        BankAccountProxy.getBankAccount(serverPlayerEntity).ifPresent(a -> a.add(count));
+        //StorageProxy.getParty(serverPlayerEntity).add(count);
 
         new DisplayRewardToastMessage(this.id, new TranslationTextComponent("ftbquests.reward.pixelmon.pokedollars.toast", this.count),
                 Icon.getIcon("pixelmon:textures/gui/pokedollar.png")).sendTo(serverPlayerEntity);
