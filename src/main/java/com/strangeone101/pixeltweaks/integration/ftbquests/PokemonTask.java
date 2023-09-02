@@ -124,32 +124,36 @@ public abstract class PokemonTask extends Task {
     }
 
     protected ITextComponent getPokemon() {
+        return getPokemon(cachedSpec);
+    }
+
+    protected ITextComponent getPokemon(PokemonSpecification spec) {
         TranslationTextComponent pokemon = new TranslationTextComponent("pixeltweaks.lang.pokemon");
-        if (cachedSpec == null) {
+        if (spec == null) {
             return pokemon;
         }
         List<ITextComponent> componentList = new ArrayList<>();
-        if (cachedSpec.getValue(PokeBallRequirement.class).isPresent()) {
+        if (spec.getValue(PokeBallRequirement.class).isPresent()) {
             TranslationTextComponent ball = new TranslationTextComponent("item.pixelmon." +
-                    cachedSpec.getValue(PokeBallRequirement.class).get().getName().toLowerCase());
+                    spec.getValue(PokeBallRequirement.class).get().getName().toLowerCase());
             TranslationTextComponent ballText = new TranslationTextComponent("pixeltweaks.lang.ball", ball);
             componentList.add(ballText);
         }
-        if (cachedSpec.getValue(PokerusRequirement.class).isPresent()) {
-            boolean pokerus = cachedSpec.getValue(PokerusRequirement.class).get() != PokerusStrain.UNINFECTED;
+        if (spec.getValue(PokerusRequirement.class).isPresent()) {
+            boolean pokerus = spec.getValue(PokerusRequirement.class).get() != PokerusStrain.UNINFECTED;
             if (pokerus) {
                 TranslationTextComponent pokerusText = new TranslationTextComponent("pixeltweaks.lang.pokerus");
                 componentList.add(pokerusText);
             }
         }
 
-        if (cachedSpec.getValue(SpeciesRequirement.class).isPresent()) {
+        if (spec.getValue(SpeciesRequirement.class).isPresent()) {
             TranslationTextComponent species = new TranslationTextComponent("pixelmon." +
-                    cachedSpec.getValue(SpeciesRequirement.class).get().getKey().toLowerCase());
+                    spec.getValue(SpeciesRequirement.class).get().getKey().toLowerCase());
             componentList.add(species);
         } else {
-            if (cachedSpec.getValue(LegendaryRequirement.class).isPresent()) {
-                boolean legend = cachedSpec.getValue(LegendaryRequirement.class).get();
+            if (spec.getValue(LegendaryRequirement.class).isPresent()) {
+                boolean legend = spec.getValue(LegendaryRequirement.class).get();
                 if (!legend) {
                     TranslationTextComponent legendText = new TranslationTextComponent("pixeltweaks.lang.legendary");
                     TranslationTextComponent nonText = new TranslationTextComponent("pixeltweaks.lang.not", legendText);
@@ -160,8 +164,8 @@ public abstract class PokemonTask extends Task {
                     componentList.add(legendText);
                 }
             }
-            if (cachedSpec.getValue(UltraBeastRequirement.class).isPresent()) {
-                boolean ultra = cachedSpec.getValue(UltraBeastRequirement.class).get();
+            if (spec.getValue(UltraBeastRequirement.class).isPresent()) {
+                boolean ultra = spec.getValue(UltraBeastRequirement.class).get();
                 if (!ultra) {
                     TranslationTextComponent ultraText = new TranslationTextComponent("pixeltweaks.lang.ultrabeast");
                     TranslationTextComponent nonText = new TranslationTextComponent("pixeltweaks.lang.not", ultraText);
@@ -172,35 +176,35 @@ public abstract class PokemonTask extends Task {
                     componentList.add(ultraText);
                 }
             }
-            if (cachedSpec.getValue(GenerationRequirement.class).isPresent()) {
+            if (spec.getValue(GenerationRequirement.class).isPresent()) {
                 TranslationTextComponent newType = new TranslationTextComponent("pixeltweaks.lang.generation",
-                        cachedSpec.getValue(GenerationRequirement.class).get().intValue());
+                        spec.getValue(GenerationRequirement.class).get().intValue());
                 componentList.add(newType);
             }
-            if (cachedSpec.getValue(TypeRequirement.class).isPresent()) {
+            if (spec.getValue(TypeRequirement.class).isPresent()) {
                 TranslationTextComponent type = new TranslationTextComponent("type." +
-                        cachedSpec.getValue(TypeRequirement.class).get().getSecond().name().toLowerCase());
+                        spec.getValue(TypeRequirement.class).get().getSecond().name().toLowerCase());
                 TranslationTextComponent newType = new TranslationTextComponent("pixeltweaks.lang.type", type);
                 componentList.add(newType);
             }
 
             componentList.add(0, pokemon);
         }
-        if (cachedSpec.getValue(FormRequirement.class).isPresent()) {
+        if (spec.getValue(FormRequirement.class).isPresent()) {
             TranslationTextComponent form = new TranslationTextComponent("pixelmon.generic.form." +
-                    cachedSpec.getValue(FormRequirement.class).get().toLowerCase());
+                    spec.getValue(FormRequirement.class).get().toLowerCase());
             componentList.add(form);
         }
-        if (cachedSpec.getValue(PaletteRequirement.class).isPresent()) {
+        if (spec.getValue(PaletteRequirement.class).isPresent()) {
             TranslationTextComponent form = new TranslationTextComponent("pixelmon.palette." +
-                    cachedSpec.getValue(PaletteRequirement.class).get().toLowerCase());
+                    spec.getValue(PaletteRequirement.class).get().toLowerCase());
             componentList.add(form);
         }
-        if (cachedSpec.getValue(GenderRequirement.class).isPresent()) {
-            TranslationTextComponent gender = new TranslationTextComponent(cachedSpec.getValue(GenderRequirement.class).get().getTranslationKey());
+        if (spec.getValue(GenderRequirement.class).isPresent()) {
+            TranslationTextComponent gender = new TranslationTextComponent(spec.getValue(GenderRequirement.class).get().getTranslationKey());
             componentList.add(gender);
         }
-        if (cachedSpec.getValue(ShinyRequirement.class).isPresent()) {
+        if (spec.getValue(ShinyRequirement.class).isPresent()) {
             TranslationTextComponent shiny = new TranslationTextComponent("pixelmon.palette.shiny");
             componentList.add(shiny);
         }

@@ -68,7 +68,8 @@ public class PokedexPercentageTask extends PokedexTask {
 
     @Override
     public String formatProgress(TeamData teamData, long progress) {
-        double p = ((double) progress / (double)this.maxPokedexSize) * 100.0;
+        long l = Math.min(progress, this.maxPokedexSize);
+        double p = ((double) l / (double)this.maxPokedexSize) * 100.0;
         return StringUtils.formatDouble(p) + "%";
     }
 

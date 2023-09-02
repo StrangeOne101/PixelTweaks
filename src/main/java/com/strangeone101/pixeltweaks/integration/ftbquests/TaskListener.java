@@ -183,7 +183,7 @@ public class TaskListener {
 
                     for (DefeatTask task : defeatTasks) {
                         if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
-                            task.defeatPokemon(data, wrapper.entity);
+                            task.defeatPokemon(data, wrapper.entity, event.user.entity);
                         }
                     }
                 }
@@ -450,9 +450,11 @@ public class TaskListener {
         if (event.getFile().isServerSide()) {
             this.catchTasks = null;
             this.defeatPlayersTasks = null;
+            this.defeatTasks = null;
             this.defeatTrainerTasks = null;
             this.battleMoveTasks = null;
             this.externalMoveTasks = null;
+            this.evolutionTasks = null;
             this.levelTasks = null;
             this.photoTasks = null;
             this.wipeoutTasks = null;
