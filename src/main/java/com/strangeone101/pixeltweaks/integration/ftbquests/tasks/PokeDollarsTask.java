@@ -100,11 +100,11 @@ public class PokeDollarsTask extends Task {
     }
 
     public void updateMoney(TeamData teamData, ServerPlayerEntity player) {
-        if (teamData.isCompleted(this)) {
+        if (teamData.isCompleted(this) || !BankAccountProxy.getBankAccount(player).isPresent()) {
             return;
         }
 
-        int m = StorageProxy.getParty(player).getBalance().intValue();
+        int m = BankAccountProxy.getBankAccount(player).get().getBalance().intValue();
         if (m <= 0) return;
         PixelTweaks.LOGGER.debug("Player has " + m + " PokeDollars");
         boolean complete = m >= this.amount;
@@ -114,7 +114,7 @@ public class PokeDollarsTask extends Task {
             teamData.setProgress(this, m);
 
             if (consumesResources() && complete) {
-                BankAccountProxy.getBankAccount(player).ifPresent(a -> a.take(this.amount));
+                BankAccountProxy.getBankAccount(player).get().take(this.amount);
                 //StorageProxy.getParty(player).take(this.amount);
             }
         }

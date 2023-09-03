@@ -30,6 +30,7 @@ public abstract class PokedexTask extends Task {
         MYTHICAL,
         LEGEND_AND_MYTHICAL,
         ULTRA_BEAST,
+        SINGLE_MON
     }
 
     protected int maxPokedexSize = PixelmonSpecies.getAll().size();
@@ -41,6 +42,7 @@ public abstract class PokedexTask extends Task {
     public byte genMinFilter = 1;
     public byte genMaxFilter = 9;
     public boolean allowUndexable = false;
+    public int singleMon = 0;
 
     public PokedexTask(Quest q) {
         super(q);
@@ -58,10 +60,12 @@ public abstract class PokedexTask extends Task {
         nbt.putBoolean("caught", caught);
         nbt.putBoolean("allowUndexable", allowUndexable);
         if (filter == PokedexFilter.TYPE) {
-            nbt.putByte("type", (byte) type.ordinal());
+            nbt.putByte("pokeType", (byte) type.ordinal());
         } else if (filter == PokedexFilter.GENERATION) {
             nbt.putByte("genMin", genMinFilter);
             nbt.putByte("genMax", genMaxFilter);
+        } else if (filter == PokedexFilter.SINGLE_MON) {
+            nbt.putInt("singleMon", singleMon);
         }
     }
 
@@ -72,10 +76,12 @@ public abstract class PokedexTask extends Task {
         caught = nbt.getBoolean("caught");
         allowUndexable = nbt.getBoolean("allowUndexable");
         if (filter == PokedexFilter.TYPE) {
-            type = Element.values()[nbt.getByte("type")];
+            type = Element.values()[nbt.getByte("pokeType")];
         } else if (filter == PokedexFilter.GENERATION) {
             genMinFilter = nbt.getByte("genMin");
             genMaxFilter = nbt.getByte("genMax");
+        } else if (filter == PokedexFilter.SINGLE_MON) {
+            singleMon = nbt.getInt("singleMon");
         }
         calculateAmount();
     }
@@ -91,6 +97,8 @@ public abstract class PokedexTask extends Task {
         } else if (filter == PokedexFilter.GENERATION) {
             buffer.writeByte(genMinFilter);
             buffer.writeByte(genMaxFilter);
+        } else if (filter == PokedexFilter.SINGLE_MON) {
+            buffer.writeVarInt(singleMon);
         }
     }
 
@@ -105,6 +113,8 @@ public abstract class PokedexTask extends Task {
         } else if (filter == PokedexFilter.GENERATION) {
             genMinFilter = buffer.readByte();
             genMaxFilter = buffer.readByte();
+        } else if (filter == PokedexFilter.SINGLE_MON) {
+            singleMon = buffer.readVarInt();
         }
 
         calculateAmount();
@@ -114,10 +124,18 @@ public abstract class PokedexTask extends Task {
     @OnlyIn(Dist.CLIENT)
     public void getConfig(ConfigGroup config) {
         super.getConfig(config);
+
+        PokedexFilter[] filterTypes = PokedexFilter.values();
+
+        if (this instanceof PokedexPercentageTask) {
+            filterTypes = new PokedexFilter[] { PokedexFilter.ALL, PokedexFilter.GENERATION, PokedexFilter.TYPE,
+                    PokedexFilter.LEGEND, PokedexFilter.MYTHICAL, PokedexFilter.LEGEND_AND_MYTHICAL, PokedexFilter.ULTRA_BEAST };
+        }
+
         config.addEnum("filter", filter, v -> {
             filter = v;
             calculateAmount();
-        }, NameMap.of(PokedexFilter.ALL, PokedexFilter.values())
+        }, NameMap.of(PokedexFilter.ALL, filterTypes)
                 .nameKey(v -> "pixeltweaks.pokedex_filter_type." + v.name().toLowerCase()).create(), PokedexFilter.ALL);
         config.addBool("caught", caught, v -> caught = v, true);
         config.addEnum("type", type, v -> {
@@ -136,6 +154,15 @@ public abstract class PokedexTask extends Task {
             genMaxFilter = v.byteValue();
             calculateAmount();
         }, (byte) 9, (byte) 1, (byte) 9);
+
+        if (!(this instanceof PokedexPercentageTask)) {
+            config.addInt("singleMon", singleMon, v -> {
+                singleMon = v;
+                filteredPokedex = new HashSet<>();
+                filteredPokedex.add(singleMon);
+                maxPokedexSize = 1;
+            }, 0, 1, 5000);
+        }
         config.addBool("allowUndexable", allowUndexable, v -> {
             allowUndexable = v;
             calculateAmount();
@@ -217,6 +244,7 @@ public abstract class PokedexTask extends Task {
         int progress = (int) StorageProxy.getParty(player).playerPokedex.getSeenMap().entrySet().parallelStream()
                 .filter(entry -> this.filteredPokedex.contains(entry.getKey()) && entry.getValue().ordinal() >= ordinalToCheck
                 ).count();
+        progress = Math.min(progress, this.maxPokedexSize);
 
         teamData.setProgress(this, progress);
     }

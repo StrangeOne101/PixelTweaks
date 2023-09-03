@@ -265,7 +265,7 @@ public class TaskListener {
         Scheduling.schedule(1, () -> hatchCommandFix.remove(event.getPokemon().getUUID()), false);
     }
 
-    public void onBreed(DayCareEvent.PostTimerBegin event) {
+    public void onBreed(DayCareEvent.PostCollect event) {
         if (breedTasks == null) {
             breedTasks = ServerQuestFile.INSTANCE.collect(BreedTask.class);
         }
@@ -278,7 +278,7 @@ public class TaskListener {
 
         for (BreedTask task : breedTasks) {
             if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
-                task.onBreed(data, event.getBox().getParentOne(), event.getBox().getParentTwo());
+                task.onBreed(data, event.getParentOne(), event.getParentTwo());
             }
         }
     }

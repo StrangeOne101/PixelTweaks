@@ -37,6 +37,9 @@ public class PokedexAmountTask extends PokedexTask {
     public void readData(CompoundNBT nbt) {
         super.readData(nbt);
         this.count = nbt.getInt("count");
+        if (this.filter == PokedexFilter.SINGLE_MON) {
+            this.count = 1;
+        }
     }
 
     @Override
@@ -49,6 +52,9 @@ public class PokedexAmountTask extends PokedexTask {
     public void readNetData(PacketBuffer buffer) {
         super.readNetData(buffer);
         this.count = buffer.readVarInt();
+        if (this.filter == PokedexFilter.SINGLE_MON) {
+            this.count = 1;
+        }
     }
 
     @Override
