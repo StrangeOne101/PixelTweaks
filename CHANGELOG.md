@@ -8,6 +8,7 @@
 - Fixed serverside NoSuchMethodFoundException for Pokemon rewards
 - Fixed Defeat and Evolution tasks still not updating their tasks (the previous cache issue still affected only these two types)
 - Fixed Pokedex Percentage tasks showing more than the max percentage
+- Fixed Pokedex pokemon type filter causing issues
 - Changed the Breed Pokemon task to trigger when you collect the pokemon
 
 
