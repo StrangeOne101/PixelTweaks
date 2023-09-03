@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.9.4
+- Added LIGHT_SCREEN and REFLECT battle action types
+- Added "Source Pokemon Spec" to defeat tasks. Allows you to check what pokemon defeated the other
+- Added SINGLE_MON pokedex filter for Pokedex Amount
+- Fixed issues with the Pixelmon Economy Bridge
+- Fixed serverside NoSuchMethodFoundException for Pokemon rewards
+- Fixed Defeat and Evolution tasks still not updating their tasks (the previous cache issue still affected only these two types)
+- Fixed Pokedex Percentage tasks showing more than the max percentage
+- Changed the Breed Pokemon task to trigger when you collect the pokemon
+
+
 ## 1.9.3
 - Renamed Whiteout task to Party Wipeout
 - Fixed NPE on catching via raids
