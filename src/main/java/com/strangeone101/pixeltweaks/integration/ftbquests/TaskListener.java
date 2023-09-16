@@ -16,6 +16,7 @@ import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.api.events.moveskills.UseMoveSkillEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.util.Scheduling;
+import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
 import com.pixelmonmod.pixelmon.battles.controller.BattleStage;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
@@ -97,6 +98,7 @@ public class TaskListener {
     @Deprecated
     private Set<UUID> antiOverflow = new HashSet<>();
     private Set<UUID> hatchCommandFix = new HashSet<>();
+    private Set<Attack> battleMoveFix = new HashSet<>();
 
     public void betterOnCatch(PokemonReceivedEvent event) {
         if (catchTasks == null) {
@@ -386,7 +388,13 @@ public class TaskListener {
         }
     }
 
-    public void onBattleMove(AttackEvent.Use event) {
+    public void onBattleMove(AttackEvent.CriticalHit event) {
+        if (battleMoveFix.contains(event.getAttack())) {
+            battleMoveFix.remove(event.getAttack());
+            return;
+        }
+        battleMoveFix.add(event.getAttack());
+
         if (battleMoveTasks == null) {
             battleMoveTasks = ServerQuestFile.INSTANCE.collect(BattleMoveTask.class);
         }
@@ -400,7 +408,7 @@ public class TaskListener {
 
         for (BattleMoveTask task : battleMoveTasks) {
             if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
-                PixelTweaks.LOGGER.debug("Battle move task for move: " + event.attack.getAttackName());
+                PixelTweaks.LOGGER.debug("Battle move task for move: " + event.getAttack().getMove().getAttackName());
                 task.onBattleMove(data, event.user.pokemon, event.getAttack());
             }
         }
