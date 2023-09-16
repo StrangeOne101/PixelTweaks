@@ -255,8 +255,13 @@ public abstract class BattleMessagePacketMixin extends BattleTaskPacket {
                 break;
             case "pixelmon.battletext.used":
                 //if (pixelTweaks$future != null) pixelTweaks$future.test(tcomponent);
-                TranslationTextComponent textComponent = (TranslationTextComponent) tcomponent.getFormatArgs()[1];
-                String move = textComponent.getKey().split("\\.", 2)[1].replace('_', ' ');
+                String move;
+                if (tcomponent.getFormatArgs()[1] instanceof TranslationTextComponent) {
+                    TranslationTextComponent textComponent = (TranslationTextComponent) tcomponent.getFormatArgs()[1];
+                    move = textComponent.getKey().split("\\.", 2)[1].replace('_', ' ');
+                } else {
+                    move = tcomponent.getFormatArgs()[1].toString();
+                }
                 Optional<ImmutableAttack> attack = AttackRegistry.getAttackBase(move);
                 attack.ifPresent(attackBase -> {
                     boolean statusMove = attackBase.getAttackCategory() == AttackCategory.STATUS;
