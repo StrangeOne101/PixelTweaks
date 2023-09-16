@@ -171,6 +171,14 @@ public abstract class PokedexTask extends Task {
 
     protected void calculateAmount() {
         Set<Integer> all = new HashSet<>();
+
+        if (this.filter == PokedexFilter.SINGLE_MON) {
+            all.add(this.singleMon);
+            this.filteredPokedex = all;
+            this.maxPokedexSize = all.size();
+            return;
+        }
+
         if (this.allowUndexable) {
             if (this.filter == PokedexFilter.TYPE) {
                 PixelmonSpecies.getAll().parallelStream().forEach(species -> {

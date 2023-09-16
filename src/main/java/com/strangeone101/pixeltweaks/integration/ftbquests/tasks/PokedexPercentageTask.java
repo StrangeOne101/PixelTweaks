@@ -62,7 +62,7 @@ public class PokedexPercentageTask extends PokedexTask {
         super.getConfig(config);
         config.addDouble("percentage", this.percentage, v -> {
             this.percentage = v;
-            doMath();
+            calculateAmount();
         }, 0.0, 0.01, 100.00);
     }
 
@@ -85,7 +85,7 @@ public class PokedexPercentageTask extends PokedexTask {
     }
 
     private void doMath() {
-        this.count = (int) (Math.ceil(this.percentage / 100.0) * ((double)this.maxPokedexSize));
+        this.count = (int) Math.ceil((this.percentage / 100.0) * ((double)this.maxPokedexSize));
     }
 
 
