@@ -26,7 +26,7 @@ public class TrackableSound extends SimpleSound implements AutoCloseable, ISound
     }
 
     public void fadeOut(long time) {
-        PixelmonMusic.fadeSoundToStop(this, time);
+        SoundManager.fadeSoundToStop(this, time, null);
     }
 
     public void play() {

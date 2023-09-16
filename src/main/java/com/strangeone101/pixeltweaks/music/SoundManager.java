@@ -1,25 +1,14 @@
 package com.strangeone101.pixeltweaks.music;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.pixelmonmod.pixelmon.battles.BattleRegistry;
-import com.pixelmonmod.pixelmon.battles.controller.BattleController;
-import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
-import com.pixelmonmod.pixelmon.client.ClientProxy;
-import com.pixelmonmod.pixelmon.client.gui.battles.PixelmonClientData;
 import com.pixelmonmod.pixelmon.client.music.PixelmonMusic;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.PixelTweaks;
-import com.strangeone101.pixeltweaks.pixelevents.EventRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ChannelManager;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -29,7 +18,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -124,7 +112,7 @@ public class SoundManager {
             if (!PixelmonMusic.getSoundManager().isPlaying(sound)) return;
             EXECUTOR.submit(() -> {
                 PixelmonMusic.resetFade(sound, true);
-                AtomicReference<ChannelManager.Entry> channel = new AtomicReference((Object)null);
+                AtomicReference<ChannelManager.Entry> channel = new AtomicReference<>(null);
                 PixelmonMusic.getSoundManager().playingSoundsChannel.forEach((s, c) -> {
                     if (Objects.equals(sound, s)) {
                         channel.set(c);
@@ -142,7 +130,7 @@ public class SoundManager {
                     for(int i = 0; (long)i < millis; ++i) {
                         float volume = PixelmonMusic.fadeSound(sound, initialVolume, millis, true);
                         if (channel.get() != null) {
-                            ((ChannelManager.Entry)channel.get()).runOnSoundExecutor((source) -> {
+                            (channel.get()).runOnSoundExecutor((source) -> {
                                 source.setGain(volume);
                             });
                         }
@@ -246,9 +234,11 @@ public class SoundManager {
     }
 
     public static void resumeAllMusic() {
+        List<ISound> pixelTweaksMusic = ALL_MUSIC.stream().map(ChainedMusic::getPlaying).collect(Collectors.toList());
         PixelmonMusic.getSoundManager().playingSoundsChannel.forEach((s, e) -> {
-            if (s.getCategory() == SoundCategory.MUSIC && e.source != null) {
-                e.source.resume();
+            if (s.getCategory() == SoundCategory.MUSIC && e.source != null && !pixelTweaksMusic.contains(s)) {
+                //e.source.resume();
+                fadeSoundToStart(s, 2000L);
             }
         });
     }
