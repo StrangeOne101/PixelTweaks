@@ -88,7 +88,7 @@ public class LevelTask extends PokemonTask {
 
     public void onLevel(TeamData team, Pokemon pokemon, ExperienceGainType cause) {
         if (!team.isCompleted(this) && team.file.isServerSide() && this.cause.matches(cause)
-                && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon) != this.invert)) {
+                && (this.cachedSpec == null || this.cachedSpec.matches(pokemon) != this.invert)) {
             team.addProgress(this, 1L);
         }
     }

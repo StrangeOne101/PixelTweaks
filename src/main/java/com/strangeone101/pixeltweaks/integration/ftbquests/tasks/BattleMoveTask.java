@@ -87,7 +87,7 @@ public class BattleMoveTask extends PokemonTask {
 
         if (this.attack.isEmpty()) title = new TranslationTextComponent("ftbquests.task.pixelmon.battle_move");
 
-        if (!this.pokemonSpec.isEmpty()) {
+        if (this.cachedSpec != null) {
             title = new TranslationTextComponent("ftbquests.task.pixelmon.battle_move.title_specific",
                     new TranslationTextComponent("attack." + this.attack),
                     new StringTextComponent(this.count > 1 ? " x" + this.count : ""),
@@ -98,7 +98,7 @@ public class BattleMoveTask extends PokemonTask {
     }
 
     public void onBattleMove(TeamData team, Pokemon pokemon, Attack move) {
-        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon))
+        if (!team.isCompleted(this) && (this.cachedSpec == null || this.cachedSpec.matches(pokemon))
                 && (this.attack.isEmpty() || this.attack.equalsIgnoreCase(move.getMove().getAttackName().toLowerCase().replace(' ', '_')))
                 && (this.crit == Tristate.DEFAULT || this.crit.isTrue() == move.didCrit)
         && (this.moveType == MoveType.ANY || (move.isMax ? this.moveType == MoveType.DYNAMAX : move.isZ ? this.moveType == MoveType.Z_MOVE : this.moveType == MoveType.NORMAL))) {

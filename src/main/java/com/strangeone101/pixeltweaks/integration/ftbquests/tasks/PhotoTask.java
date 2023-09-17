@@ -54,7 +54,7 @@ public class PhotoTask extends PokemonTask {
     }
 
     public void takePhoto(TeamData team, PixelmonEntity entity) {
-        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(entity.getPokemon()) != this.invert)
+        if (!team.isCompleted(this) && (this.cachedSpec == null || this.cachedSpec.matches(entity.getPokemon()) != this.invert)
                 && (!entity.isBossPokemon() || ignoreBosses)) {
             team.addProgress(this, 1);
         }

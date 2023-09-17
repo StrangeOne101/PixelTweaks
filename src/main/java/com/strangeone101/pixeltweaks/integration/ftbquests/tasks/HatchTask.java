@@ -19,7 +19,7 @@ public class HatchTask extends PokemonTask {
     }
 
     public void onHatch(TeamData team, Pokemon pokemon) {
-        if (!team.isCompleted(this) && team.file.isServerSide() && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon) != this.invert)) {
+        if (!team.isCompleted(this) && team.file.isServerSide() && (this.cachedSpec == null || this.cachedSpec.matches(pokemon) != this.invert)) {
             team.addProgress(this, 1L);
         }
     }

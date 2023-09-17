@@ -102,7 +102,7 @@ public class EvolutionTask extends PokemonTask {
     }
 
     public void evolvePokemon(TeamData team, ServerPlayerEntity player, Pokemon pokemon, Evolution evolution) {
-        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon) != this.invert) && matches(evolution)) {
+        if (!team.isCompleted(this) && (this.cachedSpec == null || this.cachedSpec.matches(pokemon) != this.invert) && matches(evolution)) {
             team.addProgress(this, 1L);
         }
     }

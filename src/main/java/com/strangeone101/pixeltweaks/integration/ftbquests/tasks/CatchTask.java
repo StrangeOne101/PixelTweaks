@@ -63,7 +63,7 @@ public class CatchTask extends PokemonTask {
     }
 
     public void catchPokemon(TeamData team, Pokemon pokemon) {
-        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon))
+        if (!team.isCompleted(this) && (this.cachedSpec == null || this.cachedSpec.matches(pokemon))
                 //&& (fromRaid == Tristate.DEFAULT || fromRaid.isFalse())) { //If it isn't from raids
              && (getType == GetType.CATCH || getType == GetType.CATCH_OR_RAID || getType == GetType.ANY || getType == GetType.ANY_EXCEPT_COMMANDS)) {
                 team.addProgress(this, 1L);
@@ -71,28 +71,28 @@ public class CatchTask extends PokemonTask {
     }
 
     public void catchRaidPokemon(TeamData team, Pokemon pokemon) {
-        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon) != this.invert)
+        if (!team.isCompleted(this) && (this.cachedSpec == null || this.cachedSpec.matches(pokemon) != this.invert)
                 && (getType == GetType.CATCH_OR_RAID || getType == GetType.RAID || getType == GetType.ANY || getType == GetType.ANY_EXCEPT_COMMANDS)) { //If it IS from raids
             team.addProgress(this, 1L);
         }
     }
 
     public void onCommand(TeamData team, Pokemon pokemon) {
-        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon) != this.invert)
+        if (!team.isCompleted(this) && (this.cachedSpec == null || this.cachedSpec.matches(pokemon) != this.invert)
                 && (getType == GetType.COMMAND || getType == GetType.ANY)) { //If it is from commands
             team.addProgress(this, 1L);
         }
     }
 
     public void onChristmas(TeamData team, Pokemon pokemon) {
-        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon) != this.invert)
+        if (!team.isCompleted(this) && (this.cachedSpec == null || this.cachedSpec.matches(pokemon) != this.invert)
                 && (getType == GetType.CHRISTMAS || getType == GetType.ANY || getType == GetType.ANY_EXCEPT_COMMANDS)) { //If it is from commands
             team.addProgress(this, 1L);
         }
     }
 
     public void onFossil(TeamData team, Pokemon pokemon) {
-        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon) != this.invert)
+        if (!team.isCompleted(this) && (this.cachedSpec == null || this.cachedSpec.matches(pokemon) != this.invert)
                 && (getType == GetType.FOSSIL || getType == GetType.ANY || getType == GetType.ANY_EXCEPT_COMMANDS)) { //If it is from fossils
             team.addProgress(this, 1L);
         }

@@ -77,7 +77,7 @@ public class ExternalMoveTask extends PokemonTask {
             title.appendString(" ");
             title.appendString(count + "x");
         }
-        if (!this.pokemonSpec.isEmpty()) {
+        if (this.cachedSpec != null) {
             title.appendString(" ");
             title.appendSibling(getPokemon());
         }
@@ -92,7 +92,7 @@ public class ExternalMoveTask extends PokemonTask {
     public void onMove(TeamData teamData, String move, Pokemon pokemon) {
         if (teamData.isCompleted(this)) return;
 
-        if (teamData.file.isServerSide() && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon) != this.invert)
+        if (teamData.file.isServerSide() && (this.cachedSpec == null || this.cachedSpec.matches(pokemon) != this.invert)
                 && this.move.equals(move)) {
             teamData.addProgress(this, 1);
         }

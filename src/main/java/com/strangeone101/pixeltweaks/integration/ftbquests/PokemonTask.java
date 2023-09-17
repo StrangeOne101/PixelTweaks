@@ -16,10 +16,8 @@ import com.pixelmonmod.api.pokemon.requirement.impl.UltraBeastRequirement;
 import com.pixelmonmod.pixelmon.api.pokemon.PokerusStrain;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.icon.Icon;
-import dev.ftb.mods.ftbquests.gui.CustomToast;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.task.Task;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
@@ -35,7 +33,6 @@ public abstract class PokemonTask extends Task {
 
     public int count = 1;
     public boolean invert = false;
-    public String pokemonSpec = "";
     public transient PokemonSpecification cachedSpec;
     public PokemonTask(Quest q) {
         super(q);
@@ -49,7 +46,7 @@ public abstract class PokemonTask extends Task {
     @Override
     public void writeData(CompoundNBT nbt) {
         super.writeData(nbt);
-        nbt.putString("pokemon", this.pokemonSpec);
+        nbt.putString("pokemon", this.cachedSpec == null ? "" : this.cachedSpec.toString());
         nbt.putInt("count", this.count);
         nbt.putBoolean("invert", this.invert);
     }
@@ -57,8 +54,8 @@ public abstract class PokemonTask extends Task {
     @Override
     public void readData(CompoundNBT nbt) {
         super.readData(nbt);
-        this.pokemonSpec = nbt.getString("pokemon");
-        this.cachedSpec = PokemonSpecificationProxy.create(this.pokemonSpec);
+        String pokemonSpec = nbt.getString("pokemon");
+        this.cachedSpec = pokemonSpec.isEmpty() ? null : PokemonSpecificationProxy.create(pokemonSpec);
         this.count = nbt.getInt("count");
         this.invert = nbt.getBoolean("invert");
     }
@@ -66,7 +63,7 @@ public abstract class PokemonTask extends Task {
     @Override
     public void writeNetData(PacketBuffer buffer) {
         super.writeNetData(buffer);
-        buffer.writeString(this.pokemonSpec);
+        buffer.writeString(this.cachedSpec == null ? "" : this.cachedSpec.toString());
         buffer.writeVarInt(this.count);
         buffer.writeBoolean(this.invert);
     }
@@ -74,8 +71,8 @@ public abstract class PokemonTask extends Task {
     @Override
     public void readNetData(PacketBuffer buffer) {
         super.readNetData(buffer);
-        this.pokemonSpec = buffer.readString();
-        this.cachedSpec = PokemonSpecificationProxy.create(this.pokemonSpec);
+        String pokemonSpec = buffer.readString();
+        this.cachedSpec = pokemonSpec.isEmpty() ? null : PokemonSpecificationProxy.create(pokemonSpec);
         this.count = buffer.readVarInt();
         this.invert = buffer.readBoolean();
     }
@@ -85,18 +82,7 @@ public abstract class PokemonTask extends Task {
     public void getConfig(ConfigGroup config) {
         super.getConfig(config);
 
-        config.addString("pokemon", this.pokemonSpec, (v) -> {
-            this.pokemonSpec = v;
-            try {
-                this.cachedSpec = PokemonSpecificationProxy.create(this.pokemonSpec);
-            } catch (Exception e) {
-                CustomToast toast = new CustomToast(new TranslationTextComponent("pixeltweaks.errors.invalid_spec.title"),
-                        Icon.getIcon("minecraft:item/barrier"), new TranslationTextComponent("pixeltweaks.errors.invalid_spec.desc"));
-                this.cachedSpec = null;
-                Minecraft.getInstance().getToastGui().add(toast);
-            }
-
-        }, "");
+        config.add("pokemon", new PokemonConfig(false), this.cachedSpec, v -> this.cachedSpec = v, null);
         config.addInt("count", this.count, v -> this.count = v, 1, 1, Integer.MAX_VALUE);
         config.addBool("invert", this.invert, v -> this.invert = v, false);
     }
@@ -116,7 +102,7 @@ public abstract class PokemonTask extends Task {
     @Override
     @OnlyIn(Dist.CLIENT)
     public Icon getAltIcon() {
-        if (cachedSpec.getValue(SpeciesRequirement.class).isPresent() && !this.pokemonSpec.isEmpty() && !this.pokemonSpec.split(" ")[0].equalsIgnoreCase("random")) {
+        if (cachedSpec != null && cachedSpec.getValue(SpeciesRequirement.class).isPresent() && !this.cachedSpec.toString().isEmpty() && !this.cachedSpec.toString().split(" ")[0].equalsIgnoreCase("random")) {
             return Icon.getIcon(cachedSpec.create().getSprite());
         }
 
@@ -178,7 +164,7 @@ public abstract class PokemonTask extends Task {
             }
             if (spec.getValue(GenerationRequirement.class).isPresent()) {
                 TranslationTextComponent newType = new TranslationTextComponent("pixeltweaks.lang.generation",
-                        spec.getValue(GenerationRequirement.class).get().intValue());
+                        spec.getValue(GenerationRequirement.class).get());
                 componentList.add(newType);
             }
             if (spec.getValue(TypeRequirement.class).isPresent()) {

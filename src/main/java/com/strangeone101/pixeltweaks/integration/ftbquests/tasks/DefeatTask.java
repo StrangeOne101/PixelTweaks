@@ -110,7 +110,7 @@ public class DefeatTask extends PokemonTask {
     }
 
     public void defeatPokemon(TeamData team, PixelmonEntity pokemon, PixelmonEntity usedPokemon) {
-        if (!team.isCompleted(this) && (this.pokemonSpec.isEmpty() || this.cachedSpec.matches(pokemon) != this.invert)
+        if (!team.isCompleted(this) && (this.cachedSpec == null || this.cachedSpec.matches(pokemon) != this.invert)
         && (wild == Tristate.DEFAULT || (pokemon.getPixelmonWrapper().getParticipant() instanceof WildPixelmonParticipant
                         || pokemon.getPixelmonWrapper().getParticipant() instanceof RaidPixelmonParticipant) == wild.get(true))
         && (this.usedPokemonSpec.isEmpty() || this.cachedUsedSpec.matches(usedPokemon) != this.invertUsed)) {
