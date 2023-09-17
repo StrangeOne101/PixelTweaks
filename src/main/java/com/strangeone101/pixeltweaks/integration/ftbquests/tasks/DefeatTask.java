@@ -6,6 +6,7 @@ import com.pixelmonmod.api.pokemon.requirement.impl.SpeciesRequirement;
 import com.pixelmonmod.pixelmon.battles.controller.participants.RaidPixelmonParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
+import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonConfig;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTaskTypes;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
@@ -25,7 +26,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class DefeatTask extends PokemonTask {
 
     public Tristate wild = Tristate.DEFAULT;
-    public String usedPokemonSpec = "";
     public transient PokemonSpecification cachedUsedSpec;
     public boolean invertUsed;
 
@@ -42,7 +42,7 @@ public class DefeatTask extends PokemonTask {
     public void writeData(CompoundNBT nbt) {
         super.writeData(nbt);
         wild.write(nbt, "wild");
-        nbt.putString("usedPokemonSpec", usedPokemonSpec);
+        nbt.putString("usedPokemonSpec", cachedUsedSpec == null ? "" : cachedUsedSpec.toString());
         nbt.putBoolean("invertUsed", invertUsed);
     }
 
@@ -50,8 +50,8 @@ public class DefeatTask extends PokemonTask {
     public void readData(CompoundNBT nbt) {
         super.readData(nbt);
         wild = Tristate.read(nbt, "wild");
-        usedPokemonSpec = nbt.getString("usedPokemonSpec");
-        cachedUsedSpec = PokemonSpecificationProxy.create(usedPokemonSpec);
+        String usedPokemonSpec = nbt.getString("usedPokemonSpec");
+        cachedUsedSpec = usedPokemonSpec.isEmpty() ? null : PokemonSpecificationProxy.create(usedPokemonSpec);
         invertUsed = nbt.getBoolean("invertUsed");
     }
 
@@ -59,7 +59,7 @@ public class DefeatTask extends PokemonTask {
     public void writeNetData(PacketBuffer buffer) {
         super.writeNetData(buffer);
         wild.write(buffer);
-        buffer.writeString(usedPokemonSpec);
+        buffer.writeString(cachedUsedSpec == null ? "" : cachedUsedSpec.toString());
         buffer.writeBoolean(invertUsed);
     }
 
@@ -67,15 +67,15 @@ public class DefeatTask extends PokemonTask {
     public void readNetData(PacketBuffer buffer) {
         super.readNetData(buffer);
         wild = Tristate.read(buffer);
-        usedPokemonSpec = buffer.readString();
-        cachedUsedSpec = PokemonSpecificationProxy.create(usedPokemonSpec);
+        String usedPokemonSpec = buffer.readString();
+        cachedUsedSpec = usedPokemonSpec.isEmpty() ? null : PokemonSpecificationProxy.create(usedPokemonSpec);
         invertUsed = buffer.readBoolean();
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public Icon getAltIcon() {
-        if (cachedUsedSpec.getValue(SpeciesRequirement.class).isPresent() && !this.usedPokemonSpec.isEmpty()) {
+        if (cachedUsedSpec != null && cachedUsedSpec.getValue(SpeciesRequirement.class).isPresent()) {
             return Icon.getIcon(cachedUsedSpec.create().getSprite());
         }
 
@@ -85,7 +85,7 @@ public class DefeatTask extends PokemonTask {
     @Override
     @OnlyIn(Dist.CLIENT)
     public ITextComponent getAltTitle() {
-        if (usedPokemonSpec.isEmpty()) return super.getAltTitle();
+        if (cachedUsedSpec == null) return super.getAltTitle();
 
         StringTextComponent pokemonDefeat = new StringTextComponent("");
         if (count > 1) {
@@ -105,7 +105,8 @@ public class DefeatTask extends PokemonTask {
     public void getConfig(ConfigGroup config) {
         super.getConfig(config);
         config.addTristate("wild", wild, v -> wild = v, Tristate.DEFAULT);
-        config.addString("usedPokemonSpec", usedPokemonSpec, v -> usedPokemonSpec = v, "");
+        config.add("usedPokemonSpec", new PokemonConfig(false), this.cachedUsedSpec, v -> this.cachedUsedSpec = v, null);
+        //config.addString("usedPokemonSpec", usedPokemonSpec, v -> usedPokemonSpec = v, "");
         config.addBool("invertUsed", invertUsed, v -> invertUsed = v, false);
     }
 
@@ -113,7 +114,7 @@ public class DefeatTask extends PokemonTask {
         if (!team.isCompleted(this) && (this.cachedSpec == null || this.cachedSpec.matches(pokemon) != this.invert)
         && (wild == Tristate.DEFAULT || (pokemon.getPixelmonWrapper().getParticipant() instanceof WildPixelmonParticipant
                         || pokemon.getPixelmonWrapper().getParticipant() instanceof RaidPixelmonParticipant) == wild.get(true))
-        && (this.usedPokemonSpec.isEmpty() || this.cachedUsedSpec.matches(usedPokemon) != this.invertUsed)) {
+        && (this.cachedUsedSpec == null || this.cachedUsedSpec.matches(usedPokemon) != this.invertUsed)) {
             team.addProgress(this, 1L);
         }
     }

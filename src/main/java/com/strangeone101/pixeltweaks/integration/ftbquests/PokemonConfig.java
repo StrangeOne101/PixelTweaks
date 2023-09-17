@@ -57,6 +57,10 @@ public class PokemonConfig extends ConfigFromString<PokemonSpecification> {
             if (!requiresSpecies && args[0].equalsIgnoreCase("random")) {
                 return false;
             } else if (requiresSpecies) {
+                if (args[0].equalsIgnoreCase("random")) {
+                    if (consumer != null) consumer.accept(pokemonSpecification);
+                    return true;
+                }
                 if (!pokemonSpecification.getValue(SpeciesRequirement.class).isPresent()
                         || pokemonSpecification.getValue(SpeciesRequirement.class).get().getKey().equalsIgnoreCase("MISSINGNO")) {
                     return false;
