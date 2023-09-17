@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.9.5
+- Added PokemonConfig type for FTB Quests
+  - Allows the specification property to now get on-the-fly parsing. Will evaluate the specs and make sure it is valid before accepting the value
+- Added BossTier property to Defeat Trainer Task
+- Fixed custom battle music not stopping when the battle ends sometimes
+- Fixed Z-moves crashing the game when using battle sound effects
+- Fixed Critical Hit property in Battle Move tasks not working
+- Fixed pokedex percentage tasks having incorrect percentage
+- Fixed pokedex task's single mon filter triggering for any mon
+- Fixed abilities that cause weather not triggering weather battle actions
+
 ## 1.9.4
 - Added LIGHT_SCREEN and REFLECT battle action types
 - Added "Source Pokemon Spec" to defeat tasks. Allows you to check what pokemon defeated the other
