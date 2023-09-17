@@ -166,9 +166,11 @@ public abstract class BattleMessagePacketMixin extends BattleTaskPacket {
                 action = Action.REFLECT;
                 break;
             case "pixelmon.effect.raining":
+            case "pixelmon.abilities.drizzle":
                 action = Action.WEATHER_RAINY;
                 break;
             case "pixelmon.effect.starthail":
+            case "pixelmon.abilities.snowwarning":
                 action = Action.WEATHER_HAIL;
                 break;
             case "pixelmon.status.extremelyheavyrain":
@@ -176,12 +178,15 @@ public abstract class BattleMessagePacketMixin extends BattleTaskPacket {
                 subAction = Action.WEATHER_RAINY;
                 break;
             case "pixelmon.effect.sandstorm":
+            case "pixelmon.abilities.sandstream":
+            case "pixelmon.abilities.sandspit":
                 action = Action.WEATHER_SANDSTORM;
                 break;
             case "pixelmon.effect.startsnow":
                 action = Action.WEATHER_SNOW;
                 break;
             case "pixelmon.effect.harshsunlight":
+            case "pixelmon.abilities.drought":
                 action = Action.WEATHER_SUNNY;
                 break;
             case "pixelmon.effect.extremelybrightlight":

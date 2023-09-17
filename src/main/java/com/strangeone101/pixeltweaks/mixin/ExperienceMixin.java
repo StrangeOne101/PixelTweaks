@@ -52,7 +52,7 @@ public class ExperienceMixin {
         }
     }
 
-    @Shadow
+    @Shadow(remap = false)
     private static void calcExp(PixelmonWrapper faintedPokemon, PixelmonWrapper expReceiver, double scaleFactor) {
         throw new MixinInitialisationError("Mixin failed to shadow calcExp");
     }
