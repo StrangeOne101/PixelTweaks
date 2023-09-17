@@ -3,6 +3,7 @@
 ## 1.9.5
 - Added PokemonConfig type for FTB Quests
   - Allows the specification property to now get on-the-fly parsing. Will evaluate the specs and make sure it is valid before accepting the value
+- Added the ability for Exp All to be used even if it is inside a backpack or shulker box
 - Added BossTier property to Defeat Trainer Task
 - Fixed custom battle music not stopping when the battle ends sometimes
 - Fixed Z-moves crashing the game when using battle sound effects
