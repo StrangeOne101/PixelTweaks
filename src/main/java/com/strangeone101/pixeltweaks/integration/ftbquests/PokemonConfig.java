@@ -44,13 +44,19 @@ public class PokemonConfig extends ConfigFromString<PokemonSpecification> {
     @Override
     public boolean parse(Consumer<PokemonSpecification> consumer, String s) {
         try {
-            if (s.isEmpty()) {
+            if (s.isEmpty()) { //If the spec is blank, return a null spec, but only if it doesn't require a species
                 if (!requiresSpecies) {
                     if (consumer != null) consumer.accept(null);
                     return true;
                 }
                 return false;
             }
+
+            if (s.charAt(0) == '*') { //Override the parsing of the spec
+                if (consumer != null) consumer.accept(PokemonSpecificationProxy.create(s.substring(1)));
+                return true;
+            }
+
             PokemonSpecification pokemonSpecification = PokemonSpecificationProxy.create(s);
 
             String[] args = s.split(" ");

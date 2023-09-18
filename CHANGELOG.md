@@ -3,6 +3,8 @@
 ## 1.9.5
 - Added PokemonConfig type for FTB Quests
   - Allows the specification property to now get on-the-fly parsing. Will evaluate the specs and make sure it is valid before accepting the value
+  - Make sure to have any extra spec mods installed on the client if you wish to use those specs in quests. The spec mods only have to be installed while you are setting up the quests, so FTB quests on your client knows about the specs
+  - You can use a `*` at the start of the spec to override parsing
 - Added the ability for Exp All to be used even if it is inside a backpack or shulker box
 - Added BossTier property to Defeat Trainer Task
 - Fixed custom battle music not stopping when the battle ends sometimes
