@@ -22,7 +22,7 @@
 - Make local weather systems like the games
 - ~~Make Mimikyu, Genesect and Aegislash able to have forms without their abilities ruining the form in battle (their abilities have a hardcoded form to revert to in situations)~~ **DONE**
 - Add support for AmbienceExtras - so ambient music will stop with battles
-- Make music events support one time sounds
+- ~~Make music events support one time sounds~~ **DONE**
 - JEI recipes for forage and headbutts
 - JEI recipes for pokemon spawns
 - JEI recipes for evolutions

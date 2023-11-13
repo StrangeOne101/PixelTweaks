@@ -18,6 +18,7 @@ public class TweaksConfig {
     public static ForgeConfigSpec.ConfigValue<Integer> zygardeLuckyAttemptRate;
     public static ForgeConfigSpec.ConfigValue<Integer> zygardeStormCoreRate;
     public static ForgeConfigSpec.ConfigValue<Boolean> backpacksIntegration;
+    public static ForgeConfigSpec.ConfigValue<Boolean> enablePokemonChat;
     public static ForgeConfigSpec.ConfigValue<Double> catchMultiplier;
     public static ForgeConfigSpec.ConfigValue<Double> legendaryCatchMultiplier;
     public static ForgeConfigSpec.ConfigValue<Boolean> includeMythicals;
@@ -67,6 +68,9 @@ public class TweaksConfig {
 
         backpacksIntegration = BUILDER.comment("If UsefulBackpacks/SimplyBackpacks integration should be enabled. Default: true")
                 .define("backpacksIntegration", true);
+
+        enablePokemonChat = BUILDER.comment("If Pokemon chat replacement should be enabled. Allows players to use [Pokemon] and [Party] to show their pokemon in chat. Default: true")
+                .define("enablePokemonChat", true);
 
         BUILDER.pop();
         /*BUILDER.comment("All catch related features").push("Server Features - Catching");

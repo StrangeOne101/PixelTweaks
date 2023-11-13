@@ -10,8 +10,8 @@ import com.pixelmonmod.pixelmon.client.music.BattleMusic;
 import com.pixelmonmod.pixelmon.client.music.PixelmonMusic;
 import com.pixelmonmod.pixelmon.client.music.VoidMusicTicker;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
+import com.pixelmonmod.pixelmon.init.registry.SoundRegistration;
 import com.pixelmonmod.pixelmon.sounds.BattleMusicType;
-import com.pixelmonmod.pixelmon.sounds.PixelmonSounds;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.music.ChainedMusic;
 import com.strangeone101.pixeltweaks.music.SoundManager;
@@ -130,7 +130,7 @@ public abstract class BattleMusicMixin {
             song = null;
         }
 
-        SoundEvent soundEvent = PixelmonSounds.BATTLE_MUSIC.get(type);
+        SoundEvent soundEvent = SoundRegistration.BATTLE_MUSIC.get(type).get();
         SimpleSound record = new BattleMusic.FixedTrackSound(soundEvent, index, SoundCategory.MUSIC, PixelmonConfigProxy.getBattle().getBattleMusicVolume(), 1.0F, repeat, 0, ISound.AttenuationType.NONE, 0.0F, 0.0F, 0.0F);
         song = record;
         PixelmonMusic.fadeSoundToStart(record, 2000L);

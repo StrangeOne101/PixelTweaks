@@ -2,6 +2,7 @@ package com.strangeone101.pixeltweaks.integration.ftbquests;
 
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.BattleItemTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.BattleMoveTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.SubmitPokemonTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.BreedTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.CatchTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatPlayersTask;
@@ -41,6 +42,7 @@ public class PokemonTaskTypes {
     public static TaskType BATTLE_ITEM;
     public static TaskType TAKE_PHOTO;
     public static TaskType EXTERNAL_MOVE;
+    public static TaskType SUBMIT_POKEMON;
 
 
     public static void register() {
@@ -79,7 +81,7 @@ public class PokemonTaskTypes {
                     WipeoutTask::new, () -> Icon.getIcon("pixelmon:items/helditems/redcard"));
 
             DEFEAT_PLAYER = TaskTypes.register(new ResourceLocation("pixelmon", "defeat_player"),
-                    DefeatPlayersTask::new, () -> Icon.getIcon("pixelmon:textures/icon32x32.png"));
+                    DefeatPlayersTask::new, () -> Icon.getIcon("pixelmon:textures/gui/ribbons/isi.png"));
 
             DEFEAT_TRAINER = TaskTypes.register(new ResourceLocation("pixelmon", "defeat_trainer"),
                     DefeatTrainerTask::new, () -> Icon.getIcon("ftblibrary:textures/icons/player.png"));
@@ -95,6 +97,9 @@ public class PokemonTaskTypes {
 
             EXTERNAL_MOVE = TaskTypes.register(new ResourceLocation("pixelmon", "external_move"),
                     ExternalMoveTask::new, () -> Icon.getIcon("pixelmon:textures/gui/overlay/externalmoves/cut.png"));
+
+            SUBMIT_POKEMON = TaskTypes.register(new ResourceLocation("pixelmon", "submit_pokemon"),
+                    SubmitPokemonTask::new, () -> Icon.getIcon("pixelmon:items/pokeballs/premier_ball"));
 
 
         } catch (Exception e) {

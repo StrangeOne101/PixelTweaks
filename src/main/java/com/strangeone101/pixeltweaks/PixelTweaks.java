@@ -82,6 +82,7 @@ public class PixelTweaks {
         new TridentDrops();
         new FoxImmunity();
         new AntiPokeTrample();
+        new PokeChat();
         ModIntegration.registerBackpackIntegrations();
         ModIntegration.registerFTBQuestsIntegration();
 

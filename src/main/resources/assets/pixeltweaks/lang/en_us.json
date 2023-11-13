@@ -1,6 +1,6 @@
 {
     "pixeltweaks.subtitle.sparkle": "Shiny Pokemon Sparkles",
-    "pixelmon.interaction.bottlecap.level": "%s must be level %i before using this!",
+    "pixelmon.interaction.bottlecap.level": "%s must be level %s before using this!",
     "pixeltweaks.subtitle.music.arceus": "Arceus Battle Music",
     "gamerule.doPokemonSpawning": "Spawn Pokemon",
     "gamerule.doTrainerSpawning": "Spawn Trainers (NPCs)",
@@ -166,6 +166,15 @@
     "ftbquests.task.pixelmon.external_move.pokemon.tooltip": "The pokemon spec to match. Can match species, type, ball, etc. Can be blank for any pokemon.\n\nExamples:\n - 'species:Arcanine form:Hisuian'\n - 'shiny type:water'\n - 'legendary ball:master_ball'\n\nFor more information, see https://pixelmonmod.com/wiki/Pokemon_spec",
     "ftbquests.task.pixelmon.external_move.invert": "Invert Spec",
     "ftbquests.task.pixelmon.external_move.invert.tooltip": "Whether to invert the pokemon specification. If true, the task will match all pokemon EXCEPT the ones that match the specification",
+    "ftbquests.task.pixelmon.submit_pokemon": "Submit Pokemon",
+    "ftbquests.task.pixelmon.submit_pokemon.title": "Catch and Submit %s",
+    "ftbquests.task.pixelmon.submit_pokemon.pokemon": "Pokemon Specification",
+    "ftbquests.task.pixelmon.submit_pokemon.pokemon.tooltip": "The pokemon spec to match. Can match species, type, ball, etc. Can be blank for any pokemon.\n\nExamples:\n - 'species:Arcanine form:Hisuian'\n - 'shiny type:water'\n - 'legendary ball:master_ball'\n\nFor more information, see https://pixelmonmod.com/wiki/Pokemon_spec",
+    "ftbquests.task.pixelmon.submit_pokemon.count": "Amount",
+    "ftbquests.task.pixelmon.submit_pokemon.party": "Remove Pokemon From",
+    "ftbquests.task.pixelmon.submit_pokemon.party.tooltip": "Where should the pokemon be taken from?",
+    "ftbquests.task.pixelmon.submit_pokemon.invert": "Invert Spec",
+    "ftbquests.task.pixelmon.submit_pokemon.invert.tooltip": "Whether to invert the pokemon specification. If true, the task will match all pokemon EXCEPT the ones that match the specification",
     "ftbquests.reward.pixelmon.pokeloot": "PokeLoot Chest Drop",
     "ftbquests.reward.pixelmon.pokeloot.title": "%s Chest Drop",
     "ftbquests.reward.pixelmon.pokeloot.one": "Poke Ball",
@@ -233,6 +242,9 @@
     "pixeltweaks.battle_item_type.herb": "Herb",
     "pixeltweaks.battle_item_type.status_heal": "Status Heal",
     "pixeltweaks.battle_item_type.escape": "Escape",
+    "pixeltweaks.party.only_party": "Party",
+    "pixeltweaks.party.only_box": "Box",
+    "pixeltweaks.party.all": "Party or Box",
     "pixeltweaks.lang.pokemon": "Pokemon",
     "pixeltweaks.lang.random": "Random",
     "pixeltweaks.lang.type": "%s Type",
@@ -244,5 +256,7 @@
     "pixeltweaks.lang.pokerus": "with Pokerus",
     "pixeltweaks.lang.not": "Non %s",
     "pixeltweaks.errors.invalid_spec.title": "Invalid Pokemon Spec!",
-    "pixeltweaks.errors.invalid_spec.desc": "An error occurred parsing that spec!"
+    "pixeltweaks.errors.invalid_spec.desc": "An error occurred parsing that spec!",
+    "pixeltweaks.errors.pokemon_not_found.title": "You do not have that pokemon!",
+    "pixeltweaks.errors.pokemon_not_found.desc": "You cannot submit a pokemon you do not have!"
 }

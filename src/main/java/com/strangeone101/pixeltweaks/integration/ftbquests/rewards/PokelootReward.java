@@ -2,7 +2,7 @@ package com.strangeone101.pixeltweaks.integration.ftbquests.rewards;
 
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.pixelmonmod.pixelmon.entities.npcs.registry.DropItemRegistry;
-import com.pixelmonmod.pixelmon.sounds.PixelmonSounds;
+import com.pixelmonmod.pixelmon.init.registry.SoundRegistration;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonRewardTypes;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.config.NameMap;
@@ -43,7 +43,7 @@ public class PokelootReward extends Reward {
     @Override
     public void claim(ServerPlayerEntity player, boolean notify) {
         if (playSound) {
-            player.playSound(PixelmonSounds.POKELOOT_OBTAINED, SoundCategory.BLOCKS, 0.2F, 1.0F);
+            player.playSound(SoundRegistration.POKELOOT_OBTAINED.get(), SoundCategory.BLOCKS, 0.2F, 1.0F);
         }
 
         if (notify) {
