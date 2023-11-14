@@ -2,17 +2,7 @@ package com.strangeone101.pixeltweaks.integration.ftbquests;
 
 import com.pixelmonmod.api.pokemon.PokemonSpecification;
 import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
-import com.pixelmonmod.api.pokemon.requirement.impl.FormRequirement;
-import com.pixelmonmod.api.pokemon.requirement.impl.GenderRequirement;
-import com.pixelmonmod.api.pokemon.requirement.impl.GenerationRequirement;
-import com.pixelmonmod.api.pokemon.requirement.impl.LegendaryRequirement;
-import com.pixelmonmod.api.pokemon.requirement.impl.PaletteRequirement;
-import com.pixelmonmod.api.pokemon.requirement.impl.PokeBallRequirement;
-import com.pixelmonmod.api.pokemon.requirement.impl.PokerusRequirement;
-import com.pixelmonmod.api.pokemon.requirement.impl.ShinyRequirement;
-import com.pixelmonmod.api.pokemon.requirement.impl.SpeciesRequirement;
-import com.pixelmonmod.api.pokemon.requirement.impl.TypeRequirement;
-import com.pixelmonmod.api.pokemon.requirement.impl.UltraBeastRequirement;
+import com.pixelmonmod.api.pokemon.requirement.impl.*;
 import com.pixelmonmod.pixelmon.api.pokemon.PokerusStrain;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
@@ -203,8 +193,16 @@ public abstract class PokemonTask extends Task {
             componentList.add(gender);
         }
         if (spec.getValue(ShinyRequirement.class).isPresent()) {
+            boolean bool = spec.getRequirement(ShinyRequirement.class).get().getValue();
             TranslationTextComponent shiny = new TranslationTextComponent("pixelmon.palette.shiny");
+            if (!bool) shiny = new TranslationTextComponent("pixeltweaks.lang.not", new TranslationTextComponent("pixelmon.palette.shiny"));
             componentList.add(shiny);
+        }
+        if (spec.getValue(EggRequirement.class).isPresent()) {
+            boolean bool = spec.getRequirement(EggRequirement.class).get().getValue();
+            TranslationTextComponent egg = new TranslationTextComponent("pixelmon.egg");
+            if (!bool) egg = new TranslationTextComponent("pixeltweaks.lang.not", new TranslationTextComponent("pixelmon.egg"));
+            componentList.add(egg);
         }
 
         StringTextComponent all = new StringTextComponent("");
