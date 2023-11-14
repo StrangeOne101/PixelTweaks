@@ -1,23 +1,6 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests;
 
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.BattleItemTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.BattleMoveTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.SubmitPokemonTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.BreedTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.CatchTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatPlayersTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatTrainerTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.EvolutionTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.ExternalMoveTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.HatchTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.LevelTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PhotoTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokeDollarsTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokedexAmountTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokedexPercentageTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.TradeTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.WipeoutTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.*;
 import dev.ftb.mods.ftbquests.quest.task.TaskType;
 import dev.ftb.mods.ftbquests.quest.task.TaskTypes;
 import net.minecraft.util.ResourceLocation;
@@ -43,6 +26,7 @@ public class PokemonTaskTypes {
     public static TaskType TAKE_PHOTO;
     public static TaskType EXTERNAL_MOVE;
     public static TaskType SUBMIT_POKEMON;
+    public static TaskType RELEASE_POKEMON;
 
 
     public static void register() {
@@ -100,6 +84,10 @@ public class PokemonTaskTypes {
 
             SUBMIT_POKEMON = TaskTypes.register(new ResourceLocation("pixelmon", "submit_pokemon"),
                     SubmitPokemonTask::new, () -> Icon.getIcon("pixelmon:items/pokeballs/premier_ball"));
+
+            RELEASE_POKEMON = TaskTypes.register(new ResourceLocation("pixelmon", "release_pokemon"),
+                    ReleaseTask::new, () -> Icon.getIcon("pixeltweaks:textures/gui/release2.png"));
+
 
 
         } catch (Exception e) {

@@ -4,13 +4,8 @@ import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.battles.BattleResults;
 import com.pixelmonmod.pixelmon.api.daycare.event.DayCareEvent;
 import com.pixelmonmod.pixelmon.api.economy.EconomyEvent;
-import com.pixelmonmod.pixelmon.api.events.CameraEvent;
-import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
-import com.pixelmonmod.pixelmon.api.events.EggHatchEvent;
-import com.pixelmonmod.pixelmon.api.events.EvolveEvent;
-import com.pixelmonmod.pixelmon.api.events.LevelUpEvent;
-import com.pixelmonmod.pixelmon.api.events.PokedexEvent;
-import com.pixelmonmod.pixelmon.api.events.PokemonReceivedEvent;
+import com.pixelmonmod.pixelmon.api.enums.DeleteType;
+import com.pixelmonmod.pixelmon.api.events.*;
 import com.pixelmonmod.pixelmon.api.events.battles.AttackEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.api.events.moveskills.UseMoveSkillEvent;
@@ -25,23 +20,7 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipan
 import com.pixelmonmod.pixelmon.battles.controller.participants.TrainerParticipant;
 import com.pixelmonmod.pixelmon.entities.npcs.NPCTrainer;
 import com.strangeone101.pixeltweaks.PixelTweaks;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.BattleMoveTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.BreedTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.CatchTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatPlayersTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.DefeatTrainerTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.EvolutionTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.ExternalMoveTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.HatchTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.LevelTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PhotoTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokeDollarsTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokedexAmountTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokedexPercentageTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.PokedexTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.TradeTask;
-import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.WipeoutTask;
+import com.strangeone101.pixeltweaks.integration.ftbquests.tasks.*;
 import dev.ftb.mods.ftbquests.events.ClearFileCacheEvent;
 import dev.ftb.mods.ftbquests.quest.ServerQuestFile;
 import dev.ftb.mods.ftbquests.quest.TeamData;
@@ -74,6 +53,7 @@ public class TaskListener {
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onBattleMove);
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onTakePhoto);
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onExternalMove);
+        Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onPokemonRelease);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, this::onLogin);
         ClearFileCacheEvent.EVENT.register(this::onFTBCacheClear);
 
@@ -94,6 +74,7 @@ public class TaskListener {
     private List<BattleMoveTask> battleMoveTasks = null;
     private List<PhotoTask> photoTasks = null;
     private List<ExternalMoveTask> externalMoveTasks = null;
+    private List<ReleaseTask> releaseTasks = null;
 
     @Deprecated
     private Set<UUID> antiOverflow = new HashSet<>();
@@ -450,8 +431,21 @@ public class TaskListener {
                 }
             }
         }
+    }
 
+    public void onPokemonRelease(PixelmonDeletedEvent event) {
+        if (event.deleteType == DeleteType.PC) {
+            if (releaseTasks == null) releaseTasks = ServerQuestFile.INSTANCE.collect(ReleaseTask.class);
+            if (releaseTasks.isEmpty()) return;
 
+            TeamData data = ServerQuestFile.INSTANCE.getData(event.player);
+
+            for (ReleaseTask task : releaseTasks) {
+                if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
+                    task.releasePokemon(data, event.player, event.pokemon);
+                }
+            }
+        }
     }
 
     private void onFTBCacheClear(ClearFileCacheEvent event) {
@@ -471,6 +465,7 @@ public class TaskListener {
             this.hatchTasks = null;
             this.tradeTasks = null;
             this.pokeDollarsTasks = null;
+            this.releaseTasks = null;
         }
     }
 }
