@@ -30,6 +30,7 @@
     "client.WorldHelperMixin",
     "client.PixelmonItemMixin",
     "client.network.BattleMessagePacketMixin",
-    "integration.FTBQuests_Pokedollar"
+    "integration.FTBQuests_Pokedollar",
+    "integration.FTBLibraryContextMenuMixin"
   ]
 }
