@@ -1,8 +1,12 @@
 package com.strangeone101.pixeltweaks.tweaks;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.Gender;
+import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
 import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
@@ -12,6 +16,15 @@ import com.pixelmonmod.pixelmon.battles.attacks.ImmutableAttack;
 import com.pixelmonmod.pixelmon.items.SpriteItem;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.TweaksConfig;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -20,8 +33,12 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +52,14 @@ public class PokeChat {
     private final Pattern party = Pattern.compile("\\[party]", Pattern.CASE_INSENSITIVE);
     private final Pattern slot = Pattern.compile("\\[(?:slot|pokemon)[(1-6)]]", Pattern.CASE_INSENSITIVE);
 
+    private float zLevel = Minecraft.getInstance().getItemRenderer().zLevel;
+
     public PokeChat() {
         if (TweaksConfig.enablePokemonChat.get()) {
             MinecraftForge.EVENT_BUS.addListener(this::onChat);
+            if (FMLEnvironment.dist == Dist.CLIENT) {
+                MinecraftForge.EVENT_BUS.addListener(this::onItemTooltip);
+            }
         }
     }
 
@@ -45,35 +67,43 @@ public class PokeChat {
     public void onChat(ServerChatEvent event) {
         long time = System.currentTimeMillis();
         if (event.getMessage().toLowerCase().matches(".*\\[(pokemon[1-6]?|party|slot[1-6])\\].*")) {
-            Pokemon pokemon = StorageProxy.getParty(event.getPlayer()).getSelectedPokemon();
-            String usedMatcher = this.pokemon.toString();
-            Matcher matcher = this.pokemon.matcher(event.getMessage());
-            Matcher matcher2 = this.party.matcher(event.getMessage());
-            Matcher matcher3 = this.slot.matcher(event.getMessage());
+            for (int i = 0; i < 6; i++) { //Stops an infinite loop, if it somehow occurs due to broken find and replace
+                Pokemon pokemon = null;
+                String usedMatcher = this.pokemon.toString();
+                ITextComponent c = event.getComponent();
+                String chat = c.getString();
+                Matcher matcher = this.pokemon.matcher(chat);
+                Matcher matcher2 = this.party.matcher(chat);
+                Matcher matcher3 = this.slot.matcher(chat);
 
-            if (matcher.find()) {
-                pokemon = StorageProxy.getParty(event.getPlayer()).getSelectedPokemon();
-            } else if (matcher3.find()) {
-                int slot = Integer.parseInt(matcher3.group().replaceAll("[^1-6]", ""));
-                pokemon = StorageProxy.getParty(event.getPlayer()).getAll()[slot - 1];
-                usedMatcher = "\\[(pokemon|slot)" + slot + "]";
+                if (matcher.find()) {
+                    pokemon = StorageProxy.getParty(event.getPlayer()).getSelectedPokemon();
+                } else if (matcher3.find()) {
+                    int slot = Integer.parseInt(matcher3.group().replaceAll("[^1-6]", ""));
+                    pokemon = StorageProxy.getParty(event.getPlayer()).getAll()[slot - 1];
+                    usedMatcher = "\\[(pokemon|slot)" + slot + "]";
+                }
+
+                if (pokemon != null) {
+                    ITextComponent component = pokemon.getFormattedDisplayName().deepCopy(); //The name of the pokemon. Nickname or localized.
+                    Style style = component.getStyle().setBold(false).setItalic(false).setFormatting(TextFormatting.GREEN);
+                    ((IFormattableTextComponent)component).mergeStyle(TextFormatting.RESET);
+
+                    HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ItemHover(getItem(pokemon)));
+                    ((IFormattableTextComponent) component).mergeStyle(style.setHoverEvent(hoverEvent));
+
+                    component = TextComponentUtils.wrapWithSquareBrackets(component); //Wrap in square brackets
+
+                    ITextComponent replaced = replaceInComponent(c, usedMatcher, component);
+                    event.setComponent(replaced);
+                    //PixelTweaks.LOGGER.info("TOok " + (System.currentTimeMillis() - time) + "ms");
+                } else {
+                    return;
+                }
             }
-
-            if (pokemon != null) {
-                ITextComponent component = pokemon.getFormattedDisplayName(); //The name of the pokemon. Nickname or localized.
-                ((IFormattableTextComponent)component).mergeStyle(TextFormatting.RESET).mergeStyle(TextFormatting.GREEN); //Make green
-
-                Style style = component.getStyle();
-                HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ItemHover(getItem(pokemon)));
-                ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "YES DADDY");
-                ((IFormattableTextComponent) component).mergeStyle(style.setHoverEvent(hoverEvent).setClickEvent(clickEvent).setItalic(false));
-
-                component = TextComponentUtils.wrapWithSquareBrackets(component); //Wrap in square brackets
-
-                event.setComponent(replaceInComponent(event.getComponent(), usedMatcher, component));
-            }
+            PixelTweaks.LOGGER.error("PokeChat exceeded 6 loops with message of: " + event.getComponent().getString());
         }
-        PixelTweaks.LOGGER.info("TOok " + (System.currentTimeMillis() - time) + "ms");
+
     }
 
     public static ITextComponent replaceInComponent(ITextComponent baseComponent, String matcher, ITextComponent replacement) {
@@ -84,11 +114,15 @@ public class PokeChat {
                 String[] split = baseString.split(matcher, 2);
                 String pre = split[0];
 
-                StringTextComponent newComponent = new StringTextComponent(pre);
+                IFormattableTextComponent newComponent = new StringTextComponent(pre);
                 newComponent.setStyle(baseComponent.getStyle());
                 newComponent.appendSibling(replacement);
 
-                if (split.length != 1) {
+                if (pre.equals("")) {
+                    newComponent = (IFormattableTextComponent) replacement;
+                }
+
+                if (split.length != 1 && !split[1].equals("")) {
                     String post = split[1];
                     StringTextComponent postComponent = new StringTextComponent(post);
                     postComponent.setStyle(baseComponent.getStyle());
@@ -109,16 +143,21 @@ public class PokeChat {
                     args[i] = replaceInComponent((ITextComponent) args[i], matcher, replacement);
                 }
             }
-        }
-        List<ITextComponent> siblings = baseComponent.getSiblings();
-        List<ITextComponent> newSiblings = new ArrayList<>(siblings.size());
 
-        for (ITextComponent sib : siblings) {
-            newSiblings.add(replaceInComponent(sib, matcher, replacement));
-        }
-        baseComponent.getSiblings().clear();
-        baseComponent.getSiblings().addAll(newSiblings);
+            baseComponent = new TranslationTextComponent(((TranslationTextComponent) baseComponent).getKey(), args);
 
+            //((TranslationTextComponent)baseComponent).ensureInitialized();
+        }
+        if (!(baseComponent instanceof TranslationTextComponent)) {
+            List<ITextComponent> siblings = baseComponent.getSiblings();
+            List<ITextComponent> newSiblings = new ArrayList<>(siblings.size());
+
+            for (ITextComponent sib : siblings) {
+                newSiblings.add(replaceInComponent(sib, matcher, replacement));
+            }
+            baseComponent.getSiblings().clear();
+            baseComponent.getSiblings().addAll(newSiblings);
+        }
 
         return baseComponent;
     }
@@ -128,9 +167,14 @@ public class PokeChat {
         CompoundNBT tag = stack.getTag();
         CompoundNBT display = new CompoundNBT();
 
-        IFormattableTextComponent name = (IFormattableTextComponent) pokemon.getFormattedDisplayName();
+        IFormattableTextComponent name = (IFormattableTextComponent) pokemon.getFormattedDisplayName().deepCopy();
         name.mergeStyle(TextFormatting.BOLD, TextFormatting.DARK_GREEN);
         name = name.setStyle(name.getStyle().setItalic(false));
+        if (pokemon.getFormattedNickname() != null && !pokemon.isEgg()) {
+            name.appendString(" (");
+            name.appendSibling(pokemon.getSpecies().getNameTranslation());
+            name.appendString(")");
+        }
 
         display.putString("Name", ITextComponent.Serializer.toJson(name)); //Set the name to the pokemon's name
         List<String> lore = new ArrayList<>();
@@ -252,6 +296,7 @@ public class PokeChat {
         display.put("Lore", NBTDynamicOps.INSTANCE.createList(loreToList.stream()));
 
         tag.put("display", display);
+        tag.putBoolean("PokeChat", true);
         stack.setTag(tag);
         return stack;
     }
@@ -288,5 +333,49 @@ public class PokeChat {
         tag.put("display", display);
         stack.setTag(tag);
         return stack;
+    }
+
+    public void onItemTooltip(RenderTooltipEvent.PostBackground event) {
+        if (event.getStack().getItem() == PixelmonItems.pixelmon_sprite.getItem()) {
+            if (event.getStack().hasTag() && event.getStack().getTag().getBoolean("PokeChat")) {
+                renderItem(event.getStack(), event.getX() + event.getWidth() - 48, event.getY());
+                //Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(event.getStack(), event.getX() + event.getWidth() - 19, event.getY() + 3);
+            }
+        }
+    }
+
+    private void renderItem(ItemStack stack, int x, int y) {
+        IBakedModel bakedmodel = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(stack, null, null);
+
+        RenderSystem.pushMatrix();
+        Minecraft.getInstance().textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        Minecraft.getInstance().textureManager.getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).setBlurMipmapDirect(false, false);
+        RenderSystem.enableRescaleNormal();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.defaultAlphaFunc();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.translatef((float)x, (float)y, 100.0F + 400F);
+        RenderSystem.translatef(24.0F, 24.0F, 0.0F);
+        RenderSystem.scalef(1.0F, -1.0F, 1.0F);
+        RenderSystem.scalef(48.0F, 48.0F, 48.0F);
+        MatrixStack matrixstack = new MatrixStack();
+        IRenderTypeBuffer.Impl irendertypebuffer$impl = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+        boolean flag = !bakedmodel.isSideLit();
+        if (flag) {
+            RenderHelper.setupGuiFlatDiffuseLighting();
+        }
+
+        Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.GUI, false, matrixstack, irendertypebuffer$impl, 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
+        irendertypebuffer$impl.finish();
+        RenderSystem.enableDepthTest();
+        if (flag) {
+            RenderHelper.setupGui3DDiffuseLighting();
+        }
+
+        RenderSystem.disableAlphaTest();
+        RenderSystem.disableRescaleNormal();
+        RenderSystem.popMatrix();
     }
 }
