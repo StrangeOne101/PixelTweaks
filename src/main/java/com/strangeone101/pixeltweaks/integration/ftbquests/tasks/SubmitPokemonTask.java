@@ -9,7 +9,9 @@ import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTaskTypes;
 import dev.ftb.mods.ftblibrary.FTBLibrary;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.config.NameMap;
+import dev.ftb.mods.ftblibrary.config.Tristate;
 import dev.ftb.mods.ftblibrary.icon.Icon;
+import dev.ftb.mods.ftblibrary.util.TooltipList;
 import dev.ftb.mods.ftbquests.gui.CustomToast;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.TeamData;
@@ -18,6 +20,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,6 +31,7 @@ public class SubmitPokemonTask extends PokemonTask {
         ONLY_PARTY, ONLY_BOX, ALL;
     }
     public Party party = Party.ONLY_PARTY;
+    public Tristate hasOT = Tristate.DEFAULT;
 
     public SubmitPokemonTask(Quest q) {
         super(q);
@@ -57,24 +61,28 @@ public class SubmitPokemonTask extends PokemonTask {
     public void writeData(CompoundNBT nbt) {
         super.writeData(nbt);
         nbt.putByte("party", (byte) this.party.ordinal());
+        hasOT.write(nbt, "hasOT");
     }
 
     @Override
     public void readData(CompoundNBT nbt) {
         super.readData(nbt);
         this.party = Party.values()[nbt.getByte("party")];
+        this.hasOT = Tristate.read(nbt, "hasOT");
     }
 
     @Override
     public void writeNetData(PacketBuffer buffer) {
         super.writeNetData(buffer);
         buffer.writeByte(this.party.ordinal());
+        hasOT.write(buffer);
     }
 
     @Override
     public void readNetData(PacketBuffer buffer) {
         super.readNetData(buffer);
         this.party = Party.values()[buffer.readByte()];
+        this.hasOT = Tristate.read(buffer);
     }
 
     @Override
@@ -84,6 +92,14 @@ public class SubmitPokemonTask extends PokemonTask {
         config.addEnum("party", this.party, v -> this.party = v, NameMap.of(Party.ONLY_PARTY, Party.values())
                 .nameKey(v -> "pixeltweaks.party." + v.name().toLowerCase())
                 .create());
+        config.addTristate("hasOT", this.hasOT, v -> this.hasOT = v, Tristate.DEFAULT);
+    }
+
+    @Override
+    public void addMouseOverText(TooltipList list, TeamData teamData) {
+        list.add(new TranslationTextComponent("ftbquests.task.pixelmon.submit_pokemon.lore",
+                new TranslationTextComponent("pixeltweaks.party." + this.party.name().toLowerCase())).mergeStyle(TextFormatting.GRAY));
+        super.addMouseOverText(list, teamData);
     }
 
     @Override
@@ -99,7 +115,8 @@ public class SubmitPokemonTask extends PokemonTask {
                     PCBox pcbox = storage.getBox(box);
                     for (int slot = 0; slot < 30; slot++) {
                         Pokemon pokemon = pcbox.get(slot);
-                        if (pokemon != null && this.cachedSpec.matches(pokemon)) {
+                        if (pokemon != null && (this.cachedSpec == null || this.cachedSpec.matches(pokemon) != this.invert) && (this.hasOT.isDefault()
+                                || pokemon.getOriginalTrainerUUID().equals(player.getUniqueID()) == this.hasOT.isTrue())) {
                             teamData.addProgress(this, 1L);
                             pcbox.set(slot, null);
                             return;
@@ -113,7 +130,8 @@ public class SubmitPokemonTask extends PokemonTask {
                 for (int slot = 0; slot < 6; slot++) {
                     Pokemon pokemon = pokemons[slot];
 
-                    if (pokemon != null && this.cachedSpec.matches(pokemon)) {
+                    if (pokemon != null && (this.cachedSpec == null || this.cachedSpec.matches(pokemon) != this.invert) && (this.hasOT.isDefault()
+                            || pokemon.getOriginalTrainerUUID().equals(player.getUniqueID()) == this.hasOT.isTrue())) {
                         teamData.addProgress(this, 1L);
                         StorageProxy.getParty(player).set(slot, null);
                         return;
