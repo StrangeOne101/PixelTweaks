@@ -35,6 +35,7 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
@@ -335,6 +336,7 @@ public class PokeChat {
         return stack;
     }
 
+    @OnlyIn(Dist.CLIENT)
     public void onItemTooltip(RenderTooltipEvent.PostBackground event) {
         if (event.getStack().getItem() == PixelmonItems.pixelmon_sprite.getItem()) {
             if (event.getStack().hasTag() && event.getStack().getTag().getBoolean("PokeChat")) {
@@ -344,6 +346,7 @@ public class PokeChat {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     private void renderItem(ItemStack stack, int x, int y) {
         IBakedModel bakedmodel = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(stack, null, null);
 
