@@ -31,7 +31,7 @@ public class TravelersBackpackIntegration {
                 for (int i = 0; i < handler.getSlots(); i++) {
                     ItemStack slot = handler.getStackInSlot(i);
                     if (ItemStack.areItemsEqual(slot, toMatch) && ItemStack.areItemStackTagsEqual(slot, toMatch)) {
-                        inv.decrStackSize(i, 1);
+                        inv.getInventory().extractItem(i, 1, false);
                         return slot;
                     }
                 }
