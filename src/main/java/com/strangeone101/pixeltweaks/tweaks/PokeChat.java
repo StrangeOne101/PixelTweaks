@@ -145,20 +145,22 @@ public class PokeChat {
                 }
             }
 
+            List<ITextComponent> siblings = baseComponent.getSiblings();
             baseComponent = new TranslationTextComponent(((TranslationTextComponent) baseComponent).getKey(), args);
+            for (ITextComponent sib : siblings) ((TranslationTextComponent) baseComponent).appendSibling(sib);
 
             //((TranslationTextComponent)baseComponent).ensureInitialized();
         }
-        if (!(baseComponent instanceof TranslationTextComponent)) {
-            List<ITextComponent> siblings = baseComponent.getSiblings();
-            List<ITextComponent> newSiblings = new ArrayList<>(siblings.size());
 
-            for (ITextComponent sib : siblings) {
-                newSiblings.add(replaceInComponent(sib, matcher, replacement));
-            }
-            baseComponent.getSiblings().clear();
-            baseComponent.getSiblings().addAll(newSiblings);
+        List<ITextComponent> siblings = baseComponent.getSiblings();
+        List<ITextComponent> newSiblings = new ArrayList<>(siblings.size());
+
+        for (ITextComponent sib : siblings) {
+            newSiblings.add(replaceInComponent(sib, matcher, replacement));
         }
+        baseComponent.getSiblings().clear();
+        baseComponent.getSiblings().addAll(newSiblings);
+
 
         return baseComponent;
     }
@@ -171,7 +173,7 @@ public class PokeChat {
         IFormattableTextComponent name = (IFormattableTextComponent) pokemon.getFormattedDisplayName().deepCopy();
         name.mergeStyle(TextFormatting.BOLD, TextFormatting.DARK_GREEN);
         name = name.setStyle(name.getStyle().setItalic(false));
-        if (pokemon.getFormattedNickname() != null && !pokemon.isEgg()) {
+        if (pokemon.getFormattedNickname() != null && !pokemon.getFormattedNickname().getString().equals("") && !pokemon.isEgg()) {
             name.appendString(" (");
             name.appendSibling(pokemon.getSpecies().getNameTranslation());
             name.appendString(")");
