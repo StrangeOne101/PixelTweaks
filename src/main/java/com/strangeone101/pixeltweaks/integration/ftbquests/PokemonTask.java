@@ -14,10 +14,12 @@ import com.pixelmonmod.api.pokemon.requirement.impl.SpeciesRequirement;
 import com.pixelmonmod.api.pokemon.requirement.impl.TypeRequirement;
 import com.pixelmonmod.api.pokemon.requirement.impl.UltraBeastRequirement;
 import com.pixelmonmod.pixelmon.api.pokemon.PokerusStrain;
+import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.icon.Icon;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.task.Task;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
@@ -134,8 +136,7 @@ public abstract class PokemonTask extends Task {
         }
 
         if (spec.getValue(SpeciesRequirement.class).isPresent()) {
-            TranslationTextComponent species = new TranslationTextComponent("pixelmon." +
-                    spec.getValue(SpeciesRequirement.class).get().getKey().toLowerCase());
+            TranslationTextComponent species = spec.getValue(SpeciesRequirement.class).get().getValueUnsafe().getNameTranslation();
             componentList.add(species);
         } else {
             if (spec.getValue(LegendaryRequirement.class).isPresent()) {
@@ -177,9 +178,18 @@ public abstract class PokemonTask extends Task {
             componentList.add(0, pokemon);
         }
         if (spec.getValue(FormRequirement.class).isPresent()) {
-            TranslationTextComponent form = new TranslationTextComponent("pixelmon.generic.form." +
-                    spec.getValue(FormRequirement.class).get().toLowerCase());
-            componentList.add(form);
+            String form = spec.getValue(FormRequirement.class).get().toLowerCase();
+
+            TranslationTextComponent formComponent = new TranslationTextComponent("pixelmon.generic.form." + form);
+
+            if (spec.getValue(SpeciesRequirement.class).isPresent()) {
+                Species species = spec.getValue(SpeciesRequirement.class).get().getValueUnsafe();
+                if (I18n.hasKey("pixelmon." + species.getName().toLowerCase() + ".form." + form)) {
+                    formComponent = new TranslationTextComponent("pixelmon." + species.getName().toLowerCase() + ".form." + form);
+                }
+            }
+
+            componentList.add(formComponent);
         }
         if (spec.getValue(PaletteRequirement.class).isPresent()) {
             TranslationTextComponent form = new TranslationTextComponent("pixelmon.palette." +
