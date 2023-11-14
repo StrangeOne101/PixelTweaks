@@ -111,10 +111,12 @@ public abstract class PokemonTask extends Task {
         return super.getAltIcon();
     }
 
+    @OnlyIn(Dist.CLIENT)
     protected ITextComponent getPokemon() {
         return getPokemon(cachedSpec);
     }
 
+    @OnlyIn(Dist.CLIENT)
     protected ITextComponent getPokemon(PokemonSpecification spec) {
         TranslationTextComponent pokemon = new TranslationTextComponent("pixeltweaks.lang.pokemon");
         if (spec == null) {

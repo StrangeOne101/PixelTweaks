@@ -26,3 +26,8 @@
 - JEI recipes for forage and headbutts
 - JEI recipes for pokemon spawns
 - JEI recipes for evolutions
+- JEI recipes for curry
+- Add GRASSY_TERRAIN, ELECTRIC_TERRAIN, etc, as valid sound events
+- Fix battle music stacking
+- Add lore to submit tasks to assist players. E.g. will be submitted from the party
+- Add release pokemon task
