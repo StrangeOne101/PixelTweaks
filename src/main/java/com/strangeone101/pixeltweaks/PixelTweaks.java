@@ -42,8 +42,6 @@ public class PixelTweaks {
 
     public static Set<String> UNKNOWN_MOVES = new HashSet<>();
 
-    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, MODID);
-    public static final RegistryObject<Feature<?>> FEATURE_OBJECT = PixelTweaks.FEATURES.register("zygarde_cell", ZygardeCellFeature::new);;
 
     public PixelTweaks() {
 
