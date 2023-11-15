@@ -201,7 +201,7 @@ public class PokeChat {
             if (pokemon.isShiny()) {
                 palette.setStyle(palette.getStyle().setColor(Color.fromInt(PixelTweaks.SHINY_COLOR)).setItalic(false));
             } else {
-                palette.mergeStyle(TextFormatting.GRAY);
+                palette.mergeStyle(TextFormatting.GRAY).modifyStyle(style -> style.setItalic(false));
             }
             lore.add(ITextComponent.Serializer.toJson(palette));
         }
