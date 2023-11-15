@@ -19,13 +19,13 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @JeiPlugin
 public class JEIIntegration implements IModPlugin {
@@ -74,25 +74,25 @@ public class JEIIntegration implements IModPlugin {
         }
         registration.addRecipes(drops, DropsRecipeCategory.UID);*/
 
-        IRecipeType<InfuserRecipe> type = RecipeTypeRegistration.INFUSER_RECIPE_TYPE;
-        if (Minecraft.getInstance().world == null) {
+        RecipeType<InfuserRecipe> type = RecipeTypeRegistration.INFUSER_RECIPE_TYPE;
+        if (Minecraft.getInstance().level == null) {
             PixelTweaks.LOGGER.warn("World is null! JEI recipes will not be registered!");
             return;
         }
 
-        Collection<InfuserRecipe> infuserRecipes = Minecraft.getInstance().world.getRecipeManager().getRecipesForType(type);
-        registration.addRecipes(infuserRecipes, InfuserRecipeCategory.UID);
+        List<InfuserRecipe> infuserRecipes = Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(type).stream().map(rh -> rh.value()).collect(Collectors.toList());
+        registration.addRecipes(InfuserRecipeCategory.UID, infuserRecipes);
         PixelTweaks.LOGGER.info("Registered " + infuserRecipes.size() + " infuser recipes to JEI!");
     }
 
     @Override
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
-        IRecipeCategory<?> category = jeiRuntime.getRecipeManager().getRecipeCategory(DropsRecipeCategory.UID);
-        PixelTweaks.LOGGER.debug("Debug category " + category);
+        //IRecipeCategory<?> category = jeiRuntime.getRecipeManager().createRecipeLookup(DropsRecipeCategory.UID).;
+        //PixelTweaks.LOGGER.debug("Debug category " + category);
 
         PixelTweaks.LOGGER.debug("Debug nums " + DropItemRegistry.pokemonDrops.keySet().size());
 
-        Set<PokemonDropInformation> drops = new HashSet<>();
+        List<PokemonDropInformation> drops = new ArrayList<>();
 
         for (Species species : DropItemRegistry.pokemonDrops.keySet()) {
             for (PokemonDropInformation info : DropItemRegistry.pokemonDrops.get(species)) {
@@ -102,7 +102,7 @@ public class JEIIntegration implements IModPlugin {
                 drops.add(info);
             }
         }
-        drops.forEach(drop -> jeiRuntime.getRecipeManager().addRecipe(drop, DropsRecipeCategory.UID));
+        jeiRuntime.getRecipeManager().addRecipes(DropsRecipeCategory.UID, drops);
         PixelTweaks.LOGGER.info("Registered " + drops.size() + " drop recipes to JEI!");
 
         PokeLootPool tier1 = new PokeLootPool(1, DropItemRegistry.tier1);
@@ -110,16 +110,13 @@ public class JEIIntegration implements IModPlugin {
         PokeLootPool tier3 = new PokeLootPool(3, DropItemRegistry.tier3);
         PokeLootPool tier4 = new PokeLootPool(4, DropItemRegistry.ultraSpace);
 
-        jeiRuntime.getRecipeManager().addRecipe(tier1, PokeLootRecipeCategory.UID);
-        jeiRuntime.getRecipeManager().addRecipe(tier2, PokeLootRecipeCategory.UID);
-        jeiRuntime.getRecipeManager().addRecipe(tier3, PokeLootRecipeCategory.UID);
-        jeiRuntime.getRecipeManager().addRecipe(tier4, PokeLootRecipeCategory.UID);
+        jeiRuntime.getRecipeManager().addRecipes(PokeLootRecipeCategory.UID, List.of(tier1, tier2, tier3, tier4));
 
     }
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addRecipeClickArea(InfuserScreen.class, 108, 32, 16, 16, InfuserRecipeCategory.UID);
+        registration.addRecipeClickArea(InfuserScreen.class, 108, 32, 16, 16, registration.getJeiHelpers().getRecipeType(InfuserRecipeCategory.UID));
     }
 
     @Override

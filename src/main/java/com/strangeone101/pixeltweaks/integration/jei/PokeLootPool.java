@@ -1,8 +1,9 @@
 package com.strangeone101.pixeltweaks.integration.jei;
 
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class PokeLootPool {
 
     public ItemStack getTierIcon() {
         ItemStack itemStack = new ItemStack(PixelmonItems.poke_ball);
-        CompoundNBT compoundNBT = new CompoundNBT();
+        CompoundTag compoundNBT = new CompoundTag();
         String ballID = "poke_ball";
         if (tier == 2) ballID = "ultra_ball";
         else if (tier == 3) ballID = "master_ball";
