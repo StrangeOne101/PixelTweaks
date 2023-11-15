@@ -113,6 +113,8 @@ public class PokemonReward extends Reward {
                 PixelTweaks.LOGGER.warn("Failed to add pokemon to player's party! Storage full! Reward ID: " + this.id + ", Pokemon: " + pokemon.getDisplayName());
             }
             c--;
+
+            this.cachedSpec = PokemonSpecificationProxy.create(this.cachedSpec.toString()); //Ensures the next pokemon will be randomized in case some requirements cache stuff. E.g. random species
         }
     }
 

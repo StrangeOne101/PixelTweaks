@@ -53,8 +53,6 @@ public class PokeChat {
     private final Pattern party = Pattern.compile("\\[party]", Pattern.CASE_INSENSITIVE);
     private final Pattern slot = Pattern.compile("\\[(?:slot|pokemon)[(1-6)]]", Pattern.CASE_INSENSITIVE);
 
-    private float zLevel = Minecraft.getInstance().getItemRenderer().zLevel;
-
     public PokeChat() {
         if (TweaksConfig.enablePokemonChat.get()) {
             MinecraftForge.EVENT_BUS.addListener(this::onChat);
