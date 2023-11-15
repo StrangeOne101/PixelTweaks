@@ -66,7 +66,7 @@ public class TweaksConfig {
         zygardeStormCoreRate = BUILDER.comment("The rate in which Zygarde Cores should spawn when it's stormy. Rate is 1/<rate>. Set to 0 to disable. Default: 7")
                 .defineInRange("zygardeStormCoreRate", 7, 0, 9999);
 
-        backpacksIntegration = BUILDER.comment("If UsefulBackpacks/SimplyBackpacks integration should be enabled. Default: true")
+        backpacksIntegration = BUILDER.comment("If Backpack integration should be enabled (supports 4 backpack mods). Default: true")
                 .define("backpacksIntegration", true);
 
         enablePokemonChat = BUILDER.comment("If Pokemon chat replacement should be enabled. Allows players to use [Pokemon] and [Party] to show their pokemon in chat. Default: true")
