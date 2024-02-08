@@ -155,7 +155,7 @@ public class TaskListener {
 
         PixelmonWrapper wrapper = event.target;
         BattleController controller = event.getBattleController();
-        if (controller.getStage() == BattleStage.PICKACTION) return; //For some reason, this event is called when the battle starts without triggering a move???
+        if (controller.getStage() == BattleStage.PICKACTION || wrapper.entity == null) return; //For some reason, this event is called when the battle starts without triggering a move??? On the client, it is pick action, on the server, the entity is null
         
         for (PixelmonWrapper opponent : controller.getOpponentPokemon(wrapper)) {
             if (opponent.getPlayerOwner() != null) {

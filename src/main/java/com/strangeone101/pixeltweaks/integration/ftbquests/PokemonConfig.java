@@ -116,7 +116,7 @@ public class PokemonConfig extends ConfigFromString<PokemonSpecification> {
 
             //If they specified a species, check if that species has the form
             if (s.getValue(SpeciesRequirement.class).isPresent() && !s.toString().split(" ")[0].equalsIgnoreCase("random")) {
-                return s.getValue(SpeciesRequirement.class).get().getValue().get().hasForm(form);
+                return form.equals("base") || form.equals("none") || s.getValue(SpeciesRequirement.class).get().getValue().get().hasForm(form);
             }
             //Otherwise, check if any pokemon has the form
             return PixelmonSpecies.getAll().stream() //Within all pokemon
