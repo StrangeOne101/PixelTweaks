@@ -1,5 +1,6 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests.tasks;
 
+import com.pixelmonmod.pixelmon.api.pokedex.PlayerPokedex;
 import com.pixelmonmod.pixelmon.api.pokemon.Element;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
@@ -249,8 +250,14 @@ public abstract class PokedexTask extends Task {
         if (teamData.isCompleted(this) || !teamData.file.isServerSide()) return;
 
         int ordinalToCheck = this.caught ? 2 : 1;
-        int progress = (int) StorageProxy.getParty(player).playerPokedex.getSeenMap().entrySet().parallelStream()
+
+
+        PlayerPokedex dex = StorageProxy.getParty(player).playerPokedex;
+        int progress = (int) dex.getSeenMap().entrySet().parallelStream()
                 .filter(entry -> this.filteredPokedex.contains(entry.getKey()) && entry.getValue().ordinal() >= ordinalToCheck
+                ).count();
+        progress += (int) dex.formDex.rowMap().entrySet().parallelStream()
+                .filter(entry -> this.filteredPokedex.contains(entry.getKey()) && entry.getValue().values().stream().anyMatch(e -> e >= ordinalToCheck)
                 ).count();
         progress = Math.min(progress, this.maxPokedexSize);
 

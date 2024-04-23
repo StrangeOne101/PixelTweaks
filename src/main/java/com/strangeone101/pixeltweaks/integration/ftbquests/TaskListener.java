@@ -231,8 +231,11 @@ public class TaskListener {
         if (hatchTasks == null) {
             hatchTasks = ServerQuestFile.INSTANCE.collect(HatchTask.class);
         }
+        if (catchTasks == null) {
+            catchTasks = ServerQuestFile.INSTANCE.collect(CatchTask.class);
+        }
 
-        if (hatchTasks.isEmpty()) {
+        if (hatchTasks.isEmpty() && catchTasks.isEmpty()) {
             return;
         }
 
@@ -241,6 +244,12 @@ public class TaskListener {
         for (HatchTask task : hatchTasks) {
             if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
                 task.onHatch(data, event.getPokemon());
+            }
+        }
+
+        for (CatchTask task : catchTasks) {
+            if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.quest)) {
+                task.onEggHatch(data, event.getPokemon());
             }
         }
 

@@ -20,7 +20,7 @@ plugins {
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'com.strangeone101'
-version = '1.10.1'
+version = '1.10.3'
 
 java {
     archivesBaseName = 'PixelTweaks'
@@ -133,6 +133,20 @@ repositories {
         }
     }
 
+    maven {
+        name = "Arclight"
+        url = 'https://maven.izzel.io/releases'
+    } //Arclight
+
+    maven {
+        name = "spigot"
+        url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots"
+    }
+
+    maven {
+        url = "https://repo.songoda.com/repository/public/"
+    }
+
     mavenCentral()
 
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
@@ -177,8 +191,12 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
+    compileOnly fg.deobf('io.izzel.arclight:arclight-forge-1.16:1.0.25:srg')
+    compileOnly fg.deobf('org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT')
+    compileOnly fg.deobf('org.spigotmc:spigot:1.16.5')
+
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-    implementation fg.deobf('com.pixelmonmod.pixelmon:Pixelmon-1.16.5-9.1.9-universal:9.1.9')
+    implementation fg.deobf('com.pixelmonmod.pixelmon:Pixelmon-1.16.5-9.1.11-universal:9.1.11')
 }
 
 mixin {

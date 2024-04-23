@@ -27,6 +27,7 @@ public class PokemonTaskTypes {
     public static TaskType EXTERNAL_MOVE;
     public static TaskType SUBMIT_POKEMON;
     public static TaskType RELEASE_POKEMON;
+    public static TaskType BRING_POKEMON;
 
 
     public static void register() {
@@ -88,6 +89,8 @@ public class PokemonTaskTypes {
             RELEASE_POKEMON = TaskTypes.register(new ResourceLocation("pixelmon", "release_pokemon"),
                     ReleaseTask::new, () -> Icon.getIcon("pixeltweaks:textures/gui/release2.png"));
 
+            BRING_POKEMON = TaskTypes.register(new ResourceLocation("pixelmon", "bring_pokemon"),
+                    BringPokemonTask::new, () -> Icon.getIcon("pixelmon:items/quests/eon_ticket"));
 
 
         } catch (Exception e) {

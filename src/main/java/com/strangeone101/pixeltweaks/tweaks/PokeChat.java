@@ -16,6 +16,7 @@ import com.pixelmonmod.pixelmon.battles.attacks.ImmutableAttack;
 import com.pixelmonmod.pixelmon.items.SpriteItem;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.TweaksConfig;
+import com.strangeone101.pixeltweaks.arclight.ArclightUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -49,13 +50,19 @@ import java.util.regex.Pattern;
 
 public class PokeChat {
 
-    private final Pattern pokemon = Pattern.compile("\\[pokemon]", Pattern.CASE_INSENSITIVE);
-    private final Pattern party = Pattern.compile("\\[party]", Pattern.CASE_INSENSITIVE);
-    private final Pattern slot = Pattern.compile("\\[(?:slot|pokemon)[(1-6)]]", Pattern.CASE_INSENSITIVE);
+    public final Pattern pokemon = Pattern.compile("\\[pokemon]", Pattern.CASE_INSENSITIVE);
+    public final Pattern party = Pattern.compile("\\[party]", Pattern.CASE_INSENSITIVE);
+    public final Pattern slot = Pattern.compile("\\[(?:slot|pokemon)[(1-6)]]", Pattern.CASE_INSENSITIVE);
 
     public PokeChat() {
         if (TweaksConfig.enablePokemonChat.get()) {
-            MinecraftForge.EVENT_BUS.addListener(this::onChat);
+            if (PixelTweaks.IS_ARCLIGHT) {
+                //TODO Finish this for 1.10.3
+                //ArclightUtil.registerListeners(this);
+            } else {
+                MinecraftForge.EVENT_BUS.addListener(this::onChat);
+            }
+
             if (FMLEnvironment.dist == Dist.CLIENT) {
                 MinecraftForge.EVENT_BUS.addListener(this::onItemTooltip);
             }

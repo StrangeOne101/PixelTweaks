@@ -97,4 +97,11 @@ public class CatchTask extends PokemonTask {
             team.addProgress(this, 1L);
         }
     }
+
+    public void onEggHatch(TeamData team, Pokemon pokemon) {
+        if (!team.isCompleted(this) && (this.cachedSpec == null || this.cachedSpec.matches(pokemon) != this.invert)
+                && (getType == GetType.ANY || getType == GetType.ANY_EXCEPT_COMMANDS)) { //If it is from eggs
+            team.addProgress(this, 1L);
+        }
+    }
 }
