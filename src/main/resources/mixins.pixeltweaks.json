@@ -19,7 +19,9 @@
     "integration.SophisticatedBackpackMixin",
     "spam.AttackBaseTypeAdapterMixin",
     "spam.AttackTypeAdapterMixin",
-    "spam.ImmutableAttackTypeAdapterMixin"
+    "spam.ImmutableAttackTypeAdapterMixin",
+    "arclight.SimplePluginManagerMixin",
+    "arclight.CraftServerMixin"
   ],
   "client": [
     "client.BattleMusicMixin",

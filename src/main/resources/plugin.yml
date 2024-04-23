@@ -1,0 +1,6 @@
+main: com.strangeone101.pixeltweaks.arclight.real.TweaksPlugin
+version: '1.0'
+description: A bridge between Arclight and PixelTweaks
+name: PixelTweaks
+author: StrangeOne101
+api-version: 1.16
