@@ -8,33 +8,26 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.Gender;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
-import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
-import com.pixelmonmod.pixelmon.api.util.helpers.ItemStackHelper;
 import com.pixelmonmod.pixelmon.api.util.helpers.SpriteItemHelper;
 import com.pixelmonmod.pixelmon.battles.attacks.ImmutableAttack;
-import com.pixelmonmod.pixelmon.items.SpriteItem;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.TweaksConfig;
-import com.strangeone101.pixeltweaks.arclight.ArclightUtil;
+import com.strangeone101.pixeltweaks.arclight.ArclightPokeChat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTDynamicOps;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.text.*;
-import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderTooltipEvent;
@@ -57,8 +50,7 @@ public class PokeChat {
     public PokeChat() {
         if (TweaksConfig.enablePokemonChat.get()) {
             if (PixelTweaks.IS_ARCLIGHT) {
-                //TODO Finish this for 1.10.3
-                //ArclightUtil.registerListeners(this);
+                ArclightPokeChat.registerListeners();
             } else {
                 MinecraftForge.EVENT_BUS.addListener(this::onChat);
             }
@@ -93,7 +85,7 @@ public class PokeChat {
                 if (pokemon != null) {
                     ITextComponent component = pokemon.getFormattedDisplayName().deepCopy(); //The name of the pokemon. Nickname or localized.
                     Style style = component.getStyle().setBold(false).setItalic(false).setFormatting(TextFormatting.GREEN);
-                    ((IFormattableTextComponent)component).mergeStyle(TextFormatting.RESET);
+                    ((IFormattableTextComponent) component).mergeStyle(TextFormatting.RESET);
 
                     HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ItemHover(getItem(pokemon)));
                     ((IFormattableTextComponent) component).mergeStyle(style.setHoverEvent(hoverEvent));
@@ -170,7 +162,7 @@ public class PokeChat {
         return baseComponent;
     }
 
-    public ItemStack getItem(Pokemon pokemon) {
+    public static ItemStack getItem(Pokemon pokemon) {
         ItemStack stack = SpriteItemHelper.getPhoto(pokemon); //Get the photo itemstack
         CompoundNBT tag = stack.getTag();
         CompoundNBT display = new CompoundNBT();
