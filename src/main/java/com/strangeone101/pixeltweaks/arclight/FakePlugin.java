@@ -6,6 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.Listener;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -17,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class FakePlugin implements Plugin {
+public class FakePlugin implements Plugin, Listener {
 
     public static final PluginDescriptionFile file = new PluginDescriptionFile("PixelTweaks", "1.0", "com.strangeone101.pixeltweaks.PixelTweaks");
 

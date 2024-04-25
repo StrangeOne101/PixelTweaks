@@ -28,7 +28,8 @@ public class ArclightPokeChat {
     public static final Pattern slot = Pattern.compile("\\[(?:slot|pokemon)[(1-6)]]", Pattern.CASE_INSENSITIVE);
 
     public static void registerListeners() {
-        AsyncPlayerChatEvent.getHandlerList().register(new RegisteredListener(null, (listener, event) -> {
+        FakePlugin plugin = new FakePlugin();
+        AsyncPlayerChatEvent.getHandlerList().register(new RegisteredListener(plugin, (listener, event) -> {
             if (event instanceof AsyncPlayerChatEvent) {
                 String msg = ((AsyncPlayerChatEvent) event).getMessage();
                 Player player = ((AsyncPlayerChatEvent) event).getPlayer();
@@ -73,6 +74,6 @@ public class ArclightPokeChat {
                     }
                 }
             }
-        }, EventPriority.HIGHEST, new FakePlugin(),false));
+        }, EventPriority.HIGHEST, plugin,false));
     }
 }
