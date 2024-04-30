@@ -10,7 +10,6 @@
     "ExperienceMixin",
     "InteractionBottleCapMixin",
     "PixelmonEntityMixin",
-    "ZygardeListenerMixin",
     "ability.MixinAegislashAbility",
     "ability.MixinMimikyuAbility",
     "block.ApriconLeavesBlockMixin",

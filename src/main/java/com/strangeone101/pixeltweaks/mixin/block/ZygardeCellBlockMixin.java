@@ -4,8 +4,6 @@ import com.pixelmonmod.pixelmon.api.util.helpers.BlockHelper;
 import com.pixelmonmod.pixelmon.blocks.GenericModelBlock;
 import com.pixelmonmod.pixelmon.blocks.ZygardeCellBlock;
 import com.pixelmonmod.pixelmon.blocks.tileentity.ZygardeCellTileEntity;
-import com.strangeone101.pixeltweaks.PixelTweaks;
-import com.strangeone101.pixeltweaks.tweaks.ZygardeCellSpawner;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;

@@ -1,23 +1,24 @@
 package com.strangeone101.pixeltweaks.integration.jei.category;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
 import com.strangeone101.pixeltweaks.integration.jei.PokeLootPool;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ITickTimer;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +37,7 @@ public class PokeLootRecipeCategory implements IRecipeCategory<PokeLootPool> {
 
     public PokeLootRecipeCategory(IGuiHelper gui){
         ItemStack itemStack = new ItemStack(PixelmonItems.poke_ball);
-        CompoundNBT compoundNBT = new CompoundNBT();
+        CompoundTag compoundNBT = new CompoundTag();
         compoundNBT.putString("PokeBallID", "beast_ball");
         itemStack.setTag(compoundNBT);
         //this.icon = gui.createDrawableIngredient(itemStack);
@@ -52,18 +53,14 @@ public class PokeLootRecipeCategory implements IRecipeCategory<PokeLootPool> {
 
     }
     @Override
-    public ResourceLocation getUid() {
+    public ResourceLocation getRegistryName(PokeLootPool recipe) {
         return UID;
     }
 
-    @Override
-    public Class<? extends PokeLootPool> getRecipeClass() {
-        return PokeLootPool.class;
-    }
 
     @Override
-    public String getTitle() {
-        return I18n.format("jei.pixeltweaks.pokeloot.title");
+    public Component getTitle() {
+        return Component.translatable("jei.pixeltweaks.pokeloot.title");
     }
 
     @Override
@@ -77,12 +74,7 @@ public class PokeLootRecipeCategory implements IRecipeCategory<PokeLootPool> {
     }
 
     @Override
-    public void setIngredients(PokeLootPool recipe, IIngredients ingredients) {
-        ingredients.setOutputs(VanillaTypes.ITEM, recipe.getItems());
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, PokeLootPool recipe, IIngredients ingredients) {
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, PokeLootPool recipe, IFocusGroup focus) {
         boolean focus = recipeLayout.getFocus(VanillaTypes.ITEM) != null && recipeLayout.getFocus(VanillaTypes.ITEM).getMode() == IFocus.Mode.OUTPUT;
 
         int items = ingredients.getOutputs(VanillaTypes.ITEM).size() - (focus ? 1 : 0);
@@ -110,11 +102,12 @@ public class PokeLootRecipeCategory implements IRecipeCategory<PokeLootPool> {
     }
 
     @Override
-    public void draw(PokeLootPool recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
-        String title = I18n.format("jei.pixeltweaks.pokeloot.subtitle." + recipe.getTier());
-        int w = Minecraft.getInstance().fontRenderer.getStringWidth(title);
+    public void draw(PokeLootPool recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
+        Component title = Component.translatable("jei.pixeltweaks.pokeloot.subtitle." + recipe.getTier());
+        int w = Minecraft.getInstance().font.width(title);
         int x = (bg.getWidth() / 2) - (w / 2) + 6;
-        Minecraft.getInstance().fontRenderer.drawStringWithShadow(matrixStack, title, x, 4, 0xFFFFFF);
+        matrixStack.drawString(Minecraft.getInstance().font, title, x, 4, 0xFFFFFF);
+        //Minecraft.getInstance().font.dr.drawStringWithShadow(matrixStack, title, x, 4, 0xFFFFFF);
         //Minecraft.getInstance().getItemRenderer().renderItem(null, recipe.getTierIcon(), ItemCameraTransforms.TransformType.GUI, false, matrixStack, null, 0);
 
         ResourceLocation pokeball = new ResourceLocation("pixelmon", "items/pokeballs/" + recipe.getTierPokeball());

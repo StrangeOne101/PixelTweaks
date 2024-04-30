@@ -9,9 +9,9 @@ import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.client.overlay.PixelmonEntityLayerExtension;
 import com.strangeone101.pixeltweaks.client.overlay.PokemonOverlay;
 import com.strangeone101.pixeltweaks.pixelevents.Condition;
-import net.minecraft.entity.EntityType;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.world.World;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,7 +25,7 @@ public class PixelmonEntity_OverlayMixin extends AbstractHoldsItemsEntity implem
     @OnlyIn(Dist.CLIENT)
     private PokemonOverlay pixelTweaks$overlay;
 
-    public PixelmonEntity_OverlayMixin(EntityType<? extends AbstractHoldsItemsEntity> type, World par1World) {
+    public PixelmonEntity_OverlayMixin(EntityType<PixelmonEntity> type, Level par1World) {
         super(type, par1World);
     }
 
@@ -84,8 +84,8 @@ public class PixelmonEntity_OverlayMixin extends AbstractHoldsItemsEntity implem
 
 
     @Override
-    public void notifyDataManagerChange(DataParameter<?> key) {
-        super.notifyDataManagerChange(key);
+    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        super.onSyncedDataUpdated(key);
 
         if (key.getId() == PokemonBase.SYNC_POKEMON_BASE.getParameterId()) {
             this.pixelTweaks$set(this.pokemon);

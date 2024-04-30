@@ -32,6 +32,8 @@ public class JEIIntegration implements IModPlugin {
 
     public static final ResourceLocation UID = new ResourceLocation("pixeltweaks", "jei");
 
+
+
     public static final IIngredientType<Stats> POKEMON = () -> Stats.class;
     public static final IIngredientType<PokemonIngredient> WRAPPED_POKEMON = () -> PokemonIngredient.class;
 
@@ -81,7 +83,7 @@ public class JEIIntegration implements IModPlugin {
         }
 
         List<InfuserRecipe> infuserRecipes = Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(type).stream().map(rh -> rh.value()).collect(Collectors.toList());
-        registration.addRecipes(InfuserRecipeCategory.UID, infuserRecipes);
+        registration.addRecipes(InfuserRecipeCategory.TYPE, infuserRecipes);
         PixelTweaks.LOGGER.info("Registered " + infuserRecipes.size() + " infuser recipes to JEI!");
     }
 
@@ -116,7 +118,7 @@ public class JEIIntegration implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addRecipeClickArea(InfuserScreen.class, 108, 32, 16, 16, registration.getJeiHelpers().getRecipeType(InfuserRecipeCategory.UID));
+        registration.addRecipeClickArea(InfuserScreen.class, 108, 32, 16, 16, InfuserRecipeCategory.TYPE);
     }
 
     @Override

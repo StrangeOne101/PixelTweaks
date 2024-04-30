@@ -5,14 +5,17 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.DamageHandler;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.TweaksConfig;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 
@@ -36,8 +39,8 @@ public class FoxImmunity {
     }
 
     public void onEntityTakeDamage(LivingDamageEvent event) {
-        if (event.getSource() == DamageSource.SWEET_BERRY_BUSH && event.getEntityLiving() instanceof PixelmonEntity) {
-            if (isFox((PixelmonEntity) event.getEntityLiving())) {
+        if (event.getSource().is(DamageTypes.SWEET_BERRY_BUSH) && event.getEntity() instanceof PixelmonEntity) {
+            if (isFox((PixelmonEntity) event.getEntity())) {
                 event.setCanceled(true);
             }
         }
@@ -64,11 +67,11 @@ public class FoxImmunity {
     public static class FoxInteraction implements IInteraction {
 
         @Override
-        public boolean processInteract(PixelmonEntity pixelmonEntity, PlayerEntity playerEntity, Hand hand, ItemStack itemStack) {
-            if (playerEntity instanceof ServerPlayerEntity && isFox(pixelmonEntity) && itemStack.getItem() == Items.SWEET_BERRIES) {
+        public boolean processInteract(PixelmonEntity pixelmonEntity, Player playerEntity, InteractionHand hand, ItemStack itemStack) {
+            if (playerEntity instanceof ServerPlayer && isFox(pixelmonEntity) && itemStack.getItem() == Items.SWEET_BERRIES) {
                 if (pixelmonEntity.getPokemon().getHealth() < pixelmonEntity.getPokemon().getMaxHealth()) {
                     pixelmonEntity.getPokemon().setHealth(Math.min(pixelmonEntity.getPokemon().getHealth() + 5, pixelmonEntity.getPokemon().getMaxHealth()));
-                    pixelmonEntity.getEntityWorld().playSound(null, pixelmonEntity.getPosition(), SoundEvents.ENTITY_GENERIC_EAT, SoundCategory.NEUTRAL, 1F, 1F);
+                    pixelmonEntity.level().playSound(null, pixelmonEntity.blockPosition(), SoundEvents.GENERIC_EAT, SoundSource.NEUTRAL, 1F, 1F);
 
                     if (!playerEntity.isCreative()) {
                         itemStack.shrink(1);

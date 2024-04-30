@@ -3,7 +3,7 @@ package com.strangeone101.pixeltweaks.tweaks;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.TweaksConfig;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.level.BlockEvent;
 
 public class AntiPokeTrample {
 

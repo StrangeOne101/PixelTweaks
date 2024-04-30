@@ -7,8 +7,8 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipan
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.enums.heldItems.EnumHeldItems;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.launch.MixinInitialisationError;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -64,7 +64,7 @@ public class ExperienceMixin {
     private static ItemStack pixelTweaks$getExpAllActive() {
         if (pixelTweaks$EXP_ALL_ACTIVE == null) {
             pixelTweaks$EXP_ALL_ACTIVE = new ItemStack(PixelmonItems.exp_all);
-            CompoundNBT tag = new CompoundNBT();
+            CompoundTag tag = new CompoundTag();
             tag.putBoolean("Activated", true);
             pixelTweaks$EXP_ALL_ACTIVE.setTag(tag);
         }

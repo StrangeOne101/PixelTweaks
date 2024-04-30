@@ -3,7 +3,7 @@ package com.strangeone101.pixeltweaks.music;
 import com.google.gson.*;
 import com.strangeone101.pixeltweaks.struct.Fade;
 import com.strangeone101.pixeltweaks.struct.SpecificTime;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.lang.reflect.Type;
 import java.util.Objects;

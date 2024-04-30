@@ -4,21 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.client.resources.JsonReloadListener;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.resources.IFutureReloadListener;
-import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.resource.IResourceType;
-import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,25 +39,25 @@ public class LangRegistry {
         return DEFAULT_LANG;
     }
 
-    public static void sendMessage(ServerPlayerEntity player, String langNode, Object... args) {
-        player.sendMessage(getMessage(player, langNode, args), null);
+    public static void sendMessage(ServerPlayer player, String langNode, Object... args) {
+        player.sendSystemMessage(getMessage(player, langNode, args));
     }
 
-    public static ITextComponent getMessage(ServerPlayerEntity player, String langNode, Object... args) {
+    public static Component getMessage(ServerPlayer player, String langNode, Object... args) {
         String locale = player.getLanguage();
         String resolved = resolveLocale(locale);
         JsonObject object = REGISTRY.get(resolved);
 
         if (object == null) {
-            return new TranslationTextComponent(langNode, args);
+            return Component.translatable(langNode, args);
         }
 
         String message = String.format(object.get(langNode).getAsString(), args);
         if (message == null) {
-            return new TranslationTextComponent(langNode, args);
+            return Component.translatable(langNode, args);
         }
 
-        return new StringTextComponent(message);
+        return Component.literal(message);
     }
 
 
@@ -72,18 +65,18 @@ public class LangRegistry {
         event.addListener(new LangReloader());
     }
 
-    private static class LangReloader extends JsonReloadListener {
+    private static class LangReloader extends SimpleJsonResourceReloadListener {
 
         public LangReloader() {
             super(new GsonBuilder().setPrettyPrinting().setLenient().create(), "pixellang");
         }
 
         @Override
-        protected void apply(Map<ResourceLocation, JsonElement> objectIn, IResourceManager resourceManagerIn, IProfiler profilerIn) {
-            for (ResourceLocation resourceLocation : objectIn.keySet()) {
+        protected void apply(Map<ResourceLocation, JsonElement> resourceLocationJsonElementMap, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
+            for (ResourceLocation resourceLocation : resourceLocationJsonElementMap.keySet()) {
                 String code = resourceLocation.getPath();
 
-                JsonObject object = objectIn.get(resourceLocation).getAsJsonObject();
+                JsonObject object = resourceLocationJsonElementMap.get(resourceLocation).getAsJsonObject();
                 if (REGISTRY.containsKey(code)) {
                     JsonObject oldObject = REGISTRY.get(code);
 
@@ -99,7 +92,7 @@ public class LangRegistry {
         }
 
         @Override
-        public String getSimpleName() {
+        public String getName() {
             return "PixelTweaks Lang Reloader";
         }
     }

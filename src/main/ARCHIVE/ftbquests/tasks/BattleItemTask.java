@@ -25,18 +25,18 @@ public class BattleItemTask extends PokemonTask {
     public enum ItemType {
 
         ANY,
-        POTION(potion, super_potion, hyper_potion, max_potion, moomoo_milk, full_restore, lava_cookie, energy_powder,
-                energy_root, lemonade, soda_pop, fresh_water, komala_coffee, tapu_cocoa, pinap_juice, roserade_tea, skitty_smoothie),
-        REVIVE(revive, max_revive, revival_herb),
-        BERRY(cheri_berry, chesto_berry, pecha_berry, rawst_berry, aspear_berry, leppa_berry, persim_berry, oran_berry,
-                lum_berry, sitrus_berry, figy_berry, wiki_berry, mago_berry, iapapa_berry),
-        STATUS_HEAL(heal_powder, burn_heal, full_heal, full_restore, ice_heal, paralyze_heal, antidote, awakening, rage_candy_bar,
-                lava_cookie, old_gateau, casteliacone, lumiose_galette, shalour_sable, big_malasada, cheri_berry, chesto_berry,
-                pecha_berry, rawst_berry, aspear_berry, persim_berry, lum_berry),
-        BOOST(x_accuracy, x_attack, x_special_attack, x_defense, x_special_defense, x_speed, dire_hit, guard_spec, red_flute,
-                blue_flute, green_flute, yellow_flute),
-        ESCAPE(escape_rope, fluffy_tail),
-        HERB(energy_powder, energy_root, revival_herb, heal_powder),
+        POTION(PixelmonItems.potion, PixelmonItems.super_potion, PixelmonItems.hyper_potion, PixelmonItems.max_potion, PixelmonItems.moomoo_milk, PixelmonItems.full_restore, PixelmonItems.lava_cookie, PixelmonItems.energy_powder,
+                PixelmonItems.energy_root, PixelmonItems.lemonade, PixelmonItems.soda_pop, PixelmonItems.fresh_water, PixelmonItems.komala_coffee, PixelmonItems.tapu_cocoa, PixelmonItems.pinap_juice, PixelmonItems.roserade_tea, PixelmonItems.skitty_smoothie),
+        REVIVE(PixelmonItems.revive, PixelmonItems.max_revive, PixelmonItems.revival_herb),
+        BERRY(PixelmonItems.cheri_berry, PixelmonItems.chesto_berry, PixelmonItems.pecha_berry, PixelmonItems.rawst_berry, PixelmonItems.aspear_berry, PixelmonItems.leppa_berry, PixelmonItems.persim_berry, PixelmonItems.oran_berry,
+                PixelmonItems.lum_berry, PixelmonItems.sitrus_berry, PixelmonItems.figy_berry, PixelmonItems.wiki_berry, PixelmonItems.mago_berry, PixelmonItems.iapapa_berry),
+        STATUS_HEAL(PixelmonItems.heal_powder, PixelmonItems.burn_heal, PixelmonItems.full_heal, PixelmonItems.full_restore, PixelmonItems.ice_heal, PixelmonItems.paralyze_heal, PixelmonItems.antidote, PixelmonItems.awakening, PixelmonItems.rage_candy_bar,
+                PixelmonItems.lava_cookie, PixelmonItems.old_gateau, PixelmonItems.casteliacone, PixelmonItems.lumiose_galette, PixelmonItems.shalour_sable, PixelmonItems.big_malasada, PixelmonItems.cheri_berry, PixelmonItems.chesto_berry,
+                PixelmonItems.pecha_berry, PixelmonItems.rawst_berry, PixelmonItems.aspear_berry, PixelmonItems.persim_berry, PixelmonItems.lum_berry),
+        BOOST(PixelmonItems.x_accuracy, PixelmonItems.x_attack, PixelmonItems.x_special_attack, PixelmonItems.x_defense, PixelmonItems.x_special_defense, PixelmonItems.x_speed, PixelmonItems.dire_hit, PixelmonItems.guard_spec, PixelmonItems.red_flute,
+                PixelmonItems.blue_flute, PixelmonItems.green_flute, PixelmonItems.yellow_flute),
+        ESCAPE(PixelmonItems.escape_rope, PixelmonItems.fluffy_tail),
+        HERB(PixelmonItems.energy_powder, PixelmonItems.energy_root, PixelmonItems.revival_herb, PixelmonItems.heal_powder),
         CUSTOM;
 
         private Item[] items;
@@ -53,7 +53,7 @@ public class BattleItemTask extends PokemonTask {
     }
 
     public ItemType type = ItemType.REVIVE;
-    public ItemStack customItem = lava_cookie.getDefaultInstance();
+    public ItemStack customItem = PixelmonItems.lava_cookie.getDefaultInstance();
 
     public BattleItemTask(Quest q) {
         super(q);
@@ -109,22 +109,22 @@ public class BattleItemTask extends PokemonTask {
                 .icon(v -> {
                     switch(v) {
                         case HERB:
-                            return Icon.getIcon(revival_herb.getRegistryName());
+                            return Icon.getIcon(PixelmonItems.revival_herb.getRegistryName());
                         case BOOST:
-                            return Icon.getIcon(x_accuracy.getRegistryName());
+                            return Icon.getIcon(PixelmonItems.x_accuracy.getRegistryName());
                         case POTION:
-                            return Icon.getIcon(potion.getRegistryName());
+                            return Icon.getIcon(PixelmonItems.potion.getRegistryName());
                         case REVIVE:
-                            return Icon.getIcon(revive.getRegistryName());
+                            return Icon.getIcon(PixelmonItems.revive.getRegistryName());
                         case STATUS_HEAL:
-                            return Icon.getIcon(paralyze_heal.getRegistryName());
+                            return Icon.getIcon(PixelmonItems.paralyze_heal.getRegistryName());
                         case BERRY:
-                            return Icon.getIcon(razz_berry.getRegistryName());
+                            return Icon.getIcon(PixelmonItems.razz_berry.getRegistryName());
                         case ESCAPE:
-                            return Icon.getIcon(escape_rope.getRegistryName());
+                            return Icon.getIcon(PixelmonItems.escape_rope.getRegistryName());
                     }
                     return null;
                 }).create());
-        config.addItemStack("customItem", customItem, v -> customItem = v, revive.getDefaultInstance(), true, false);
+        config.addItemStack("customItem", customItem, v -> customItem = v, PixelmonItems.revive.getDefaultInstance(), true, false);
     }
 }

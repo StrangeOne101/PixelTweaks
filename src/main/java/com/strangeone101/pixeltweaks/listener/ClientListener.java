@@ -9,15 +9,19 @@ import com.strangeone101.pixeltweaks.particle.FakeParticle;
 import com.strangeone101.pixeltweaks.pixelevents.EventRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.renderer.culling.ClippingHelper;
 import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -48,7 +52,7 @@ public class ClientListener {
         }
     }
 
-    public void onPokemonSpawn(EntityJoinWorldEvent event) {
+    public void onPokemonSpawn(EntityJoinLevelEvent event) {
         if (enableSparkle && event.getEntity() instanceof PixelmonEntity && !event.isCanceled() && event.getResult() != Event.Result.DENY && event.getWorld().isRemote) {
             //PixelTweaks.LOGGER.info("Pixelmon spawned on client: " + event.getWorld().isRemote);
             ClientScheduler.schedule(1, () -> { //Wait a tick so the entity is fully loaded, so it isn't a bulbasaur
@@ -66,8 +70,8 @@ public class ClientListener {
     }
 
     public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (enableSparkle && event.phase == TickEvent.Phase.END && !Minecraft.getInstance().isGamePaused()
-                && (Minecraft.getInstance().currentScreen == null || Minecraft.getInstance().currentScreen instanceof ChatScreen)) {
+        if (enableSparkle && event.phase == TickEvent.Phase.END && !Minecraft.getInstance().isPaused()
+                && (Minecraft.getInstance().screen == null || Minecraft.getInstance().screen instanceof ChatScreen)) {
             ShinyTracker.INSTANCE.tick();
             ClientScheduler.tick();
         }
@@ -77,14 +81,15 @@ public class ClientListener {
         ShinyTracker.INSTANCE.untrackAll();
     }
 
-    public void onRenderWorldLastEvent(RenderWorldLastEvent event) {
+    public void onRenderWorldLastEvent(RenderLevelStageEvent event) {
         if (enableSparkle) {
             ShinyTracker.INSTANCE.camera = new ClippingHelper(event.getMatrixStack().getLast().getMatrix(), event.getProjectionMatrix());
         }
     }
 
-    public void onTextureStitch(TextureStitchEvent.Pre event) {
-        if (event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_PARTICLES_TEXTURE)) {
+    public void onTextureStitch(TextureStitchEvent.Post event) {
+        if (event.getAtlas().location().equals(TextureAtlas.LOCATION_PARTICLES)) {
+
             event.addSprite(new ResourceLocation(PixelTweaks.MODID, "particle/stars_0"));
             event.addSprite(new ResourceLocation(PixelTweaks.MODID, "particle/stars_1"));
             FakeParticle.atlasTexture = event.getMap();

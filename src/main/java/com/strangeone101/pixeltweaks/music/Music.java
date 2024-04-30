@@ -1,7 +1,7 @@
 package com.strangeone101.pixeltweaks.music;
 
 import com.strangeone101.pixeltweaks.struct.Fade;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Arrays;
 import java.util.Objects;

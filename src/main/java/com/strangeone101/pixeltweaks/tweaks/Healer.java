@@ -3,14 +3,12 @@ package com.strangeone101.pixeltweaks.tweaks;
 import com.pixelmonmod.pixelmon.init.registry.BlockRegistration;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.TweaksConfig;
-import net.minecraft.block.AbstractBlock;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.DyeColor;
-import net.minecraft.util.ResourceLocation;
-
-import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.lang.reflect.Field;
 
@@ -21,7 +19,7 @@ public class Healer {
             //FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Block.class, this::onBlockRegistry);
             PixelTweaks.LOGGER.info("Registered healer tweak");
             try {
-                Field field = ObfuscationReflectionHelper.findField(AbstractBlock.class, "field_220085_g"); // lootTable field
+                Field field = ObfuscationReflectionHelper.findField(BlockBehaviour.class, "f_60440_"); // drops field
                 boolean accessible = field.isAccessible();
                 field.setAccessible(true);
                 for (RegistryObject<Block> healerBlock : BlockRegistration.HEALERS) {

@@ -9,14 +9,10 @@ import com.pixelmonmod.pixelmon.entities.npcs.NPCTrainer;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.pixellang.LangRegistry;
 import com.strangeone101.pixeltweaks.tweaks.NewGamerules;
-import com.strangeone101.pixeltweaks.worldgen.ZygardeCellFeature;
-import net.minecraft.entity.Entity;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.GameRules;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TagsUpdatedEvent;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 
 import java.util.HashMap;
@@ -30,7 +26,6 @@ public class CommonListener {
         //Pixelmon.EVENT_BUS.addListener(this::onPokemonExperienceGain);
         MinecraftForge.EVENT_BUS.addListener(this::onTagReload);
 
-        new ZygardeCellSpawner();
         new LangRegistry();
 
         TYPE_COLORS.put(Element.BUG, 0x9DC130);
@@ -85,19 +80,5 @@ public class CommonListener {
         if (event.getType() == ExperienceGainType.BATTLE && !Pixelmon.isClient()) {
 
         }
-    }
-
-    public void onBiomeLoad(BiomeLoadingEvent event) {
-        //Disable Zygarde cell feature because it is causing timeouts for some reason
-        /*ConfiguredFeature<?, ?> configuredFeature = ZygardeCellFeature.CONFIGURED_FEATURE;
-        if (configuredFeature == null) {
-            PixelTweaks.LOGGER.error("Failed to find the configured feature for Zygarde cells! Cannot spawn!");
-            return;
-        }
-        event.getGeneration().withFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION, configuredFeature);*/
-    }
-
-    public void onTagReload(TagsUpdatedEvent event) {
-        ZygardeCellSpawner.setTags();
     }
 }

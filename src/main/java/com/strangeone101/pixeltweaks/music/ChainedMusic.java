@@ -2,8 +2,9 @@ package com.strangeone101.pixeltweaks.music;
 
 import com.pixelmonmod.pixelmon.client.music.PixelmonMusic;
 import com.strangeone101.pixeltweaks.PixelTweaks;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.client.resources.sounds.Sound;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.sounds.SoundSource;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -19,13 +20,13 @@ public class ChainedMusic {
         this.music = music;
 
         if (music.start != null) {
-            this.intro = new TrackableSound(music.start, SoundCategory.MUSIC, music.volume, music.pitch, false, 0, SimpleSound.AttenuationType.NONE, 0.0D, 0.0D, 0.0D, true);
+            this.intro = new TrackableSound(music.start, SoundSource.MUSIC, music.volume, music.pitch, false, 0, SoundInstance.Attenuation.NONE, 0.0D, 0.0D, 0.0D, true);
         }
         if (music.loop != null) {
-            this.loop = new TrackableSound(music.loop, SoundCategory.MUSIC, music.volume, music.pitch, true, 0, SimpleSound.AttenuationType.NONE, 0.0D, 0.0D, 0.0D, true);
+            this.loop = new TrackableSound(music.loop, SoundSource.MUSIC, music.volume, music.pitch, true, 0, SoundInstance.Attenuation.NONE, 0.0D, 0.0D, 0.0D, true);
         }
         if (music.end != null) {
-            this.end = new TrackableSound(music.end, SoundCategory.MUSIC, music.volume, music.pitch, false, 0, SimpleSound.AttenuationType.NONE, 0.0D, 0.0D, 0.0D, true);
+            this.end = new TrackableSound(music.end, SoundSource.MUSIC, music.volume, music.pitch, false, 0, SoundInstance.Attenuation.NONE, 0.0D, 0.0D, 0.0D, true);
         }
 
         //this.introPlayed = intro == null;

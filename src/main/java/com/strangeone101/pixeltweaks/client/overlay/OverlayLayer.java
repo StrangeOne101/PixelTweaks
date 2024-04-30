@@ -6,7 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.pixelmonmod.pixelmon.api.util.helpers.ResourceLocationHelper;
 import com.strangeone101.pixeltweaks.struct.Fade;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.awt.Color;
 import java.lang.reflect.Type;

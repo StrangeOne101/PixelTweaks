@@ -2,7 +2,6 @@ package com.strangeone101.pixeltweaks.mixin.client.network;
 
 import com.pixelmonmod.pixelmon.api.battles.AttackCategory;
 import com.pixelmonmod.pixelmon.api.battles.attack.AttackRegistry;
-import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.battles.attacks.ImmutableAttack;
 import com.pixelmonmod.pixelmon.battles.tasks.BattleMessagePacket;
 import com.pixelmonmod.pixelmon.battles.tasks.BattleTaskPacket;
@@ -11,8 +10,10 @@ import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.client.BattleHelper;
 import com.strangeone101.pixeltweaks.music.MusicEvent;
 import com.strangeone101.pixeltweaks.music.SoundManager;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -29,20 +30,19 @@ import java.util.function.Predicate;
 public abstract class BattleMessagePacketMixin extends BattleTaskPacket {
 
     @Unique
-    private static Predicate<TranslationTextComponent> pixelTweaks$future = null;
+    private static Predicate<TranslatableContents> pixelTweaks$future = null;
 
     @Unique
-    private static TranslationTextComponent pixelTweaks$last = null;
+    private static TranslatableContents pixelTweaks$last = null;
     @Shadow(remap = false)
-    private ITextComponent component;
+    private Component component;
 
     @Inject(method = "process", at = @At("HEAD"), cancellable = true, remap = false)
     public void onProcess(ClientBattleManager bm, CallbackInfoReturnable<Boolean> cir) {
-        if (!(component instanceof TranslationTextComponent) || MusicEvent.BattleAction.REGISTRY.isEmpty()) {
+        if (!(component.getContents() instanceof TranslatableContents tcomponent) || MusicEvent.BattleAction.REGISTRY.isEmpty()) {
             return;
         }
 
-        TranslationTextComponent tcomponent = (TranslationTextComponent) component;
 
         if (pixelTweaks$future != null) {
             if (pixelTweaks$future.test(tcomponent)) {
@@ -51,8 +51,8 @@ public abstract class BattleMessagePacketMixin extends BattleTaskPacket {
             }
         }
 
-        MusicEvent.BattleAction.Action action = null;
-        MusicEvent.BattleAction.Action subAction = null;
+        Action action = null;
+        Action subAction = null;
 
         switch (tcomponent.getKey()) {
             case "pixelmon.effect.accuracyincreased":
@@ -261,11 +261,10 @@ public abstract class BattleMessagePacketMixin extends BattleTaskPacket {
             case "pixelmon.battletext.used":
                 //if (pixelTweaks$future != null) pixelTweaks$future.test(tcomponent);
                 String move;
-                if (tcomponent.getFormatArgs()[1] instanceof TranslationTextComponent) {
-                    TranslationTextComponent textComponent = (TranslationTextComponent) tcomponent.getFormatArgs()[1];
-                    move = textComponent.getKey().split("\\.", 2)[1].replace('_', ' ');
+                if (tcomponent.getArgs()[1] instanceof MutableComponent tcomponent2 && tcomponent2.getContents() instanceof TranslatableContents tcomponent3) {
+                    move = tcomponent3.getKey().split("\\.", 2)[1].replace('_', ' ');
                 } else {
-                    move = tcomponent.getFormatArgs()[1].toString();
+                    move = tcomponent.getArgs()[1].toString();
                 }
                 Optional<ImmutableAttack> attack = AttackRegistry.getAttackBase(move);
                 attack.ifPresent(attackBase -> {
@@ -275,7 +274,7 @@ public abstract class BattleMessagePacketMixin extends BattleTaskPacket {
 
                     pixelTweaks$future = (component) -> {
                         String key = component.getKey();
-                        String lastPokemon = pixelTweaks$last != null ? pixelTweaks$last.getFormatArgs()[0].toString() : null;
+                        String lastPokemon = pixelTweaks$last != null ? pixelTweaks$last.getArgs()[0].toString() : null;
                         switch (key) {
                             case "pixelmon.battletext.missedattack":
                                 SoundManager.playBattleAction(BattleHelper.getFromNickname(lastPokemon), Action.HIT_MISS);
@@ -324,7 +323,7 @@ public abstract class BattleMessagePacketMixin extends BattleTaskPacket {
 
                 pixelTweaks$last = tcomponent;
         }
-        String nickname = tcomponent.getFormatArgs().length > 0 ? tcomponent.getFormatArgs()[0].toString() : null;
+        String nickname = tcomponent.getArgs().length > 0 ? tcomponent.getArgs()[0].toString() : null;
 
         if (subAction != null) {
             PixelTweaks.LOGGER.debug("Playing action " + action + "/" + subAction + " for " + nickname);

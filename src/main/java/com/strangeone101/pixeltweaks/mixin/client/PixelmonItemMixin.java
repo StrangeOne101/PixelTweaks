@@ -2,8 +2,8 @@ package com.strangeone101.pixeltweaks.mixin.client;
 
 import com.pixelmonmod.pixelmon.items.PixelmonItem;
 import com.strangeone101.pixeltweaks.TweaksConfig;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.Item;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Unique;
@@ -29,11 +29,11 @@ public abstract class PixelmonItemMixin extends Item {
      */
     @Overwrite(remap = false)
     public String getTooltipText() {
-        return I18n.hasKey(this.getTranslationKey() + ".tooltip") && !I18n.format(this.getTranslationKey() + ".tooltip").isEmpty() ?
-                (TweaksConfig.autoWrapLoreLength.get() > 0 ?
-                        String.join("\n", pixelTweaks$splitString(I18n.format(this.getTranslationKey() + ".tooltip"), TweaksConfig.autoWrapLoreLength.get()))
-                        : I18n.format(this.getTranslationKey() + ".tooltip"))
-                : "";
+        return
+                I18n.exists(this.getDescriptionId() + ".tooltip") && I18n.get(this.getDescriptionId() + ".tooltip", new Object[0]).isEmpty() ?
+                        (TweaksConfig.autoWrapLoreLength.get() > 0 ?
+                                String.join("\n", pixelTweaks$splitString(I18n.get(this.getDescriptionId() + ".tooltip"), TweaksConfig.autoWrapLoreLength.get()))
+                                : I18n.get(this.getDescriptionId() + ".tooltip", new Object[0])) : "";
     }
 
     /**

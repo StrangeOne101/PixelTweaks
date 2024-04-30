@@ -4,6 +4,9 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TweaksConfig {
 
     protected static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
@@ -11,6 +14,7 @@ public class TweaksConfig {
     //Server
     public static ForgeConfigSpec.ConfigValue<Boolean> healersDropThemselves;
     public static ForgeConfigSpec.ConfigValue<Integer> hypertrainLevel;
+    public static ForgeConfigSpec.ConfigValue<List<String>> hypertrainBlacklist;
     public static ForgeConfigSpec.ConfigValue<Boolean> randomlyDropRipeApricorns;
     public static ForgeConfigSpec.ConfigValue<Boolean> foxesLoveBerries;
     public static ForgeConfigSpec.ConfigValue<Boolean> antiTrampleCrops;

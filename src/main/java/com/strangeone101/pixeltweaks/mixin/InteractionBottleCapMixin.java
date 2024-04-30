@@ -15,9 +15,10 @@ import com.pixelmonmod.pixelmon.enums.EnumGuiScreen;
 import com.pixelmonmod.pixelmon.enums.items.EnumBottleCap;
 import com.pixelmonmod.pixelmon.items.BottlecapItem;
 import com.strangeone101.pixeltweaks.TweaksConfig;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
+
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -25,8 +26,8 @@ import org.spongepowered.asm.mixin.Shadow;
 public abstract class InteractionBottleCapMixin implements IInteraction {
 
     @Override
-    public boolean processInteract(PixelmonEntity pixelmon, PlayerEntity player, Hand hand, ItemStack itemstack) {
-        if (!player.world.isRemote && hand != Hand.OFF_HAND && itemstack.getItem() instanceof BottlecapItem) {
+    public boolean processInteract(PixelmonEntity pixelmon, Player player, InteractionHand hand, ItemStack itemstack) {
+        if (!player.level().isClientSide && hand != InteractionHand.OFF_HAND && itemstack.getItem() instanceof BottlecapItem) {
             Pokemon data = pixelmon.getPokemon();
             if (data.getOwnerPlayer() != player) {
                 return false;
@@ -56,7 +57,7 @@ public abstract class InteractionBottleCapMixin implements IInteraction {
                                 screenData[i] = !ivs.isHyperTrained(types[i]) && ivs.getStat(types[i]) != 31 ? getHTValue(types[i], data) : 0;
                             }
 
-                            screenData[6] = pixelmon.getEntityId();
+                            screenData[6] = pixelmon.getId();
                             OpenScreenPacket.open(player, EnumGuiScreen.BottleCap, screenData);
                         }
 

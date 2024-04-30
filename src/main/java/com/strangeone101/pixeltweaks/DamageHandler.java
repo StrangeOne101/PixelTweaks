@@ -1,7 +1,7 @@
 package com.strangeone101.pixeltweaks;
 
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.damagesource.DamageSource;
 
 import java.util.Collection;
 import java.util.HashMap;
