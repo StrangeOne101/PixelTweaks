@@ -22,9 +22,9 @@ public class CommonListener {
 
     public CommonListener() {
         Pixelmon.EVENT_BUS.addListener(EventPriority.LOWEST, this::onPokemonSpawn);
-        MinecraftForge.EVENT_BUS.addListener(this::onBiomeLoad);
+        //MinecraftForge.EVENT_BUS.addListener(this::onBiomeLoad);
         //Pixelmon.EVENT_BUS.addListener(this::onPokemonExperienceGain);
-        MinecraftForge.EVENT_BUS.addListener(this::onTagReload);
+        //MinecraftForge.EVENT_BUS.addListener(this::onTagReload);
 
         new LangRegistry();
 

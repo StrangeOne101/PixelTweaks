@@ -3,12 +3,12 @@ package com.strangeone101.pixeltweaks.pixelevents.condition;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.mixin.client.WorldHelperMixin;
 import com.strangeone101.pixeltweaks.pixelevents.Condition;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.feature.structure.StructureStart;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.HashSet;
@@ -21,26 +21,26 @@ import java.util.Set;
 
 public class StructureCondition extends Condition<PixelmonEntity> {
     public List<ResourceLocation> structures;
-    public transient Set<Structure<?>> internalStructures;
+    public transient Set<Structure> internalStructures;
     boolean invert = false;
 
     @Override
     public boolean conditionMet(PixelmonEntity item) {
-        if (internalStructures == null) {
+        /*if (internalStructures == null) {
             internalStructures = new HashSet<>();
 
-            structures.stream().map(Registry.STRUCTURE_FEATURE::getOptional)
+            structures.stream().map(Registries.STRUCTURE::)
                     .filter(Optional::isPresent).map(Optional::get)
                     .forEach(internalStructures::add);
         }
 
-        for (Structure<?> structure : internalStructures) {
-            if (insideStructure(item.world, structure.getStructureName(), item.getPosition())) {
+        for (Structure structure : internalStructures) {
+            if (insideStructure(item.level(), structure.getStructureName(), item.getPosition())) {
                 return !invert;
             } else if (item.getOwner() != null && insideStructure(item.world, structure.getStructureName(), item.getOwner().getPosition())) {
                 return !invert;
             }
-        }
+        }*/
 
         return invert;
     }
@@ -57,8 +57,8 @@ public class StructureCondition extends Condition<PixelmonEntity> {
                 '}';
     }
 
-    public static boolean insideStructure(World world, String structure, BlockPos pos) {
-        Structure<?> value = WorldHelperMixin.getCachedStructures().computeIfAbsent(structure.toLowerCase(Locale.ROOT), (s) -> {
+    /*public static boolean insideStructure(Level world, String structure, BlockPos pos) {
+        Structure value = WorldHelperMixin.getCachedStructures().computeIfAbsent(structure.toLowerCase(Locale.ROOT), (s) -> {
             return Structure.NAME_STRUCTURE_BIMAP.get(structure);
         });
         if (value == null) {
@@ -84,5 +84,5 @@ public class StructureCondition extends Condition<PixelmonEntity> {
                 return false;
             }
         }
-    }
+    }*/
 }

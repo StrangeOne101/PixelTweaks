@@ -14,8 +14,6 @@
     "ability.MixinMimikyuAbility",
     "block.ApriconLeavesBlockMixin",
     "block.BerryLeavesBlockMixin",
-    "block.ZygardeCellBlockMixin",
-    "integration.SophisticatedBackpackMixin",
     "spam.AttackBaseTypeAdapterMixin",
     "spam.AttackTypeAdapterMixin",
     "spam.ImmutableAttackTypeAdapterMixin"
@@ -25,11 +23,8 @@
     "client.DataSyncControlPacketMixin",
     "client.OpponentElementMixin",
     "client.PixelmonEntity_OverlayMixin",
-    "client.PokemonShimLayerMixin",
     "client.WorldHelperMixin",
     "client.PixelmonItemMixin",
-    "client.network.BattleMessagePacketMixin",
-    "integration.FTBQuests_Pokedollar",
-    "integration.FTBLibraryContextMenuMixin"
+    "client.network.BattleMessagePacketMixin"
   ]
 }

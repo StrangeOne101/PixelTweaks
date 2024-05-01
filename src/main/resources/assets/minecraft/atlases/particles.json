@@ -1,0 +1,14 @@
+{
+  "sources": [
+    {
+      "type": "single",
+      "resource": "particle/stars_0.png",
+      "sprite": "stars_0"
+    },
+    {
+      "type": "single",
+        "resource": "particle/stars_1.png",
+        "sprite": "stars_1"
+    }
+  ]
+}

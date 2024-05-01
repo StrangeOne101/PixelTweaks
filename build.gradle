@@ -183,7 +183,7 @@ dependencies {
     implementation fg.deobf("curse.maven:architectury-api-419699:4663010")
     runtimeOnly fg.deobf("curse.maven:item-filters-309674:4553322")*/
 
-    implementation fg.deobf('com.pixelmonmod.pixelmon:Pixelmon-1.20.2-9.2.5-universal:9.2.5')
+    implementation fg.deobf('com.pixelmonmod.pixelmon:Pixelmon-1.20.2-9.2.7-universal:9.2.7')
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar

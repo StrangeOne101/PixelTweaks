@@ -84,7 +84,7 @@ public abstract class OpponentElementMixin extends PixelmonWidget {
 
         //ScreenHelper.drawImage(ScreenHelper.getPokemonSprite(this.enemy, this.parent.getMinecraft()), matrix, (float)(this.x + 1), (float)(this.y - 3), 40.0F, 40.0F, this.zLevel);
         graphics.setColor(1F, 1F, 1F, 1F);
-        this.particleEngine.drawAtOffset(graphics, this.enemy.pokemonUUID.toString(), (double)(this.x + 5), (double)(this.y + 1), (double) RandomHelper.rand.nextInt(26), (double)RandomHelper.rand.nextInt(26));
+        this.particleEngine.drawAtOffset(graphics, this.enemy.pokemonUUID.toString(), (double)(this.x + 5), (double)(this.y + 1), (double) RandomHelper.getRandom().nextInt(26), (double)RandomHelper.getRandom().nextInt(26));
         float offset = 0.0F;
         if (ClientStorageManager.pokedex.hasCaught(this.enemy.species)) {
             ScreenHelper.drawImage(graphics, CAUGHT, (float)(this.x + 52), (float)(this.y + 5), 8.0F, 8.0F, this.zLevel);
@@ -118,8 +118,8 @@ public abstract class OpponentElementMixin extends PixelmonWidget {
             ScreenHelper.drawScaledString(graphics, I18n.get("gui.battle.catch_combo", new Object[]{ClientProxy.battleManager.catchCombo}), (float)(this.x + 22) + offset, (float)this.y + 38.75F, -986896, 12.0F);
         }
 
-        if (shiny && RandomHelper.rand.nextInt(80) == 0) {
-            int size = 7 + RandomHelper.rand.nextInt(7);
+        if (shiny && RandomHelper.getRandom().nextInt(80) == 0) {
+            int size = 7 + RandomHelper.getRandom().nextInt(7);
             this.particleEngine.addParticle(new ScreenParticleEngine.GuiParticle(this.enemy.pokemonUUID.toString(), SHINY, 0.0D, 0.0D, 1.0D, 0.0D, 0.0D, 0.0D, 1.0F, 0.8F, 0.3F, 0.0F, (float)size, (float)size, 120, (particle, matrixStack) -> {
                 int x = particle.age;
                 int m = particle.maxAge;

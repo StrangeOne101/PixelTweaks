@@ -4,16 +4,10 @@ import com.google.common.base.Charsets;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.particle.TextureSheetParticle;
-import net.minecraft.client.particle.TexturesParticle;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,28 +30,6 @@ public abstract class FakeParticle extends TextureSheetParticle {
 
     public abstract ResourceLocation getResourceLocation();
 
-    public static TextureAtlasSprite loadTexture(ResourceLocation location) {
-
-        String fileLoc = "particles/" + location.getPath() + ".json";
-
-        try (
-                Reader reader = new InputStreamReader(Objects.requireNonNull(PixelTweaks.getResource(fileLoc)),Charsets.UTF_8);
-        ) {
-
-            Minecraft.getInstance().textureManager.
-            TexturesParticle texturesparticle = TexturesParticle.deserialize(JsonUtils..fromJson(reader));
-            List<ResourceLocation> list = texturesparticle.getTextures();
-
-            FakeParticleTexture texture = new FakeParticleTexture(list.stream().map((particleTextureID)
-                    -> new ResourceLocation(particleTextureID.getNamespace(), "particle/" + particleTextureID.getPath()))
-                    .map((resourceLoc) -> atlasTexture.getSprite(resourceLoc)).collect(Collectors.toList()));
-
-            return texture;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new FakeParticleTexture(Arrays.asList(atlasTexture.getSprite(MissingTextureSprite.getLocation())));
-    }
 
     public static class FakeParticleTexture implements SpriteSet {
         private List<TextureAtlasSprite> sprites;

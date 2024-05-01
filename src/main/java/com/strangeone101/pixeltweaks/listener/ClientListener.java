@@ -6,28 +6,29 @@ import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.ShinyTracker;
 import com.strangeone101.pixeltweaks.TweaksConfig;
 import com.strangeone101.pixeltweaks.particle.FakeParticle;
+import com.strangeone101.pixeltweaks.particle.StarParticle;
 import com.strangeone101.pixeltweaks.pixelevents.EventRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screens.ChatScreen;
-import net.minecraft.client.renderer.culling.ClippingHelper;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.texture.SpriteLoader;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+
+import java.util.Arrays;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientListener {
@@ -53,7 +54,7 @@ public class ClientListener {
     }
 
     public void onPokemonSpawn(EntityJoinLevelEvent event) {
-        if (enableSparkle && event.getEntity() instanceof PixelmonEntity && !event.isCanceled() && event.getResult() != Event.Result.DENY && event.getWorld().isRemote) {
+        if (enableSparkle && event.getEntity() instanceof PixelmonEntity && !event.isCanceled() && event.getResult() != Event.Result.DENY && event.getLevel().isClientSide) {
             //PixelTweaks.LOGGER.info("Pixelmon spawned on client: " + event.getWorld().isRemote);
             ClientScheduler.schedule(1, () -> { //Wait a tick so the entity is fully loaded, so it isn't a bulbasaur
                 PixelmonEntity entity = (PixelmonEntity) event.getEntity();
@@ -83,16 +84,18 @@ public class ClientListener {
 
     public void onRenderWorldLastEvent(RenderLevelStageEvent event) {
         if (enableSparkle) {
-            ShinyTracker.INSTANCE.camera = new ClippingHelper(event.getMatrixStack().getLast().getMatrix(), event.getProjectionMatrix());
+
+            ShinyTracker.INSTANCE.camera = new Frustum(event.getProjectionMatrix().transpose().normal(), event.getProjectionMatrix());
         }
     }
 
     public void onTextureStitch(TextureStitchEvent.Post event) {
         if (event.getAtlas().location().equals(TextureAtlas.LOCATION_PARTICLES)) {
 
-            event.addSprite(new ResourceLocation(PixelTweaks.MODID, "particle/stars_0"));
-            event.addSprite(new ResourceLocation(PixelTweaks.MODID, "particle/stars_1"));
-            FakeParticle.atlasTexture = event.getMap();
+            TextureAtlasSprite star0 = event.getAtlas().getSprite(new ResourceLocation(PixelTweaks.MODID, "particle/stars_0.png"));
+            TextureAtlasSprite star1 = event.getAtlas().getSprite(new ResourceLocation(PixelTweaks.MODID, "particle/stars_1.png"));
+
+            StarParticle.SPRITES = new FakeParticle.FakeParticleTexture(Arrays.asList(star0, star1));
         }
     }
 

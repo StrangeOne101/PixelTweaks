@@ -4,11 +4,10 @@ import com.pixelmonmod.pixelmon.api.config.BetterSpawnerConfig;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.pixelevents.Condition;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.Dimension;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.dimension.DimensionType;
 
 import java.util.List;
 import java.util.Set;
@@ -25,12 +24,12 @@ public class DimensionCondition extends Condition<ResourceLocation> {
 
     @Override
     public ResourceLocation itemFromPixelmon(PixelmonEntity entity) {
-        DimensionType dim = entity.getEntityWorld().getDimensionType();
+        DimensionType dim = entity.level().dimensionType();
         return getDimension(dim);
     }
 
-    public static ResourceLocation getDimension(DimensionType biome) {
-        return Minecraft.getInstance().world.func_241828_r().getRegistry(Registry.DIMENSION_TYPE_KEY).getKey(biome);
+    public static ResourceLocation getDimension(DimensionType dim) {
+        return Minecraft.getInstance().level.registryAccess().registry(Registries.DIMENSION_TYPE).get().getKey(dim);
     }
 
     @Override

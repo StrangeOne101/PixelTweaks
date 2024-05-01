@@ -62,13 +62,13 @@ public class SoundManager {
 
     public static void fadeSoundToStart(SoundInstance sound, long millis) {
         try {
-            if (PixelmonMusic.getSoundManager().isActive(sound)) return;
+            if (PixelmonMusic.getSoundHandler().isActive(sound)) return;
 
             EXECUTOR.submit(() -> {
                 PixelmonMusic.resetFade(sound, false);
                 PixelmonMusic.getSoundHandler().play(sound);
                 AtomicReference<ChannelAccess.ChannelHandle> channel = new AtomicReference<ChannelAccess.ChannelHandle>();
-                PixelmonMusic.getSoundManager().instanceToChannel.forEach((s, c) -> {
+                PixelmonMusic.getSoundHandler().soundEngine.instanceToChannel.forEach((s, c) -> {
                     if (Objects.equals(sound, s)) {
                         channel.set(c);
                     }
@@ -76,7 +76,7 @@ public class SoundManager {
                 });
                 float initialVolume;
                 if (channel.get() != null) {
-                    initialVolume = PixelmonMusic.getSoundManager().calculateVolume(sound);
+                    initialVolume = PixelmonMusic.getSoundHandler().soundEngine.calculateVolume(sound);
                 } else {
                     initialVolume = 1.0F;
                 }
@@ -105,18 +105,18 @@ public class SoundManager {
 
             });
         } catch (Exception var4) {
-            PixelmonMusic.getSoundManager().play(sound);
+            PixelmonMusic.getSoundHandler().play(sound);
         }
 
     }
 
     public static void fadeSoundToStop(SimpleSoundInstance sound, long millis, Runnable runnable) {
         try {
-            if (!PixelmonMusic.getSoundManager().isActive(sound)) return;
+            if (!PixelmonMusic.getSoundHandler().isActive(sound)) return;
             EXECUTOR.submit(() -> {
                 PixelmonMusic.resetFade(sound, true);
                 AtomicReference<ChannelAccess.ChannelHandle> channel = new AtomicReference<>(null);
-                PixelmonMusic.getSoundManager().instanceToChannel.forEach((s, c) -> {
+                PixelmonMusic.getSoundHandler().soundEngine.instanceToChannel.forEach((s, c) -> {
                     if (Objects.equals(sound, s)) {
                         channel.set(c);
                     }
@@ -124,7 +124,7 @@ public class SoundManager {
                 });
                 float initialVolume;
                 if (channel.get() != null) {
-                    initialVolume = PixelmonMusic.getSoundManager().calculateVolume(sound);
+                    initialVolume = PixelmonMusic.getSoundHandler().soundEngine.calculateVolume(sound);
                 } else {
                     initialVolume = 1.0F;
                 }
@@ -144,7 +144,7 @@ public class SoundManager {
                     var8.printStackTrace();
                 }
 
-                PixelmonMusic.getSoundManager().stop(sound);
+                PixelmonMusic.getSoundHandler().stop(sound);
                 PixelmonMusic.resetFade(sound, true);
                 if (channel.get() != null) {
                     ((ChannelAccess.ChannelHandle)channel.get()).execute((source) -> {
@@ -158,7 +158,7 @@ public class SoundManager {
 
             });
         } catch (Exception var5) {
-            PixelmonMusic.getSoundManager().stop(sound);
+            PixelmonMusic.getSoundHandler().stop(sound);
             if (runnable != null) {
                 runnable.run();
             }
@@ -219,7 +219,7 @@ public class SoundManager {
 
             PixelTweaks.LOGGER.debug("Playing music " + event.getFile());
         } else if (event.sound != null) {
-            SimpleSoundInstance sound = new SimpleSoundInstance(event.sound.sound, SoundSource.BLOCKS, event.sound.volume, event.sound.pitch, RandomSource.create(), false, 0, Sound.Type.FILE, 0.0D, 0.0D, 0.0D, true);
+            SimpleSoundInstance sound = new SimpleSoundInstance(event.sound.sound, SoundSource.BLOCKS, event.sound.volume, event.sound.pitch, RandomSource.create(), false, 0, SoundInstance.Attenuation.NONE, 0.0D, 0.0D, 0.0D, true);
 
             fadeSoundToStart(sound, event.sound.fade.start);
             PixelTweaks.LOGGER.debug("Playing sound " + event.getFile());
@@ -228,7 +228,7 @@ public class SoundManager {
 
     public static void pauseAllMusic() {
         List<SoundInstance> pixelTweaksMusic = ALL_MUSIC.stream().map(ChainedMusic::getPlaying).collect(Collectors.toList());
-        PixelmonMusic.getSoundManager().instanceToChannel.forEach((s, e) -> {
+        PixelmonMusic.getSoundHandler().soundEngine.instanceToChannel.forEach((s, e) -> {
             //Make sure it is music, but make sure it isn't battle music played by PixelTweaks
             if (s.getSource() == SoundSource.MUSIC && e.channel != null && !pixelTweaksMusic.contains(s)) {
                 e.channel.pause();
@@ -238,7 +238,7 @@ public class SoundManager {
 
     public static void resumeAllMusic() {
         List<SoundInstance> pixelTweaksMusic = ALL_MUSIC.stream().map(ChainedMusic::getPlaying).collect(Collectors.toList());
-        PixelmonMusic.getSoundManager().instanceToChannel.forEach((s, e) -> {
+        PixelmonMusic.getSoundHandler().soundEngine.instanceToChannel.forEach((s, e) -> {
             if (s.getSource() == SoundSource.MUSIC && e.channel != null && !pixelTweaksMusic.contains(s)) {
                 //e.source.resume();
                 fadeSoundToStart(s, 2000L);

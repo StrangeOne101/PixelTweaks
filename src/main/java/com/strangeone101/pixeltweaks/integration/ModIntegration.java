@@ -1,13 +1,9 @@
 package com.strangeone101.pixeltweaks.integration;
 
 import com.strangeone101.pixeltweaks.TweaksConfig;
-import com.strangeone101.pixeltweaks.integration.backpack.SophisticatedBackpacksIntegration;
-import com.strangeone101.pixeltweaks.integration.backpack.SimplyBackpacksIntegration;
 import com.strangeone101.pixeltweaks.integration.backpack.TravelersBackpackIntegration;
 import com.strangeone101.pixeltweaks.integration.backpack.UsefulBackpacksIntegration;
-import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonRewardTypes;
-import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTaskTypes;
-import com.strangeone101.pixeltweaks.integration.ftbquests.TaskListener;
+
 import net.minecraftforge.fml.ModList;
 
 public class ModIntegration {
@@ -45,8 +41,8 @@ public class ModIntegration {
     }
 
     public static void registerBackpackIntegrations() {
-        new SophisticatedBackpacksIntegration();
-        new SimplyBackpacksIntegration();
+        //new SophisticatedBackpacksIntegration();
+        //new SimplyBackpacksIntegration();
         new UsefulBackpacksIntegration();
         new TravelersBackpackIntegration();
     }
@@ -54,8 +50,8 @@ public class ModIntegration {
     public static void registerFTBQuestsIntegration() {
         if (!ftbQuests()) return;
 
-        PokemonTaskTypes.register();
-        PokemonRewardTypes.register();
-        new TaskListener();
+        //PokemonTaskTypes.register();
+        //PokemonRewardTypes.register();
+        //new TaskListener();
     }
 }
