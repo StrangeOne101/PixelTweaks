@@ -130,7 +130,7 @@ public class ShinyTracker {
         final double h = entity.getBoundingBoxForCulling().getYsize() / 2.5;
 
         double boxSize = Math.cbrt(entity.getBoundingBoxForCulling().getXsize() * entity.getBoundingBoxForCulling().getYsize() * entity.getBoundingBoxForCulling().getZsize());
-        int amount = (int) Math.max(5, Math.min(boxSize * 5, 50));
+        int amount = (int) Math.max(5, Math.min(boxSize * 5, 50)); //For every 1 block size the pokemon is, an additional 5 particles should spawn. Min of 5 particles and max of 50
         int div = 360 / amount;
 
         for (int i = 0; i < amount; i++) {

@@ -1,6 +1,5 @@
 package com.strangeone101.pixeltweaks.integration.jei.category;
 
-import com.mojang.blaze3d.matrix.GuiGraphics;
 import com.pixelmonmod.pixelmon.api.pokemon.drops.ItemWithChance;
 import com.pixelmonmod.pixelmon.api.pokemon.drops.PokemonDropInformation;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
@@ -8,16 +7,16 @@ import com.strangeone101.pixeltweaks.integration.jei.JEIIntegration;
 import com.strangeone101.pixeltweaks.integration.jei.PokemonIngredient;
 import com.strangeone101.pixeltweaks.integration.jei.PokemonIngredientRenderer;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -38,7 +37,7 @@ public class DropsRecipeCategory implements IRecipeCategory<PokemonDropInformati
     public DropsRecipeCategory(IGuiHelper gui){
         ItemStack itemStack = new ItemStack(PixelmonItems.quick_claw);
 
-        this.icon = gui.createDrawableIngredient(itemStack);
+        this.icon = gui.createDrawableIngredient(VanillaTypes.ITEM_STACK, itemStack);
         this.slotDrawable = gui.getSlotDrawable();
         this.bg = gui.drawableBuilder(new ResourceLocation("pixeltweaks", "textures/jei/drops_bg2.png"), 0, 0, 112, 100).setTextureSize(112, 100).build();
 
@@ -51,6 +50,11 @@ public class DropsRecipeCategory implements IRecipeCategory<PokemonDropInformati
     @Override
     public Class<? extends PokemonDropInformation> getRecipeClass() {
         return PokemonDropInformation.class;
+    }
+
+    @Override
+    public RecipeType<PokemonDropInformation> getRecipeType() {
+        return null;
     }
 
     @Override
@@ -69,7 +73,9 @@ public class DropsRecipeCategory implements IRecipeCategory<PokemonDropInformati
     }
 
     @Override
-    public void setIngredients(IRecipeLayoutBuilder builder, PokemonDropInformation recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder iRecipeLayoutBuilder, PokemonDropInformation pokemonDropInformation, IFocusGroup iFocusGroup) {
+
+
         IIngredients ingredients = builder.getIngredients();
         ingredients.setInput(JEIIntegration.WRAPPED_POKEMON, new PokemonIngredient(recipe.getPokemonSpec()));
 
@@ -78,6 +84,11 @@ public class DropsRecipeCategory implements IRecipeCategory<PokemonDropInformati
             items.add(drop.getItemStack());
         }
         ingredients.setOutputs(VanillaTypes.ITEM, items);
+    }
+
+    @Override
+    public void setIngredients(IRecipeLayoutBuilder builder, PokemonDropInformation recipe, IFocusGroup focuses) {
+
     }
 
     @Override
@@ -91,13 +102,13 @@ public class DropsRecipeCategory implements IRecipeCategory<PokemonDropInformati
     }
 
     @Override
-    public void draw(PokemonDropInformation recipe, GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(PokemonDropInformation recipe, IRecipeSlotsView slotview, GuiGraphics matrixStack, double mouseX, double mouseY) {
         for (int i = 0; i < recipe.getDrops().size(); i++) {
             ItemWithChance drop = recipe.getDrops().get(i);
             double chance = drop.getChance() * 100;
             String chanceString = String.format("%.0f", chance) + "%";
-            int w = Minecraft.getInstance().fontRenderer.getStringWidth(chanceString);
-            Minecraft.getInstance().fontRenderer.drawStringWithShadow(matrixStack, chanceString, 8 + (26 * i) + 10 - ((float) w / 2), 66 + 24, 0xFFFFFF);
+            int w = Minecraft.getInstance().font.width(chanceString);
+            matrixStack.drawString(Minecraft.getInstance().font, chanceString, 8 + (26 * i) + 10 - ((float) w / 2), 66 + 24, 0xFFFFFF, true);
 
             //String amountString = drop.getMin() + "-" + drop.getMax();
             //Minecraft.getInstance().fontRenderer.drawStringWithShadow(matrixStack, amountString, 8 + (26 * i), 66 + 4, 0xFFFFFF);
