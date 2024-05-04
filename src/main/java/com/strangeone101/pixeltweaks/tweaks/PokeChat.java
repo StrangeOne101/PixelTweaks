@@ -19,6 +19,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
@@ -37,6 +38,7 @@ import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -350,34 +352,30 @@ public class PokeChat {
     @OnlyIn(Dist.CLIENT)
     private void renderItem(GuiGraphics matrixStack, ItemStack stack, int x, int y) {
         matrixStack.pose().pushPose();
-        Minecraft.getInstance().getTextureManager().bindForSetup(TextureAtlas.LOCATION_BLOCKS);
-        Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS).setBlurMipmap(false, false);
-
-        BakedModel bakedmodel = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
-        bakedmodel = bakedmodel.getOverrides().resolve(bakedmodel, stack, null, null, 0);
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        //Minecraft.getInstance().getTextureManager().bindForSetup(TextureAtlas.LOCATION_BLOCKS);
+        //Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS).setBlurMipmap(false, false);
         float half = 8.0F * 2;
         float full = 16.0F * 2;
 
-        matrixStack.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        BakedModel bakedmodel = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
+        bakedmodel = bakedmodel.getOverrides().resolve(bakedmodel, stack, null, null, 0);
+
         matrixStack.pose().translate((float)x, (float)y, 100.0F + 400);
         matrixStack.pose().translate(half, half, 0.0F);
-        matrixStack.pose().scale(1.0F, -1.0F, 1.0F);
+        //matrixStack.pose().translate((float)(x + 8), (float)(y + 8), (float)(150 + (bakedmodel.isGui3d() ? 1 : 0)));
+        matrixStack.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        matrixStack.pose().mulPoseMatrix((new Matrix4f()).scaling(1.0F, -1.0F, 1.0F));
+
+        //RenderSystem.enableDepthTest();
+        //RenderSystem.enableBlend();
+       /// RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+
+        //matrixStack.pose().scale(1.0F, -1.0F, 1.0F);
         matrixStack.pose().scale(full, full, full);
-        MultiBufferSource.BufferSource irendertypebuffer$impl = Minecraft.getInstance().renderBuffers().bufferSource();
-        boolean flag = !bakedmodel.useAmbientOcclusion();
-        /*if (flag) {
-            RenderHelper.setupGuiFlatDiffuseLighting();
-        }*/
 
-        Minecraft.getInstance().getItemRenderer().render(stack, ItemDisplayContext.GUI, false, matrixStack.pose(), irendertypebuffer$impl, 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
-        irendertypebuffer$impl.endBatch();
-        RenderSystem.enableDepthTest();
+        Minecraft.getInstance().getItemRenderer().render(stack, ItemDisplayContext.GUI, false, matrixStack.pose(), matrixStack.bufferSource(), 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
 
-        RenderSystem.disableDepthTest();
-
+        matrixStack.flush();
         matrixStack.pose().popPose();
     }
 }

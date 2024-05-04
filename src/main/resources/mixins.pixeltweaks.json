@@ -4,7 +4,7 @@
   "package": "com.strangeone101.pixeltweaks.mixin",
   "refmap": "mixins.pixeltweaks.refmap.json",
   "target": "@env(DEFAULT)",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_16",
   "mixins": [
     "AbstractSpecificationMixin",
     "ExperienceMixin",

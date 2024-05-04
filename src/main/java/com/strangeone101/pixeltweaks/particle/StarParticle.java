@@ -57,7 +57,7 @@ public class StarParticle extends FakeParticle {
         this.bCol = 1F - (world.random.nextFloat() * 0.015F);
         this.gravity = 0.4F;
         this.angleDirection = world.random.nextFloat() > 0.5F ? 1F : -1F;
-        this.localScale = 0F;
+        this.quadSize = 0F;
         this.setSize(0F, 0F);
 
         this.pickSprite(SPRITES);
@@ -76,10 +76,10 @@ public class StarParticle extends FakeParticle {
         this.oRoll = this.roll;
         this.roll += (this.angleDirection * 0.5F);
         //this.particleScale = 0.1F * sizeScale[this.age % 20];// * this.getViewScale();
-        this.prevScale = this.localScale;
+        this.prevScale = this.quadSize;
         float f = 0.10F * sizeScale[realAge % 15] * this.getViewScale() * localScale;
         this.setSize(f, f);
-        this.localScale = f;
+        this.quadSize = f;
 
         //Make the particle fade out as it is nearing the end of its life
         this.prevAlpha = this.alpha;
@@ -94,7 +94,7 @@ public class StarParticle extends FakeParticle {
             this.remove();
         } else {
             this.yd -= 0.04D * (double)this.gravity;
-            this.move(this.x, this.y, this.z);
+            this.move(this.xd, this.yd, this.zd);
             this.xd *= (double)drag;
             this.yd *= (double)drag;
             this.zd *= (double)drag;
@@ -117,7 +117,7 @@ public class StarParticle extends FakeParticle {
 
     @Override
     public float getQuadSize(float partialTicks) {
-        return Mth.lerp(partialTicks, this.prevScale, this.localScale);
+        return Mth.lerp(partialTicks, this.prevScale, this.quadSize);
     }
 
     @Override

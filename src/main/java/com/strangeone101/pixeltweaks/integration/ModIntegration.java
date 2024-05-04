@@ -1,8 +1,6 @@
 package com.strangeone101.pixeltweaks.integration;
 
 import com.strangeone101.pixeltweaks.TweaksConfig;
-import com.strangeone101.pixeltweaks.integration.backpack.TravelersBackpackIntegration;
-import com.strangeone101.pixeltweaks.integration.backpack.UsefulBackpacksIntegration;
 
 import net.minecraftforge.fml.ModList;
 
@@ -43,8 +41,8 @@ public class ModIntegration {
     public static void registerBackpackIntegrations() {
         //new SophisticatedBackpacksIntegration();
         //new SimplyBackpacksIntegration();
-        new UsefulBackpacksIntegration();
-        new TravelersBackpackIntegration();
+        //new UsefulBackpacksIntegration();
+        //new TravelersBackpackIntegration();
     }
 
     public static void registerFTBQuestsIntegration() {

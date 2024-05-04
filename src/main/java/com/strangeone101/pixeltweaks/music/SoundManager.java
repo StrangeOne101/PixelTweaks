@@ -32,6 +32,7 @@ public class SoundManager {
     public static Set<ChainedMusic> BATTLE_MUSIC = new HashSet<>();
 
     static {
+        PixelTweaks.LOGGER.debug("Starting music thread");
         EXECUTOR = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setPriority(5).setDaemon(true).setNameFormat("pixeltweaks_sound_%d").build());
 
         EXECUTOR.submit(() -> {
@@ -62,9 +63,11 @@ public class SoundManager {
 
     public static void fadeSoundToStart(SoundInstance sound, long millis) {
         try {
+            PixelTweaks.LOGGER.debug("fadeSoundToStart " + sound.getSound().getLocation());
             if (PixelmonMusic.getSoundHandler().isActive(sound)) return;
 
             EXECUTOR.submit(() -> {
+                PixelTweaks.LOGGER.debug("Fading sound to start executor: " + sound.getSound().getLocation());
                 PixelmonMusic.resetFade(sound, false);
                 PixelmonMusic.getSoundHandler().play(sound);
                 AtomicReference<ChannelAccess.ChannelHandle> channel = new AtomicReference<ChannelAccess.ChannelHandle>();
@@ -114,6 +117,7 @@ public class SoundManager {
         try {
             if (!PixelmonMusic.getSoundHandler().isActive(sound)) return;
             EXECUTOR.submit(() -> {
+                PixelTweaks.LOGGER.debug("Fading sound to stop: " + sound.getSound().getLocation());
                 PixelmonMusic.resetFade(sound, true);
                 AtomicReference<ChannelAccess.ChannelHandle> channel = new AtomicReference<>(null);
                 PixelmonMusic.getSoundHandler().soundEngine.instanceToChannel.forEach((s, c) -> {
@@ -227,6 +231,7 @@ public class SoundManager {
     }
 
     public static void pauseAllMusic() {
+        PixelTweaks.LOGGER.debug("Pausing all music");
         List<SoundInstance> pixelTweaksMusic = ALL_MUSIC.stream().map(ChainedMusic::getPlaying).collect(Collectors.toList());
         PixelmonMusic.getSoundHandler().soundEngine.instanceToChannel.forEach((s, e) -> {
             //Make sure it is music, but make sure it isn't battle music played by PixelTweaks
@@ -237,6 +242,7 @@ public class SoundManager {
     }
 
     public static void resumeAllMusic() {
+        PixelTweaks.LOGGER.debug("Resuming all music");
         List<SoundInstance> pixelTweaksMusic = ALL_MUSIC.stream().map(ChainedMusic::getPlaying).collect(Collectors.toList());
         PixelmonMusic.getSoundHandler().soundEngine.instanceToChannel.forEach((s, e) -> {
             if (s.getSource() == SoundSource.MUSIC && e.channel != null && !pixelTweaksMusic.contains(s)) {

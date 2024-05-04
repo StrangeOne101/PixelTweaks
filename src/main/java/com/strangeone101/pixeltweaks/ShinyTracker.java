@@ -48,7 +48,6 @@ public class ShinyTracker {
     }
 
     public void tick() {
-
         //Check if the player is in a battle, and if so, don't sparkle shinies
         if (BattleRegistry.getBattle(Minecraft.getInstance().player) != null || camera == null) return;
 
@@ -60,6 +59,8 @@ public class ShinyTracker {
 
         camera.prepare(pos.x, pos.y, pos.z);
 
+        //Frustum frustum = new Frustum(Minecraft.getInstance().gameRenderer.getMainCamera()., Minecraft.getInstance().getMainRenderTarget().);
+
 
         //Check all pokemon
         Iterator<PixelmonEntity> iterator = shinyTracking.iterator();
@@ -67,7 +68,7 @@ public class ShinyTracker {
             PixelmonEntity entity = iterator.next();
             //Check if the pokemon is in range & entity is being rendered
 
-            boolean rendered = Minecraft.getInstance().getEntityRenderDispatcher().shouldRender(entity, camera, vec.x, vec.y, vec.z);
+            boolean rendered = Minecraft.getInstance().getEntityRenderDispatcher().shouldRender(entity, camera, pos.x, pos.y, pos.z);
             boolean visible = rayTrace(entity);
 
             if (entity.position().distanceToSqr(Minecraft.getInstance().player.position()) <= range * range && rendered && visible) {
@@ -76,9 +77,9 @@ public class ShinyTracker {
                 iterator.remove();
                 //PixelTweaks
                 ClientScheduler.schedule(10, () -> {
-                    Vector3f vec2 = Minecraft.getInstance().gameRenderer.getMainCamera().getLookVector();
-                    camera.prepare(vec2.x, vec2.y, vec2.z);
-                    boolean rendered2 = Minecraft.getInstance().getEntityRenderDispatcher().shouldRender(entity, camera, vec.x, vec.y, vec.z);
+                    Vec3 pos2 = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+                    camera.prepare(pos2.x, pos2.y, pos2.z);
+                    boolean rendered2 = Minecraft.getInstance().getEntityRenderDispatcher().shouldRender(entity, camera, pos2.x, pos2.y, pos2.z);
 
                     if (rendered2 && rayTrace(entity)) {
                         //Add to shiny map
@@ -126,9 +127,10 @@ public class ShinyTracker {
 
 
         final double d = entity.getBbWidth() / 2.5D + 0.2D;
-        final double h = entity.getBbHeight() / 2.5D - 0.5D;
+        final double h = entity.getBoundingBoxForCulling().getYsize() / 2.5;
 
-        int amount = 5;
+        double boxSize = Math.cbrt(entity.getBoundingBoxForCulling().getXsize() * entity.getBoundingBoxForCulling().getYsize() * entity.getBoundingBoxForCulling().getZsize());
+        int amount = (int) Math.max(5, Math.min(boxSize * 5, 50));
         int div = 360 / amount;
 
         for (int i = 0; i < amount; i++) {
@@ -137,14 +139,18 @@ public class ShinyTracker {
             double zz = Math.sin(Math.toRadians(deg));
 
             double driftX = (entity.level().random.nextDouble() * 0.2D - 0.1D) * d;
-            double driftY = (entity.level().random.nextDouble() * 0.2D - 0.1D) * h;
+            double driftY = (entity.level().random.nextDouble() * 0.4D - 0.15D) * h;
             double driftZ = (entity.level().random.nextDouble() * 0.2D - 0.1D) * d;
 
             double x = xx * d + entity.getX() + driftX;
             double y = h + entity.getY() + driftY;
             double z = zz * d + entity.getZ() + driftZ;
 
-            StarParticle particle = new StarParticle(Minecraft.getInstance().level, x, y, z, 0.01 * xx, 0.1 * entity.getBbHeight(), 0.01 * zz);
+            double xo = entity.getDeltaMovement().x;
+            double yo = entity.getDeltaMovement().y;
+            double zo = entity.getDeltaMovement().z;
+
+            StarParticle particle = new StarParticle(Minecraft.getInstance().level, x, y, z, 0.01 * xx + xo, 0.1 * entity.getBbHeight() + yo, 0.01 * zz + zo);
             Minecraft.getInstance().particleEngine.add(particle);
         }
     }

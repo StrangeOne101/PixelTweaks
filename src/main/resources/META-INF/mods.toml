@@ -71,7 +71,7 @@ description='''${mod_description}'''
 [[dependencies.pixeltweaks]]
    modId="jei"
    mandatory=false
-   versionRange="[7.6.1.0,)"
+   versionRange="[16.0.0.0,)"
    side="BOTH"
    ordering="NONE"
 

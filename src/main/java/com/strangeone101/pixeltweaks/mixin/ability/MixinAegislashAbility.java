@@ -18,40 +18,6 @@ public class MixinAegislashAbility extends AbstractAbility {
      * @reason Fixed Aegislash not changing forms
      */
     @Overwrite(remap = false)
-    public void preProcessAttackUser(PixelmonWrapper pokemon, PixelmonWrapper target, Attack a) {
-        /*String shield = "shield";
-        String blade = "blade";
-        String newShield = "shield";
-        String newBlade = "blade";
-
-        //If the pokemon has a custom form
-        if (pokemon.getForm().getName().contains("_")) {
-            String[] split = pokemon.getForm().getName().split("_");
-            newShield = split[0] + "_shield";
-            newBlade = split[0] + "_blade";
-        }
-
-        PixelTweaks.LOGGER.debug("Form name: " + pokemon.getForm().getName());
-        PixelTweaks.LOGGER.debug("Attack: " + a.savedAttack.getAttackName());
-
-        if (Attack.dealsDamage(a) && pokemon.getForm().getName().endsWith(shield)) {
-            pokemon.setForm(newBlade);
-            pokemon.bc.modifyStats(pokemon);
-            pokemon.bc.sendToAll("pixelmon.abilities.stancechange.blade", pokemon.getNickname());
-        } else if (!Attack.dealsDamage(a) && pokemon.getForm().getName().endsWith(blade)) {
-            pokemon.setForm(newShield);
-            pokemon.bc.modifyStats(pokemon);
-            pokemon.bc.sendToAll("pixelmon.abilities.stancechange.shield", pokemon.getNickname());
-        }*/
-
-    }
-
-
-    /**
-     * @author StrangeOne101
-     * @reason Fixed Aegislash not changing forms
-     */
-    @Overwrite(remap = false)
     public void applySwitchOutEffect(PixelmonWrapper oldPokemon) {
         if (oldPokemon.getForm().getName().endsWith("blade")) {
             if (oldPokemon.getForm().getName().contains("_")) {

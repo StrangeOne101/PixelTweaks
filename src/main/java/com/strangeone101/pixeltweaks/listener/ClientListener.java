@@ -44,7 +44,6 @@ public class ClientListener {
         MinecraftForge.EVENT_BUS.addListener(this::onRenderWorldLastEvent);
 
         new EventRegistry();
-
     }
 
     public void clientSetup(FMLClientSetupEvent event) {
@@ -84,18 +83,20 @@ public class ClientListener {
 
     public void onRenderWorldLastEvent(RenderLevelStageEvent event) {
         if (enableSparkle) {
-
-            ShinyTracker.INSTANCE.camera = new Frustum(event.getProjectionMatrix().transpose().normal(), event.getProjectionMatrix());
+            ShinyTracker.INSTANCE.camera = event.getFrustum();
         }
     }
 
     public void onTextureStitch(TextureStitchEvent.Post event) {
         if (event.getAtlas().location().equals(TextureAtlas.LOCATION_PARTICLES)) {
+            PixelTweaks.LOGGER.debug("Stitching particles");
 
-            TextureAtlasSprite star0 = event.getAtlas().getSprite(new ResourceLocation(PixelTweaks.MODID, "particle/stars_0.png"));
-            TextureAtlasSprite star1 = event.getAtlas().getSprite(new ResourceLocation(PixelTweaks.MODID, "particle/stars_1.png"));
+            TextureAtlasSprite star0 = event.getAtlas().getSprite(new ResourceLocation(PixelTweaks.MODID, "stars_0"));
+            TextureAtlasSprite star1 = event.getAtlas().getSprite(new ResourceLocation(PixelTweaks.MODID, "stars_1"));
 
             StarParticle.SPRITES = new FakeParticle.FakeParticleTexture(Arrays.asList(star0, star1));
+        } else {
+            PixelTweaks.LOGGER.debug("Stitching " + event.getAtlas().location().toString());
         }
     }
 

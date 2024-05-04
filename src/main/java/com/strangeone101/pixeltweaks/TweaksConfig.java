@@ -18,9 +18,6 @@ public class TweaksConfig {
     public static ForgeConfigSpec.ConfigValue<Boolean> randomlyDropRipeApricorns;
     public static ForgeConfigSpec.ConfigValue<Boolean> foxesLoveBerries;
     public static ForgeConfigSpec.ConfigValue<Boolean> antiTrampleCrops;
-    public static ForgeConfigSpec.ConfigValue<Integer> zygardeSpawnTime;
-    public static ForgeConfigSpec.ConfigValue<Integer> zygardeLuckyAttemptRate;
-    public static ForgeConfigSpec.ConfigValue<Integer> zygardeStormCoreRate;
     public static ForgeConfigSpec.ConfigValue<Boolean> backpacksIntegration;
     public static ForgeConfigSpec.ConfigValue<Boolean> enablePokemonChat;
     public static ForgeConfigSpec.ConfigValue<Double> catchMultiplier;
@@ -60,15 +57,6 @@ public class TweaksConfig {
 
         antiTrampleCrops = BUILDER.comment("If pokemon should be prevented from trampling crops. Default: true")
                 .define("antiTrampleCrops", true);
-
-        zygardeSpawnTime = BUILDER.comment("How often a Zygarde cell should attempt to spawn (in seconds). Does not guarantee a spawn. Set to 0 to disable. Default: 30")
-                .defineInRange("zygardeSpawnTime", 30, 0, 9999);
-
-        zygardeLuckyAttemptRate = BUILDER.comment("The chance of a spawn attempt being 'lucky'. Lucky attempts will spawn with a higher chance of being near the player. Chance is 1/<rate> Set to 0 to disable. Default: 4.")
-                .defineInRange("zygardeLuckyAttemptRate", 4, 0, 9999);
-
-        zygardeStormCoreRate = BUILDER.comment("The rate in which Zygarde Cores should spawn when it's stormy. Rate is 1/<rate>. Set to 0 to disable. Default: 7")
-                .defineInRange("zygardeStormCoreRate", 7, 0, 9999);
 
         backpacksIntegration = BUILDER.comment("If Backpack integration should be enabled (supports 4 backpack mods). Default: true")
                 .define("backpacksIntegration", true);
