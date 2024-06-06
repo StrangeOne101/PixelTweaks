@@ -40,7 +40,14 @@ public class TweaksConfig {
         autoWrapLoreLength = BUILDER.comment("The length of each line of lore in the item tooltip. Set to 0 to disable. Default: 60")
                 .define("autoWrapLoreLength", 60);
 
-        BUILDER.pop().comment("All features that require being on the server").push("Server Features");
+        BUILDER.pop();
+
+        if (PixelTweaks.CLIENT_ONLY) {
+            ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, BUILDER.build(), PixelTweaks.MODID + ".toml");
+            return;
+        }
+
+        BUILDER.comment("All features that require being on the server").push("Server Features");
 
         healersDropThemselves = BUILDER.comment("If Pixelmon Healers should drop themselves when broken. Default: true")
                 .define("healersDropThemselves", true);

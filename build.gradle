@@ -20,10 +20,14 @@ plugins {
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'com.strangeone101'
-version = '1.10.5'
+version = '1.10.6'
+var clientVersion = false
 
 java {
     archivesBaseName = 'PixelTweaks'
+    if (clientVersion == true) {
+        archivesBaseName = "PixelTweaks-Client"
+    }
     toolchain.languageVersion = JavaLanguageVersion.of(8)
 }
 

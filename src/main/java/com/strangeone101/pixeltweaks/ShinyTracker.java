@@ -125,7 +125,8 @@ public class ShinyTracker {
         final double d = entity.getWidth() / 2.5D + 0.2D;
         final double h = entity.getHeight() / 2.5D - 0.5D;
 
-        int amount = 5;
+        double boxSize = Math.cbrt(entity.getRenderBoundingBox().getXSize() * entity.getRenderBoundingBox().getYSize() * entity.getRenderBoundingBox().getZSize());
+        int amount = (int) Math.max(5, Math.min(boxSize * 5, 50));
         int div = 360 / amount;
 
         for (int i = 0; i < amount; i++) {

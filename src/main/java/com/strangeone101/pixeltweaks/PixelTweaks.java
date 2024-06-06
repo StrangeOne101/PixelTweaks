@@ -34,6 +34,7 @@ import java.util.Set;
 public class PixelTweaks {
 
     public static final String MODID = "pixeltweaks";
+    public static final boolean CLIENT_ONLY = false;
 
     public static final int SHINY_COLOR = 0xe8aa00;
 
@@ -70,9 +71,13 @@ public class PixelTweaks {
             new ClientListener();
         }
 
-        new CommonListener();
+        if (!CLIENT_ONLY) {
+            new CommonListener();
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::initializeTweaks);
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(this::initializeTweaks);
+        }
+
+
 
         //FEATURES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
@@ -93,7 +98,6 @@ public class PixelTweaks {
         LOGGER.info("Initializing tweaks");
         new Healer();
         new NewGamerules();
-        new TridentDrops();
         new FoxImmunity();
         new AntiPokeTrample();
         new PokeChat();

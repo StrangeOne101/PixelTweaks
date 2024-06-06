@@ -32,6 +32,7 @@ public class SubmitPokemonTask extends PokemonTask {
     }
     public Party party = Party.ONLY_PARTY;
     public Tristate hasOT = Tristate.DEFAULT;
+    public boolean consumePokemon = true;
 
     public SubmitPokemonTask(Quest q) {
         super(q);
@@ -44,12 +45,12 @@ public class SubmitPokemonTask extends PokemonTask {
 
     @Override
     public long getMaxProgress() {
-        return this.count;
+        return !this.consumePokemon ? 1 : this.count;
     }
 
     @Override
     public boolean consumesResources() {
-        return true;
+        return consumePokemon;
     }
 
     @Override
@@ -62,6 +63,7 @@ public class SubmitPokemonTask extends PokemonTask {
         super.writeData(nbt);
         nbt.putByte("party", (byte) this.party.ordinal());
         hasOT.write(nbt, "hasOT");
+        nbt.putBoolean("consumePokemon", this.consumePokemon);
     }
 
     @Override
@@ -69,6 +71,7 @@ public class SubmitPokemonTask extends PokemonTask {
         super.readData(nbt);
         this.party = Party.values()[nbt.getByte("party")];
         this.hasOT = Tristate.read(nbt, "hasOT");
+        this.consumePokemon = nbt.getBoolean("consumePokemon");
     }
 
     @Override
@@ -76,6 +79,7 @@ public class SubmitPokemonTask extends PokemonTask {
         super.writeNetData(buffer);
         buffer.writeByte(this.party.ordinal());
         hasOT.write(buffer);
+        buffer.writeBoolean(this.consumePokemon);
     }
 
     @Override
@@ -83,6 +87,7 @@ public class SubmitPokemonTask extends PokemonTask {
         super.readNetData(buffer);
         this.party = Party.values()[buffer.readByte()];
         this.hasOT = Tristate.read(buffer);
+        this.consumePokemon = buffer.readBoolean();
     }
 
     @Override
@@ -93,11 +98,14 @@ public class SubmitPokemonTask extends PokemonTask {
                 .nameKey(v -> "pixeltweaks.party." + v.name().toLowerCase())
                 .create());
         config.addTristate("hasOT", this.hasOT, v -> this.hasOT = v, Tristate.DEFAULT);
+        config.addBool("consumePokemon", this.consumePokemon, v -> this.consumePokemon = v, true);
     }
 
     @Override
     public void addMouseOverText(TooltipList list, TeamData teamData) {
-        list.add(new TranslationTextComponent("ftbquests.task.pixelmon.submit_pokemon.lore",
+        String key = "ftbquests.task.pixelmon.submit_pokemon.lore";
+        if (!consumePokemon) key += "NoConsume";
+        list.add(new TranslationTextComponent(key,
                 new TranslationTextComponent("pixeltweaks.party." + this.party.name().toLowerCase())).mergeStyle(TextFormatting.GRAY));
         super.addMouseOverText(list, teamData);
     }
@@ -118,7 +126,8 @@ public class SubmitPokemonTask extends PokemonTask {
                         if (pokemon != null && (this.cachedSpec == null || this.cachedSpec.matches(pokemon) != this.invert) && (this.hasOT.isDefault()
                                 || pokemon.getOriginalTrainerUUID().equals(player.getUniqueID()) == this.hasOT.isTrue())) {
                             teamData.addProgress(this, 1L);
-                            pcbox.set(slot, null);
+                            if (this.consumePokemon) //Only consume if the task is set to consume
+                                pcbox.set(slot, null);
                             return;
                         }
                     }
@@ -133,7 +142,8 @@ public class SubmitPokemonTask extends PokemonTask {
                     if (pokemon != null && (this.cachedSpec == null || this.cachedSpec.matches(pokemon) != this.invert) && (this.hasOT.isDefault()
                             || pokemon.getOriginalTrainerUUID().equals(player.getUniqueID()) == this.hasOT.isTrue())) {
                         teamData.addProgress(this, 1L);
-                        StorageProxy.getParty(player).set(slot, null);
+                        if (this.consumePokemon) //Only consume if the task is set to consume
+                            StorageProxy.getParty(player).set(slot, null);
                         return;
                     }
                 }
