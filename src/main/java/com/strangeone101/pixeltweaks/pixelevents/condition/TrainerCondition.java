@@ -3,9 +3,13 @@ package com.strangeone101.pixeltweaks.pixelevents.condition;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
 import com.pixelmonmod.pixelmon.api.storage.TrainerPartyStorage;
+import com.pixelmonmod.pixelmon.battles.controller.BattleController;
+import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.entities.npcs.NPCTrainer;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.pixelevents.Condition;
+
+import java.util.List;
 
 public class TrainerCondition extends Condition<NPCTrainer> {
     public String trainerType;
@@ -35,9 +39,16 @@ public class TrainerCondition extends Condition<NPCTrainer> {
 
     @Override
     public NPCTrainer itemFromPixelmon(PixelmonEntity entity) {
-        if (entity.getOwner() instanceof NPCTrainer) {
-            return (NPCTrainer) entity.getOwner();
+        BattleController bt = entity.battleController;
+        List<BattleParticipant> participants = bt.participants;
+        for (BattleParticipant p : participants) {
+            if (p.getEntity() instanceof NPCTrainer){
+                return (NPCTrainer) p.getEntity();
+            }
         }
+/*        if (entity.getOwner() instanceof NPCTrainer) {
+            return (NPCTrainer) entity.getOwner();
+        }*/
         return null;
     }
 
