@@ -1,8 +1,10 @@
 package com.strangeone101.pixeltweaks.integration;
 
 import com.strangeone101.pixeltweaks.TweaksConfig;
-
-import net.minecraftforge.fml.ModList;
+import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonRewardTypes;
+import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTaskTypes;
+import com.strangeone101.pixeltweaks.integration.ftbquests.TaskListener;
+import net.neoforged.fml.ModList;
 
 public class ModIntegration {
 
@@ -48,8 +50,8 @@ public class ModIntegration {
     public static void registerFTBQuestsIntegration() {
         if (!ftbQuests()) return;
 
-        //PokemonTaskTypes.register();
-        //PokemonRewardTypes.register();
-        //new TaskListener();
+        PokemonTaskTypes.register();
+        PokemonRewardTypes.register();
+        new TaskListener();
     }
 }

@@ -1,12 +1,14 @@
 package com.strangeone101.pixeltweaks.mixin;
 
 import com.pixelmonmod.pixelmon.api.battles.BattleItemScanner;
-import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
 import com.pixelmonmod.pixelmon.battles.controller.Experience;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.enums.heldItems.EnumHeldItems;
+import com.pixelmonmod.pixelmon.init.registry.ItemRegistration;
+import com.pixelmonmod.pixelmon.items.HeldItem;
+import com.pixelmonmod.pixelmon.items.helpers.ItemHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.launch.MixinInitialisationError;
@@ -42,7 +44,7 @@ public class ExperienceMixin {
 
                 for (PixelmonWrapper pw : teamOwner.allPokemon) {
                     if (!attackers.contains(pw)) {
-                        if (hasExpAll || pw.getHeldItem().getHeldItemType() == EnumHeldItems.expShare) {
+                        if (hasExpAll || ((HeldItem)pw.getHeldItem().getItem()).getHeldItemType() == EnumHeldItems.expShare) {
                             calcExp(faintedPokemon, pw, 0.5D);
                         }
                     }
@@ -63,10 +65,10 @@ public class ExperienceMixin {
     @Unique
     private static ItemStack pixelTweaks$getExpAllActive() {
         if (pixelTweaks$EXP_ALL_ACTIVE == null) {
-            pixelTweaks$EXP_ALL_ACTIVE = new ItemStack(PixelmonItems.exp_all);
+            pixelTweaks$EXP_ALL_ACTIVE = new ItemStack(ItemRegistration.EXP_ALL);
             CompoundTag tag = new CompoundTag();
             tag.putBoolean("Activated", true);
-            pixelTweaks$EXP_ALL_ACTIVE.setTag(tag);
+            ItemHelper.setTag(pixelTweaks$EXP_ALL_ACTIVE, tag);
         }
         return pixelTweaks$EXP_ALL_ACTIVE;
     }

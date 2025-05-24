@@ -7,14 +7,10 @@ import com.pixelmonmod.pixelmon.api.pokemon.stats.AttackBaseTypeAdapter;
 import com.pixelmonmod.pixelmon.battles.attacks.ImmutableAttack;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Mixin(AttackBaseTypeAdapter.class)
 public class AttackBaseTypeAdapterMixin {

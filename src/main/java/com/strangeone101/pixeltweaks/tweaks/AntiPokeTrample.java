@@ -2,13 +2,13 @@ package com.strangeone101.pixeltweaks.tweaks;
 
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.TweaksConfig;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.level.BlockEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.BlockEvent;
 
 public class AntiPokeTrample {
 
     public AntiPokeTrample() {
-        MinecraftForge.EVENT_BUS.addListener(this::onTrample);
+        NeoForge.EVENT_BUS.addListener(this::onTrample);
     }
 
     public void onTrample(BlockEvent.FarmlandTrampleEvent event) {

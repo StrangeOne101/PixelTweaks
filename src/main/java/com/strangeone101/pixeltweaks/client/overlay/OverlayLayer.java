@@ -27,7 +27,7 @@ public class OverlayLayer {
             OverlayLayer layer = new OverlayLayer();
             if (!json.isJsonObject()) {
                 if (json.isJsonPrimitive() && json.getAsJsonPrimitive().isString()) {
-                    layer.texture = new ResourceLocation(json.getAsString());
+                    layer.texture = ResourceLocation.parse(json.getAsString());
                     return layer;
                 } else {
                     throw new JsonParseException("OverlayLayer must be a string or an object!");
@@ -35,7 +35,7 @@ public class OverlayLayer {
             }
             if (json.getAsJsonObject().has("offset")) layer.offset = json.getAsJsonObject().get("offset").getAsDouble();
             if (json.getAsJsonObject().has("emissive")) layer.emissive = json.getAsJsonObject().get("emissive").getAsBoolean();
-            if (json.getAsJsonObject().has("texture")) layer.texture = ResourceLocationHelper.ofTexture(new ResourceLocation(json.getAsJsonObject().get("texture").getAsString()));
+            if (json.getAsJsonObject().has("texture")) layer.texture = ResourceLocationHelper.ofTexture(ResourceLocation.parse(json.getAsJsonObject().get("texture").getAsString()));
             if (json.getAsJsonObject().has("color")) {
                 JsonElement element = json.getAsJsonObject().get("color");
                 if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isNumber()) {

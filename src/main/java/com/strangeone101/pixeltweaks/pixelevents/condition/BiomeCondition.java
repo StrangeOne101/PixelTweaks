@@ -1,22 +1,15 @@
 package com.strangeone101.pixeltweaks.pixelevents.condition;
 
-import com.google.common.collect.Sets;
-import com.pixelmonmod.pixelmon.api.config.BetterSpawnerConfig;
-import com.pixelmonmod.pixelmon.api.tags.TagsHelper;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.pixelevents.Condition;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraftforge.common.Tags;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class BiomeCondition extends Condition<ResourceLocation> {
     public BiomeCondition() {
@@ -45,9 +38,9 @@ public class BiomeCondition extends Condition<ResourceLocation> {
 
                    // TODO FIGURE THIS OUT
                 } else if (biome.contains(":")) {
-                    cachedBiomes.add(new ResourceLocation(biome.toLowerCase()));
+                    cachedBiomes.add(ResourceLocation.parse(biome.toLowerCase()));
                 } else {
-                    cachedBiomes.add(new ResourceLocation("minecraft", biome.toLowerCase()));
+                    cachedBiomes.add(ResourceLocation.fromNamespaceAndPath("minecraft", biome.toLowerCase()));
                 }
             }
         }
@@ -57,7 +50,7 @@ public class BiomeCondition extends Condition<ResourceLocation> {
 
     @Override
     public ResourceLocation itemFromPixelmon(PixelmonEntity entity) {
-        Biome biome = Minecraft.getInstance().level.getBiome(entity.getOnPos()).get();
+        Biome biome = Minecraft.getInstance().level.getBiome(entity.getOnPos()).value();
         return getBiome(biome);
     }
 

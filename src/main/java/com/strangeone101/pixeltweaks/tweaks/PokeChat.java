@@ -1,43 +1,45 @@
 package com.strangeone101.pixeltweaks.tweaks;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.Gender;
-import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
 import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
 import com.pixelmonmod.pixelmon.api.util.helpers.ItemStackHelper;
 import com.pixelmonmod.pixelmon.api.util.helpers.SpriteItemHelper;
 import com.pixelmonmod.pixelmon.battles.attacks.ImmutableAttack;
+import com.pixelmonmod.pixelmon.init.registry.ItemRegistration;
+import com.pixelmonmod.pixelmon.init.registry.PixelmonRegistry;
 import com.pixelmonmod.pixelmon.items.SpriteItem;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.TweaksConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.*;
-import net.minecraft.network.chat.contents.LiteralContents;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderTooltipEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.ItemLore;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.event.RenderTooltipEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.ServerChatEvent;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;
@@ -54,9 +56,9 @@ public class PokeChat {
 
     public PokeChat() {
         if (TweaksConfig.enablePokemonChat.get()) {
-            MinecraftForge.EVENT_BUS.addListener(this::onChat);
+            NeoForge.EVENT_BUS.addListener(this::onChat);
             if (FMLEnvironment.dist == Dist.CLIENT) {
-                MinecraftForge.EVENT_BUS.addListener(this::onItemTooltip);
+                NeoForge.EVENT_BUS.addListener(this::onItemTooltip);
             }
         }
     }
@@ -84,7 +86,7 @@ public class PokeChat {
                     }
 
                     if (pokemon != null) {
-                        Component component = pokemon.getFormattedDisplayName().copy(); //The name of the pokemon. Nickname or localized.
+                        Component component = pokemon.getDisplayName().copy(); //The name of the pokemon. Nickname or localized.
                         Style style = component.getStyle().withBold(false).withItalic(false).withColor(ChatFormatting.GREEN);
                         ((MutableComponent)component).withStyle(ChatFormatting.RESET);
 
@@ -108,8 +110,8 @@ public class PokeChat {
     }
 
     public static Component replaceInComponent(Component baseComponent, String matcher, Component replacement) {
-        if (baseComponent.getContents() instanceof LiteralContents) {
-            String baseString = ((LiteralContents) baseComponent.getContents()).text();
+        if (baseComponent.getContents() instanceof PlainTextContents.LiteralContents) {
+            String baseString = ((PlainTextContents.LiteralContents) baseComponent.getContents()).text();
 
             if (!baseString.replaceFirst(matcher, "").equals(baseString)) { //If it matches
                 String[] split = baseString.split(matcher, 2);
@@ -168,24 +170,23 @@ public class PokeChat {
 
     public ItemStack getItem(Pokemon pokemon) {
         ItemStack stack = SpriteItemHelper.getPhoto(pokemon); //Get the photo itemstack
-        CompoundTag tag = stack.getTag();
-        CompoundTag display = new CompoundTag();
+        CustomData tag = stack.get(DataComponents.CUSTOM_DATA);
 
-        MutableComponent name = (MutableComponent) pokemon.getFormattedDisplayName().copy();
+        MutableComponent name = (MutableComponent) pokemon.getDisplayName().copy();
         name.withStyle(ChatFormatting.BOLD, ChatFormatting.DARK_GREEN);
         name = name.setStyle(name.getStyle().withItalic(false));
-        if (pokemon.getFormattedNickname() != null && !pokemon.getFormattedNickname().getString().equals("") && !pokemon.isEgg()) {
+        if (pokemon.getNickname() != null && !pokemon.getNickname().getString().equals("") && !pokemon.isEgg()) {
             name.append(" (");
             name.append(pokemon.getSpecies().getNameTranslation());
             name.append(")");
         }
 
-        display.putString("Name", Component.Serializer.toJson(name)); //Set the name to the pokemon's name
-        List<String> lore = new ArrayList<>();
+
+        stack.set(DataComponents.CUSTOM_NAME, name); //Set the name to the pokemon's name
+
+        List<Component> lore = new ArrayList<>();
 
         if (pokemon.isEgg()) {
-            tag.put("display", display);
-            stack.setTag(tag);
             return stack;
         } else if (pokemon.getSpecies().is(PixelmonSpecies.MISSINGNO)) {
             return getMissingNo();
@@ -196,7 +197,8 @@ public class PokeChat {
             MutableComponent form = Component.translatable("gui.screenpokechecker.form", Component.translatable(pokemon.getForm().getTranslationKey()));
             form.setStyle(form.getStyle().withItalic(false));
             form.withStyle(ChatFormatting.GRAY);
-            lore.add(Component.Serializer.toJson(form));
+
+            lore.add(form);
         }
 
         if (!pokemon.getPalette().getName().equals("") && !pokemon.getPalette().getName().equals("none")) {
@@ -206,16 +208,16 @@ public class PokeChat {
             } else {
                 palette.withStyle(ChatFormatting.GRAY).withStyle(style -> style.withItalic(false));
             }
-            lore.add(Component.Serializer.toJson(palette));
+            lore.add(palette);
         }
-        lore.add("");
+        lore.add(Component.literal(""));
 
         MutableComponent lvl = Component.translatable("pixelmon.command.pokemoninfo.level");
         lvl.setStyle(lvl.getStyle().withItalic(false));
         lvl.withStyle(ChatFormatting.GREEN);
         lvl.append(": ");
         lvl.append(Component.literal(String.valueOf(pokemon.getPokemonLevel())).withStyle(ChatFormatting.YELLOW));
-        lore.add(Component.Serializer.toJson(lvl));
+        lore.add(lvl);
 
         if (pokemon.getGender() != Gender.NONE) {
             MutableComponent gender = Component.translatable("pixelmon.command.pokemoninfo.gender");
@@ -224,7 +226,7 @@ public class PokeChat {
             gender.append(": ");
             Style style = Style.EMPTY.withColor(pokemon.getGender() == Gender.FEMALE ? 0xff6464 : 0x6464ff).withItalic(false);
             gender.append(Component.translatable(pokemon.getGender().getTranslationKey()).withStyle(style));
-            lore.add(Component.Serializer.toJson(gender));
+            lore.add(gender);
         }
 
         MutableComponent ability = Component.translatable("pixelmon.command.pokemoninfo.ability");
@@ -242,28 +244,28 @@ public class PokeChat {
             ability.append(hidden);
         }
 
-        lore.add(Component.Serializer.toJson(ability));
+        lore.add(ability);
 
         MutableComponent pokeball = Component.translatable("gui.pokemoneditor.pokeball");
         pokeball.setStyle(pokeball.getStyle().withItalic(false));
         pokeball.withStyle(ChatFormatting.GREEN);
         pokeball.append(": ");
         pokeball.append(Component.translatable(pokemon.getBall().getTranslationKey()).withStyle(ChatFormatting.YELLOW));
-        lore.add(Component.Serializer.toJson(pokeball));
+        lore.add(pokeball);
 
-        MutableComponent growth = Component.translatable("pixelmon.command.pokemoninfo.growth");
+        /*MutableComponent growth = Component.translatable("pixelmon.command.pokemoninfo.growth");
         growth.setStyle(growth.getStyle().withItalic(false));
         growth.withStyle(ChatFormatting.GREEN);
         growth.append(": ");
         growth.append(Component.translatable(pokemon.getGrowth().getTranslationKey()).withStyle(ChatFormatting.YELLOW));
-        lore.add(Component.Serializer.toJson(growth));
+        lore.add(Component.Serializer.toJson(growth));*/
 
         MutableComponent nature = Component.translatable("pixelmon.command.pokemoninfo.nature");
         nature.setStyle(nature.getStyle().withItalic(false));
         nature.withStyle(ChatFormatting.GREEN);
         nature.append(": ");
         nature.append(Component.translatable(pokemon.getNature().getTranslationKey()).withStyle(ChatFormatting.YELLOW));
-        lore.add(Component.Serializer.toJson(nature));
+        lore.add(nature);
 
         MutableComponent moves = Component.translatable("pixelmon.command.pokemoninfo.moves");
         moves.setStyle(moves.getStyle().withItalic(false));
@@ -292,16 +294,13 @@ public class PokeChat {
                 moves.append(attackComponent);
             }
         }
-        lore.add(Component.Serializer.toJson(moves));
+        lore.add(moves);
 
-        ListTag loreToList = new ListTag();
-        for (String l : lore ) loreToList.add(StringTag.valueOf(l));
+        ItemLore itemLore = new ItemLore(lore);
+        stack.set(DataComponents.LORE, itemLore); //Set the lore to the pokemon's info
 
-        display.put("Lore", NbtOps.INSTANCE.createList(loreToList.stream()));
 
-        tag.put("display", display);
-        tag.putBoolean("PokeChat", true);
-        stack.setTag(tag);
+        stack.set(DataComponents.CUSTOM_DATA, tag.update(t -> t.putBoolean("PokeChat", true)));
         return stack;
     }
 
@@ -311,11 +310,9 @@ public class PokeChat {
         MutableComponent name = pokemon.getTranslatedName();
         name.withStyle(ChatFormatting.BOLD, ChatFormatting.DARK_GREEN);
         name = name.setStyle(name.getStyle().withItalic(false));
-        CompoundTag tag = new CompoundTag();
-        CompoundTag display = new CompoundTag();
 
-        display.putString("Name", Component.Serializer.toJson(name)); //Set the name to the pokemon's name
-        List<String> lore = new ArrayList<>();
+        stack.set(DataComponents.CUSTOM_NAME, name); //Set the name to the pokemon's name
+        List<Component> lore = new ArrayList<>();
         int lines = ThreadLocalRandom.current().nextInt(5) + 5;
 
         for (int i = 0; i < lines; i++) {
@@ -326,23 +323,19 @@ public class PokeChat {
                 s += chars[(i * 7 + length + j * 3) % 7];
             }
             MutableComponent stc = Component.literal(s);
-            lore.add(Component.Serializer.toJson(stc.setStyle(stc.getStyle().withItalic(false).withColor(ChatFormatting.WHITE))));
+            lore.add(stc.setStyle(stc.getStyle().withItalic(false).withColor(ChatFormatting.WHITE)));
         }
 
-        ListTag loreToList = new ListTag();
-        for (String l : lore ) loreToList.add(StringTag.valueOf(l));
-
-        display.put("Lore", NbtOps.INSTANCE.createList(loreToList.stream()));
-
-        tag.put("display", display);
-        stack.setTag(tag);
+        stack.set(DataComponents.LORE, new ItemLore(lore)); //Set the lore to the pokemon's info
+        CustomData tag = stack.get(DataComponents.CUSTOM_DATA);
+        stack.set(DataComponents.CUSTOM_DATA, tag.update(t -> t.putBoolean("PokeChat", true)));
         return stack;
     }
 
     @OnlyIn(Dist.CLIENT)
     public void onItemTooltip(RenderTooltipEvent.Pre event) {
-        if (event.getItemStack().getItem() == PixelmonItems.pixelmon_sprite.asItem()) {
-            if (event.getItemStack().hasTag() && event.getItemStack().getTag().getBoolean("PokeChat")) {
+        if (event.getItemStack().getItem() == ItemRegistration.PIXELMON_SPRITE.get()) {
+            if (event.getItemStack().get(DataComponents.CUSTOM_DATA) != null && event.getItemStack().get(DataComponents.CUSTOM_DATA).contains("PokeChat")) {
 
                 renderItem(event.getGraphics(), event.getItemStack(), event.getX() + event.getGraphics().guiWidth() - 48, event.getY());
                 //Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(event.getStack(), event.getX() + event.getWidth() - 19, event.getY() + 3);
@@ -370,7 +363,7 @@ public class PokeChat {
         matrixStack.pose().translate((float)x + half, (float)y + half, 150F);
         //matrixStack.pose().translate((float)(x + 8), (float)(y + 8), (float)(150 + (bakedmodel.isGui3d() ? 1 : 0)));
         //matrixStack.setColor(1.0F, 1.0F, 1.0F, 1.0F);
-        matrixStack.pose().mulPoseMatrix((new Matrix4f()).scaling(1.0F, -1.0F, 1.0F));
+        matrixStack.pose().mulPose((new Matrix4f()).scaling(1.0F, -1.0F, 1.0F));
 
         //RenderSystem.enableDepthTest();
         //RenderSystem.enableBlend();

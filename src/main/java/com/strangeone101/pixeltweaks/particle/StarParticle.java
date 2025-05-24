@@ -8,23 +8,19 @@ import com.strangeone101.pixeltweaks.PixelTweaks;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class StarParticle extends FakeParticle {
 
     //private static IAnimatedSprite texture = loadTexture(new ResourceLocation(PixelTweaks.MODID, "star"));
-    private static final ResourceLocation tex = new ResourceLocation(PixelTweaks.MODID, "textures/particles/stars_0.png");
-    private static final ResourceLocation tex2 = new ResourceLocation(PixelTweaks.MODID, "textures/particles/stars_1.png");
+    private static final ResourceLocation tex = ResourceLocation.fromNamespaceAndPath(PixelTweaks.MODID, "textures/particles/stars_0.png");
+    private static final ResourceLocation tex2 = ResourceLocation.fromNamespaceAndPath(PixelTweaks.MODID, "textures/particles/stars_1.png");
 
     public static SpriteSet SPRITES;
 
@@ -147,6 +143,6 @@ public class StarParticle extends FakeParticle {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(PixelTweaks.MODID, "star");
+        return ResourceLocation.fromNamespaceAndPath(PixelTweaks.MODID, "star");
     }
 }

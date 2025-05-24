@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.util.helpers.SpriteItemHelper;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -14,11 +15,9 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraftforge.client.RenderTypeHelper;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -48,6 +47,11 @@ public class PokemonIngredientRenderer implements IIngredientRenderer<PokemonIng
 
     @Override
     public List<Component> getTooltip(PokemonIngredient ingredient, TooltipFlag tooltipFlag) {
+        return List.of();
+    }
+
+    @Override
+    public void getTooltip(ITooltipBuilder tooltip, PokemonIngredient ingredient, TooltipFlag tooltipFlag) {
         List<Component> allTooltips = new ArrayList<>();
         String species = ingredient.getForm().getParentSpecies().getTranslatedName().getString();
         String form = ingredient.getForm().getLocalizedName();
@@ -60,7 +64,7 @@ public class PokemonIngredientRenderer implements IIngredientRenderer<PokemonIng
         if (ingredient.getGender().isPresent()) {
             allTooltips.add(Component.literal(ChatFormatting.GRAY + ingredient.getGender().get().getLocalizedName()));
         }
-        return allTooltips;
+        tooltip.addAll(allTooltips);
     }
 
     public static void renderItem(GuiGraphics matrixStack, ItemStack stack, int x, int y, float scale) {

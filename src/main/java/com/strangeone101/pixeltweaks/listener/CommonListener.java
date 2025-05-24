@@ -5,15 +5,13 @@ import com.pixelmonmod.pixelmon.api.enums.ExperienceGainType;
 import com.pixelmonmod.pixelmon.api.events.ExperienceGainEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.SpawnEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Element;
-import com.pixelmonmod.pixelmon.entities.npcs.NPCTrainer;
+import com.pixelmonmod.pixelmon.entities.npcs.NPC;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.pixellang.LangRegistry;
 import com.strangeone101.pixeltweaks.tweaks.NewGamerules;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.GameRules;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TagsUpdatedEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
+import net.neoforged.bus.api.EventPriority;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -68,10 +66,12 @@ public class CommonListener {
                 if (!rules.getBoolean(NewGamerules.DO_POKEMON_SPAWNING)) {
                     event.setCanceled(true);
                 }
-            } else if (entity instanceof NPCTrainer) {
+            } else if (entity instanceof NPC) {
+                /*NPC npc = (NPC) entity;
+
                 if (!rules.getBoolean(NewGamerules.DO_TRAINER_SPAWNING)) {
                     event.setCanceled(true);
-                }
+                }*/
             }
         }
     }

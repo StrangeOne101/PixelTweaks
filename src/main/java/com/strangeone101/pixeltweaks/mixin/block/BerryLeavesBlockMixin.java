@@ -1,11 +1,8 @@
 package com.strangeone101.pixeltweaks.mixin.block;
 
-import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
-import com.pixelmonmod.pixelmon.blocks.ApricornLeavesBlock;
 import com.pixelmonmod.pixelmon.blocks.BerryLeavesBlock;
 import com.pixelmonmod.pixelmon.enums.BerryType;
 import com.pixelmonmod.pixelmon.enums.items.ApricornType;
-import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.TweaksConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,7 +12,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ForgeHooks;
+import net.neoforged.neoforge.common.CommonHooks;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -25,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import static com.pixelmonmod.pixelmon.blocks.BerryLeavesBlock.AGE;
 
@@ -50,10 +46,10 @@ public class BerryLeavesBlockMixin extends LeavesBlock {
             super.randomTick(state, level, pos, rand);
         } else {
             int i = (Integer)state.getValue(AGE);
-            if (i < 2 && ForgeHooks.onCropsGrowPre(level, pos, state, rand.nextInt(this.berry.growthTime) == 0)) {
+            if (i < 2 && CommonHooks.canCropGrow(level, pos, state, rand.nextInt(this.berry.growthTime) == 0)) {
                 state = (BlockState)state.setValue(AGE, i + 1);
                 level.setBlock(pos, state, 2);
-                ForgeHooks.onCropsGrowPost(level, pos, state);
+                CommonHooks.fireCropGrowPost(level, pos, state);
             }
 
             super.randomTick(state, level, pos, rand);

@@ -40,7 +40,8 @@ public abstract class InteractionBottleCapMixin implements IInteraction {
                 boolean isHt = ivs.isHyperTrained(BattleStatsType.HP) && ivs.isHyperTrained(BattleStatsType.ATTACK) && ivs.isHyperTrained(BattleStatsType.DEFENSE) && ivs.isHyperTrained(BattleStatsType.SPECIAL_ATTACK) && ivs.isHyperTrained(BattleStatsType.SPECIAL_DEFENSE) && ivs.isHyperTrained(BattleStatsType.SPEED);
                 if (!isMax && !isHt) {
                     BottlecapItem bottleCap = (BottlecapItem)itemstack.getItem();
-                    if (Pixelmon.EVENT_BUS.post(new BottleCapEvent(pixelmon, player, bottleCap.type, itemstack))) {
+                    BottleCapEvent event = Pixelmon.EVENT_BUS.post(new BottleCapEvent(pixelmon, player, bottleCap.type, itemstack));
+                    if (event.isCanceled()) {
                         return false;
                     } else {
                         if (bottleCap.type == EnumBottleCap.GOLD) {

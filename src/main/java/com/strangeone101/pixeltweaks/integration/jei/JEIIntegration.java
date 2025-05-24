@@ -1,45 +1,53 @@
 package com.strangeone101.pixeltweaks.integration.jei;
 
+import com.pixelmonmod.pixelmon.api.pokemon.item.pokeball.PokeBall;
+import com.pixelmonmod.pixelmon.api.pokemon.item.pokeball.PokeBallRegistry;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
-import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
 
+import com.pixelmonmod.pixelmon.init.registry.ItemRegistration;
+import com.pixelmonmod.pixelmon.init.registry.PixelmonDataComponents;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.ingredients.IIngredientType;
+import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
+import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 @JeiPlugin
-public class JEIIntegration implements IModPlugin {
+public class JEIIntegration implements IModPlugin, ISubtypeInterpreter<ItemStack> {
 
-    public static final ResourceLocation UID = new ResourceLocation("pixeltweaks", "jei");
+    public static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath("pixeltweaks", "jei");
 
     public static final IIngredientType<Stats> POKEMON = () -> Stats.class;
     public static final IIngredientType<PokemonIngredient> WRAPPED_POKEMON = () -> PokemonIngredient.class;
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
-        registration.useNbtForSubtypes(PixelmonItems.poke_ball);
-        registration.useNbtForSubtypes(PixelmonItems.poke_ball_lid);
-        registration.useNbtForSubtypes(PixelmonItems.tm_gen1);
-        registration.useNbtForSubtypes(PixelmonItems.tm_gen2);
-        registration.useNbtForSubtypes(PixelmonItems.tm_gen3);
-        registration.useNbtForSubtypes(PixelmonItems.tm_gen4);
-        registration.useNbtForSubtypes(PixelmonItems.tm_gen5);
-        registration.useNbtForSubtypes(PixelmonItems.tm_gen6);
-        registration.useNbtForSubtypes(PixelmonItems.tm_gen7);
-        registration.useNbtForSubtypes(PixelmonItems.tm_gen8);
-        registration.useNbtForSubtypes(PixelmonItems.tm_gen9);
-        registration.useNbtForSubtypes(PixelmonItems.tr_gen8);
+        registration.registerSubtypeInterpreter(ItemRegistration.POKE_BALL.get(), this);
+        registration.registerSubtypeInterpreter(ItemRegistration.POKE_BALL_LID.get(), this);
+        registration.registerSubtypeInterpreter(ItemRegistration.TM_GEN1.get(), this);
+        registration.registerSubtypeInterpreter(ItemRegistration.TM_GEN2.get(), this);
+        registration.registerSubtypeInterpreter(ItemRegistration.TM_GEN3.get(), this);
+        registration.registerSubtypeInterpreter(ItemRegistration.TM_GEN4.get(), this);
+        registration.registerSubtypeInterpreter(ItemRegistration.TM_GEN5.get(), this);
+        registration.registerSubtypeInterpreter(ItemRegistration.TM_GEN6.get(), this);
+        registration.registerSubtypeInterpreter(ItemRegistration.TM_GEN7.get(), this);
+        registration.registerSubtypeInterpreter(ItemRegistration.TM_GEN8.get(), this);
+        registration.registerSubtypeInterpreter(ItemRegistration.TM_GEN9.get(), this);
+        registration.registerSubtypeInterpreter(ItemRegistration.TR_GEN8.get(), this);
 
     }
 
     @Override
     public void registerIngredients(IModIngredientRegistration registration) {
-        registration.register(WRAPPED_POKEMON, new HashSet<>(), new PokemonIngredientHelper(), new PokemonIngredientRenderer());
+        registration.register(WRAPPED_POKEMON, new HashSet<>(), new PokemonIngredientHelper(), new PokemonIngredientRenderer(), PokemonIngredient.CODEC);
 
     }
 
@@ -113,5 +121,25 @@ public class JEIIntegration implements IModPlugin {
     @Override
     public ResourceLocation getPluginUid() {
         return UID;
+    }
+
+    @Override
+    public @Nullable Object getSubtypeData(ItemStack ingredient, UidContext context) {
+        if (ingredient.get(PixelmonDataComponents.POKE_BALL) != null) {
+            return ingredient.get(PixelmonDataComponents.POKE_BALL).getValue().orElse(PokeBallRegistry.POKE_BALL.getValueUnsafe());
+        } else if (ingredient.get(DataComponents.CUSTOM_DATA) != null && ingredient.get(DataComponents.CUSTOM_DATA).contains("tm")) {
+            return ingredient.get(DataComponents.CUSTOM_DATA).getUnsafe().getShort("tm");
+        }
+        return null;
+    }
+
+    @Override
+    public String getLegacyStringSubtypeInfo(ItemStack ingredient, UidContext context) {
+        if (ingredient.get(PixelmonDataComponents.POKE_BALL) != null) {
+            return ingredient.get(PixelmonDataComponents.POKE_BALL).getValue().orElse(PokeBallRegistry.POKE_BALL.getValueUnsafe()).getName();
+        } else if (ingredient.get(DataComponents.CUSTOM_DATA) != null && ingredient.get(DataComponents.CUSTOM_DATA).contains("tm")) {
+            return String.valueOf(ingredient.get(DataComponents.CUSTOM_DATA).getUnsafe().getShort("tm"));
+        }
+        return "";
     }
 }

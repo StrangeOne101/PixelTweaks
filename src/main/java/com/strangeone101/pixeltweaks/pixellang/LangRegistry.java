@@ -1,6 +1,5 @@
 package com.strangeone101.pixeltweaks.pixellang;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -10,12 +9,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Predicate;
 
 public class LangRegistry {
 
@@ -27,7 +25,7 @@ public class LangRegistry {
     public LangRegistry() {
         DEFAULTS.put("en", "en_us");
 
-        MinecraftForge.EVENT_BUS.addListener(this::registerReload);
+        NeoForge.EVENT_BUS.addListener(this::registerReload);
     }
 
     protected static String resolveLocale(String locale) {

@@ -1,22 +1,12 @@
 package com.strangeone101.pixeltweaks.pixelevents.condition;
 
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
-import com.strangeone101.pixeltweaks.mixin.client.WorldHelperMixin;
 import com.strangeone101.pixeltweaks.pixelevents.Condition;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import org.apache.commons.lang3.tuple.Triple;
 
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 public class StructureCondition extends Condition<PixelmonEntity> {

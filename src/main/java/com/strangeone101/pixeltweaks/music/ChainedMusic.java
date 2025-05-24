@@ -2,7 +2,6 @@ package com.strangeone101.pixeltweaks.music;
 
 import com.pixelmonmod.pixelmon.client.music.PixelmonMusic;
 import com.strangeone101.pixeltweaks.PixelTweaks;
-import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
 

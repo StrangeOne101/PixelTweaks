@@ -55,7 +55,7 @@ public abstract class OpponentElementMixin extends PixelmonWidget {
         RenderSystem.blendFunc(770, 771);
         ScreenHelper.drawImage(graphics, OPPONENT, (float)this.x, (float)(this.y - 3), 160.0F, 50.0F, this.zLevel);
         float healthPercent = this.enemy.health.floatValue() / (float)this.enemy.maxHealth;
-        ScreenHelper.drawBar(graphics, (double)(this.x + 44), (double)(this.y + 20), 109.0D, 10.0D, healthPercent, this.enemy.getHealthColor());
+        ScreenHelper.drawBar(graphics, (double)(this.x + 44), (double)(this.y + 20), 109.0D, 10.0D, healthPercent, this.enemy.getHealthColor(this.enemy.health.intValue(), this.enemy.maxHealth));
         ScreenHelper.drawImage(healthPercent <= 0.5F ? (healthPercent <= 0.25F ? WARNING : CAUTION) : HEALTHY, graphics, (float)(this.x - 10), (float)(this.y - 18), 60.0F, 60.0F, this.zLevel);
         float[] rgb = {1F, 1F, 1F};
         boolean boss = this.enemy.bossTier.isBoss();
@@ -86,7 +86,7 @@ public abstract class OpponentElementMixin extends PixelmonWidget {
         graphics.setColor(1F, 1F, 1F, 1F);
         this.particleEngine.drawAtOffset(graphics, this.enemy.pokemonUUID.toString(), (double)(this.x + 5), (double)(this.y + 1), (double) RandomHelper.getRandom().nextInt(26), (double)RandomHelper.getRandom().nextInt(26));
         float offset = 0.0F;
-        if (ClientStorageManager.pokedex.hasCaught(this.enemy.species)) {
+        if (ClientStorageManager.pokedex().hasCaught(this.enemy.species)) {
             ScreenHelper.drawImage(graphics, CAUGHT, (float)(this.x + 52), (float)(this.y + 5), 8.0F, 8.0F, this.zLevel);
             offset += 9.0F;
         }

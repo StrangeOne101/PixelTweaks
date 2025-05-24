@@ -16,7 +16,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.HashSet;
@@ -118,7 +117,7 @@ public class ShinyTracker {
         LocalPlayer thiz = Minecraft.getInstance().player;
         if (volume > 0) {
             ClientScheduler.schedule(3, () -> {
-                SimpleSoundInstance sound = new SimpleSoundInstance(new ResourceLocation(PixelTweaks.MODID, "sparkle"), SoundSource.PLAYERS,
+                SimpleSoundInstance sound = new SimpleSoundInstance(ResourceLocation.fromNamespaceAndPath(PixelTweaks.MODID, "sparkle"), SoundSource.PLAYERS,
                         volume, 1F, RandomSource.create(), false, 0, SoundInstance.Attenuation.LINEAR,
                         entity.getX(), entity.getY(), entity.getZ(), false);
                 Minecraft.getInstance().getSoundManager().play(sound);

@@ -1,26 +1,13 @@
 package com.strangeone101.pixeltweaks.particle;
 
-import com.google.common.base.Charsets;
-import com.strangeone101.pixeltweaks.PixelTweaks;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.JsonUtils;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.stream.Collectors;
 
 public abstract class FakeParticle extends TextureSheetParticle {
 

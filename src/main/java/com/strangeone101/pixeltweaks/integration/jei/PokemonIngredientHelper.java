@@ -39,7 +39,7 @@ public class PokemonIngredientHelper implements IIngredientHelper<PokemonIngredi
 
     @Override
     public ResourceLocation getResourceLocation(PokemonIngredient pokemonIngredient) {
-        return new ResourceLocation("pixelmon", getResourceId(pokemonIngredient));
+        return ResourceLocation.fromNamespaceAndPath("pixelmon", getResourceId(pokemonIngredient));
     }
 
     public String getResourceId(PokemonIngredient ingredient) {

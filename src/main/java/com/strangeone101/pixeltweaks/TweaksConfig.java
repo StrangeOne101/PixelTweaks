@@ -1,35 +1,45 @@
 package com.strangeone101.pixeltweaks;
 
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
 
-import java.util.ArrayList;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.List;
 
 public class TweaksConfig {
 
-    protected static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    public static final TweaksConfig CONFIG;
+    public static final ModConfigSpec CONFIG_SPEC;
 
     //Server
-    public static ForgeConfigSpec.ConfigValue<Boolean> healersDropThemselves;
-    public static ForgeConfigSpec.ConfigValue<Integer> hypertrainLevel;
-    public static ForgeConfigSpec.ConfigValue<List<String>> hypertrainBlacklist;
-    public static ForgeConfigSpec.ConfigValue<Boolean> randomlyDropRipeApricorns;
-    public static ForgeConfigSpec.ConfigValue<Boolean> foxesLoveBerries;
-    public static ForgeConfigSpec.ConfigValue<Boolean> antiTrampleCrops;
-    public static ForgeConfigSpec.ConfigValue<Boolean> backpacksIntegration;
-    public static ForgeConfigSpec.ConfigValue<Boolean> enablePokemonChat;
-    public static ForgeConfigSpec.ConfigValue<Double> catchMultiplier;
-    public static ForgeConfigSpec.ConfigValue<Double> legendaryCatchMultiplier;
-    public static ForgeConfigSpec.ConfigValue<Boolean> includeMythicals;
+    public static ModConfigSpec.ConfigValue<Boolean> healersDropThemselves;
+    public static ModConfigSpec.ConfigValue<Integer> hypertrainLevel;
+    public static ModConfigSpec.ConfigValue<List<String>> hypertrainBlacklist;
+    public static ModConfigSpec.ConfigValue<Boolean> randomlyDropRipeApricorns;
+    public static ModConfigSpec.ConfigValue<Boolean> foxesLoveBerries;
+    public static ModConfigSpec.ConfigValue<Boolean> antiTrampleCrops;
+    public static ModConfigSpec.ConfigValue<Boolean> backpacksIntegration;
+    public static ModConfigSpec.ConfigValue<Boolean> enablePokemonChat;
+    public static ModConfigSpec.ConfigValue<Double> catchMultiplier;
+    public static ModConfigSpec.ConfigValue<Double> legendaryCatchMultiplier;
+    public static ModConfigSpec.ConfigValue<Boolean> includeMythicals;
 
     //Client
-    public static ForgeConfigSpec.ConfigValue<Double> shinySparkleRange;
-    public static ForgeConfigSpec.ConfigValue<Double> shinySparkleVolume;
-    public static ForgeConfigSpec.ConfigValue<Integer> autoWrapLoreLength;
+    public static ModConfigSpec.ConfigValue<Double> shinySparkleRange;
+    public static ModConfigSpec.ConfigValue<Double> shinySparkleVolume;
+    public static ModConfigSpec.ConfigValue<Integer> autoWrapLoreLength;
 
-    public TweaksConfig() {
+    static {
+        Pair<TweaksConfig, ModConfigSpec> pair =
+                new ModConfigSpec.Builder().configure(TweaksConfig::new);
+
+        //Store the resulting values
+        CONFIG = pair.getLeft();
+        CONFIG_SPEC = pair.getRight();
+    }
+
+    public TweaksConfig(ModConfigSpec.Builder BUILDER) {
         BUILDER.comment("All features that require being on the client").push("Client Features");;
 
         shinySparkleRange = BUILDER.comment("The range in which shinies will sparkle. Set to -1 to disable. Default: 25.0")
@@ -77,10 +87,5 @@ public class TweaksConfig {
                 .define("includeMythicals", true);
 
         BUILDER.pop();*/
-
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, BUILDER.build(), PixelTweaks.MODID + ".toml");
     }
-
-
-
 }

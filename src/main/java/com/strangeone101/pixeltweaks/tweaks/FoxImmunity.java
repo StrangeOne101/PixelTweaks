@@ -9,15 +9,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageSources;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 import java.util.Optional;
 
@@ -27,7 +24,7 @@ public class FoxImmunity {
         if (TweaksConfig.foxesLoveBerries.get()) {
             PixelTweaks.LOGGER.info("Registered fox immunity tweak");
 
-            MinecraftForge.EVENT_BUS.addListener(this::onEntityTakeDamage);
+            NeoForge.EVENT_BUS.addListener(this::onEntityTakeDamage);
             PixelmonEntity.interactionList.add(new FoxInteraction());
             DamageHandler.registerPixelmonDamageSourceHandler("berry_bushes", (source, entity) -> {
                 if (isFox(entity)) {
@@ -38,10 +35,10 @@ public class FoxImmunity {
         }
     }
 
-    public void onEntityTakeDamage(LivingDamageEvent event) {
+    public void onEntityTakeDamage(LivingDamageEvent.Pre event) {
         if (event.getSource().is(DamageTypes.SWEET_BERRY_BUSH) && event.getEntity() instanceof PixelmonEntity) {
             if (isFox((PixelmonEntity) event.getEntity())) {
-                event.setCanceled(true);
+                event.setNewDamage(0);
             }
         }
     }

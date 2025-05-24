@@ -3,7 +3,6 @@ package com.strangeone101.pixeltweaks.music;
 import com.pixelmonmod.pixelmon.client.music.PixelmonMusic;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundEventListener;
 import net.minecraft.client.sounds.WeighedSoundEvents;
@@ -16,7 +15,7 @@ public class TrackableSound extends SimpleSoundInstance implements AutoCloseable
     private boolean started;
 
 
-    public TrackableSound(ResourceLocation sound, SoundSource category, float volume, float pitch, boolean repeat, int repeatDelay, SoundInstance.Attenuation attenuationType, double x, double y, double z, boolean global) {
+    public TrackableSound(ResourceLocation sound, SoundSource category, float volume, float pitch, boolean repeat, int repeatDelay, Attenuation attenuationType, double x, double y, double z, boolean global) {
         super(sound, category, volume, pitch, RandomSource.create(), repeat, repeatDelay, attenuationType, x, y, z, global);
 
         Minecraft.getInstance().getSoundManager().addListener(this);
@@ -58,8 +57,8 @@ public class TrackableSound extends SimpleSoundInstance implements AutoCloseable
     }
 
     @Override
-    public void onPlaySound(SoundInstance soundIn, WeighedSoundEvents accessor) {
-        if (soundIn == this) {
+    public void onPlaySound(SoundInstance soundInstance, WeighedSoundEvents weighedSoundEvents, float v) {
+        if (soundInstance == this) {
             this.called = false;
             this.started = true;
         }

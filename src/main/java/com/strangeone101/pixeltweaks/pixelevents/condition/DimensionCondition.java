@@ -4,14 +4,11 @@ import com.pixelmonmod.pixelmon.api.config.BetterSpawnerConfig;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.strangeone101.pixeltweaks.pixelevents.Condition;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.dimension.DimensionType;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class DimensionCondition extends Condition<ResourceLocation> {
     public List<ResourceLocation> dimensions;

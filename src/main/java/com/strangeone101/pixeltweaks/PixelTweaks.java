@@ -5,11 +5,13 @@ import com.strangeone101.pixeltweaks.integration.ModIntegration;
 import com.strangeone101.pixeltweaks.listener.ClientListener;
 import com.strangeone101.pixeltweaks.listener.CommonListener;
 import com.strangeone101.pixeltweaks.tweaks.*;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,23 +36,21 @@ public class PixelTweaks {
     public static Set<String> UNKNOWN_MOVES = new HashSet<>();
 
 
-    public PixelTweaks() {
+    public PixelTweaks(ModContainer container) {
 
         //Make the server tell clients it is fine to join without it
         //ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
 
-        new TweaksConfig();
+        container.registerConfig(ModConfig.Type.COMMON, TweaksConfig.CONFIG_SPEC);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            new ClientListener();
+            new ClientListener(container);
         }
 
         new CommonListener();
 
         LOGGER.info("Enabling Tweaks");
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::initializeTweaks);
-
-        //FEATURES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        container.getEventBus().addListener(this::initializeTweaks);
     }
 
     public static InputStream getResource(String filename) throws IOException {
@@ -66,9 +66,9 @@ public class PixelTweaks {
     }
 
     public void initializeTweaks(FMLCommonSetupEvent event) {
-        LOGGER.info("Initializing tweaks");
+        LOGGER.debug("Initializing tweaks");
         new Healer();
-        new NewGamerules();
+        new NewGamerules(event);
         new TridentDrops();
         new FoxImmunity();
         LOGGER.debug("Anti Trample");

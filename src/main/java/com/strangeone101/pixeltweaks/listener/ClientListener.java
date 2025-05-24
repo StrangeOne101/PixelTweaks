@@ -10,23 +10,20 @@ import com.strangeone101.pixeltweaks.particle.StarParticle;
 import com.strangeone101.pixeltweaks.pixelevents.EventRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
-import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.texture.SpriteLoader;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 import java.util.Arrays;
 
@@ -35,13 +32,13 @@ public class ClientListener {
 
     private boolean enableSparkle;
 
-    public ClientListener() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onTextureStitch);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, this::onPokemonSpawn);
-        MinecraftForge.EVENT_BUS.addListener(this::onClientTick);
-        MinecraftForge.EVENT_BUS.addListener(this::onPlayerLeaveWorld);
-        MinecraftForge.EVENT_BUS.addListener(this::onRenderWorldLastEvent);
+    public ClientListener(ModContainer container) {
+        //container.getEventBus().addListener(this::clientSetup);
+        container.getEventBus().addListener(this::onTextureStitch);
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, this::onPokemonSpawn);
+        NeoForge.EVENT_BUS.addListener(this::onClientTick);
+        NeoForge.EVENT_BUS.addListener(this::onPlayerLeaveWorld);
+        NeoForge.EVENT_BUS.addListener(this::onRenderWorldLastEvent);
 
         new EventRegistry();
     }
@@ -53,7 +50,7 @@ public class ClientListener {
     }
 
     public void onPokemonSpawn(EntityJoinLevelEvent event) {
-        if (enableSparkle && event.getEntity() instanceof PixelmonEntity && !event.isCanceled() && event.getResult() != Event.Result.DENY && event.getLevel().isClientSide) {
+        if (enableSparkle && event.getEntity() instanceof PixelmonEntity && !event.isCanceled() && event.getLevel().isClientSide) {
             //PixelTweaks.LOGGER.info("Pixelmon spawned on client: " + event.getWorld().isRemote);
             ClientScheduler.schedule(1, () -> { //Wait a tick so the entity is fully loaded, so it isn't a bulbasaur
                 PixelmonEntity entity = (PixelmonEntity) event.getEntity();
@@ -69,8 +66,9 @@ public class ClientListener {
         }
     }
 
-    public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (enableSparkle && event.phase == TickEvent.Phase.END && !Minecraft.getInstance().isPaused()
+    public void onClientTick(ClientTickEvent.Post event) {
+
+        if (enableSparkle && !Minecraft.getInstance().isPaused()
                 && (Minecraft.getInstance().screen == null || Minecraft.getInstance().screen instanceof ChatScreen)) {
             ShinyTracker.INSTANCE.tick();
             ClientScheduler.tick();
@@ -87,12 +85,12 @@ public class ClientListener {
         }
     }
 
-    public void onTextureStitch(TextureStitchEvent.Post event) {
+    public void onTextureStitch(TextureAtlasStitchedEvent event) {
         if (event.getAtlas().location().equals(TextureAtlas.LOCATION_PARTICLES)) {
             PixelTweaks.LOGGER.debug("Stitching particles");
 
-            TextureAtlasSprite star0 = event.getAtlas().getSprite(new ResourceLocation(PixelTweaks.MODID, "stars_0"));
-            TextureAtlasSprite star1 = event.getAtlas().getSprite(new ResourceLocation(PixelTweaks.MODID, "stars_1"));
+            TextureAtlasSprite star0 = event.getAtlas().getSprite(ResourceLocation.fromNamespaceAndPath(PixelTweaks.MODID, "stars_0"));
+            TextureAtlasSprite star1 = event.getAtlas().getSprite(ResourceLocation.fromNamespaceAndPath(PixelTweaks.MODID, "stars_1"));
 
             StarParticle.SPRITES = new FakeParticle.FakeParticleTexture(Arrays.asList(star0, star1));
         } else {

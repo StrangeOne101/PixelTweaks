@@ -1,6 +1,8 @@
 package com.strangeone101.pixeltweaks.integration.jei;
 
+import com.mojang.serialization.Codec;
 import com.pixelmonmod.api.pokemon.PokemonSpecification;
+import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
 import com.pixelmonmod.api.pokemon.requirement.impl.GenderRequirement;
 import com.pixelmonmod.api.pokemon.requirement.impl.PaletteRequirement;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
@@ -17,10 +19,19 @@ public class PokemonIngredient {
     private Optional<Gender> gender = Optional.empty();
     private Optional<PaletteProperties> palette = Optional.empty();
 
+    private transient PokemonSpecification specification;
+
     protected Pokemon buildPokemon;
+
+    public static Codec<PokemonIngredient> CODEC = Codec.STRING.xmap((str) -> {
+        PokemonSpecification spec = PokemonSpecificationProxy.create(str).get();
+        return new PokemonIngredient(spec);
+    }, (ingredient) -> ingredient.specification.toString());
+
 
     public PokemonIngredient(PokemonSpecification specification) {
         this.buildPokemon = specification.create();
+        this.specification = specification;
 
         this.stats = buildPokemon.getForm();
 

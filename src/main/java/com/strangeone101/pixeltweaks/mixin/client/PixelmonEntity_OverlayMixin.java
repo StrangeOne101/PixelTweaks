@@ -12,8 +12,8 @@ import com.strangeone101.pixeltweaks.pixelevents.Condition;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -87,7 +87,7 @@ public class PixelmonEntity_OverlayMixin extends AbstractHoldsItemsEntity implem
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
         super.onSyncedDataUpdated(key);
 
-        if (key.getId() == PokemonBase.SYNC_POKEMON_BASE.getParameterId()) {
+        if (key.id() == PokemonBase.SYNC_POKEMON_BASE.getParameterId()) {
             this.pixelTweaks$set(this.pokemon);
         }
     }

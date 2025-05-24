@@ -1,6 +1,5 @@
 package com.strangeone101.pixeltweaks.mixin.client;
 
-import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.api.util.helpers.WorldHelper;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;

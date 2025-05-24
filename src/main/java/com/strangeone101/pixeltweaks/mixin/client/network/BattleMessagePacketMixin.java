@@ -11,7 +11,6 @@ import com.strangeone101.pixeltweaks.client.BattleHelper;
 import com.strangeone101.pixeltweaks.music.MusicEvent;
 import com.strangeone101.pixeltweaks.music.SoundManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,7 +21,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.strangeone101.pixeltweaks.music.MusicEvent.BattleAction.Action;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Predicate;
 

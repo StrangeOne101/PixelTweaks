@@ -1,6 +1,7 @@
 package com.strangeone101.pixeltweaks.mixin.client;
 
 import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
@@ -89,7 +90,7 @@ public abstract class BattleMusicMixin {
             } else {
                 PixelTweaks.LOGGER.debug("Controller is " + controller);
                 BattleParticipant player = controller.getPlayer(Minecraft.getInstance().player.getDisplayName().getString());
-                controller.getOpponentPokemon(player).stream().map(wrapper -> wrapper.entity).forEach(opponentEntities::add);
+                controller.getOpponentPokemon(player).stream().map(Pokemon::getEntity).forEach(opponentEntities::add);
             }
         }
 

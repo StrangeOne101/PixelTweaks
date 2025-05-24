@@ -1,6 +1,5 @@
 package com.strangeone101.pixeltweaks.tweaks;
 
-import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.GeneralConfig;
 import com.pixelmonmod.pixelmon.api.events.DropEvent;
@@ -11,7 +10,6 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class TridentDrops {
