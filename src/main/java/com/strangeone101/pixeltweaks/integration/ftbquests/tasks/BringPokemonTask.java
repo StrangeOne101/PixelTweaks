@@ -7,16 +7,32 @@ import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonConfig;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTask;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTaskTypes;
+import dev.ftb.mods.ftblibrary.FTBLibrary;
+import dev.ftb.mods.ftblibrary.config.ConfigCallback;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
+import dev.ftb.mods.ftblibrary.config.ConfigValue;
 import dev.ftb.mods.ftblibrary.config.NameMap;
+import dev.ftb.mods.ftblibrary.config.ResourceConfigValue;
 import dev.ftb.mods.ftblibrary.config.Tristate;
+import dev.ftb.mods.ftblibrary.config.ui.EditConfigScreen;
+import dev.ftb.mods.ftblibrary.config.ui.SelectImageResourceScreen;
+import dev.ftb.mods.ftblibrary.config.ui.SelectableResource;
+import dev.ftb.mods.ftblibrary.icon.IResourceIcon;
+import dev.ftb.mods.ftblibrary.icon.Icon;
+import dev.ftb.mods.ftblibrary.ui.Widget;
+import dev.ftb.mods.ftblibrary.ui.input.MouseButton;
+import dev.ftb.mods.ftblibrary.util.TooltipList;
+import dev.ftb.mods.ftbquests.FTBQuests;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.AbstractBooleanTask;
 import dev.ftb.mods.ftbquests.quest.task.LocationTask;
 import dev.ftb.mods.ftbquests.quest.task.Task;
 import dev.ftb.mods.ftbquests.quest.task.TaskType;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -33,6 +49,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import java.util.OptionalLong;
 
 public class BringPokemonTask extends AbstractBooleanTask {
 
@@ -163,21 +181,21 @@ public class BringPokemonTask extends AbstractBooleanTask {
         }, (int) Minecraft.getInstance().player.getZ(), Integer.MIN_VALUE, Integer.MAX_VALUE);
         config.addInt("w", this.w, (v) -> {
             this.w = v;
-        }, 1, 1, Integer.MAX_VALUE);
+        }, 5, 1, Integer.MAX_VALUE);
         config.addInt("h", this.h, (v) -> {
             this.h = v;
         }, 0, 0, Integer.MAX_VALUE);
         config.addInt("d", this.d, (v) -> {
             this.d = v;
-        }, 1, 1, Integer.MAX_VALUE);
+        }, 5, 1, Integer.MAX_VALUE);
         config.addEnum("dim", this.dimension.location().toString(), (v) -> {
             this.dimension = ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(v.toString()));
-        }, NameMap.of("minecraft:overworld", Minecraft.getInstance().getConnection().getLevel().registryAccess().registry(Registries.DIMENSION).get().keySet().toArray(new ResourceKey[0]))
+        }, NameMap.of("minecraft:overworld", Minecraft.getInstance().getConnection().levels().stream().map(v -> v.location().toString()).toArray(String[]::new))
                 .nameKey(Object::toString).create(), "minecraft:overworld");
         config.addBool("ignore_dim", this.ignoreDimension, (v) -> {
             this.ignoreDimension = v;
         }, false);
-
+        config.add("reset_button", new ResetButton(this, config), null, (v) -> {},null);
     }
 
     private String getLocation() {
@@ -236,6 +254,53 @@ public class BringPokemonTask extends AbstractBooleanTask {
 
     @Override
     public int autoSubmitOnPlayerTick() {
-        return 5;
+        return 10;
     }
+
+    public class ResetButton extends ConfigValue<String> {
+        private boolean allowEmpty = true;
+        public BringPokemonTask task;
+        public ConfigGroup group;
+
+        public ResetButton(BringPokemonTask task, ConfigGroup group) {
+            this.task = task;
+            this.group = group;
+        }
+
+        public void onClicked(Widget clicked, MouseButton button, ConfigCallback callback) {
+            Screen screen = new ConfirmScreen((result) -> {
+                if (result) {
+                    group.getValues().stream().forEach(v -> {
+                        if (v instanceof ConfigValue vi) {
+                            if (v.id.equals("x")) vi.setValue(Minecraft.getInstance().player.getBlockX());
+                            else if (v.id.equals("y")) vi.setValue(Minecraft.getInstance().player.getBlockY());
+                            else if (v.id.equals("z")) vi.setValue(Minecraft.getInstance().player.getBlockZ());
+                            else if (v.id.equals("dim")) vi.setValue(Minecraft.getInstance().player.level().dimension().location().toString());
+                        }
+                    });
+                }
+                callback.save(result);
+                clicked.getGui().openGui();
+                clicked.getGui().onInit();
+                clicked.getGui().refreshWidgets();
+
+            }, Component.translatable("ftbquests.task.pixelmon.bring_pokemon.reset_button.title"), Component.translatable("ftbquests.task.pixelmon.bring_pokemon.reset_button.description"));
+
+            Minecraft.getInstance().setScreen(screen);
+        }
+
+        public boolean isEmpty() {
+            return true;
+        }
+
+        public void addInfo(TooltipList list) {
+            super.addInfo(list);
+        }
+
+        @Override
+        public String getValue() {
+            return "[Click me!]";
+        }
+    }
+
 }
