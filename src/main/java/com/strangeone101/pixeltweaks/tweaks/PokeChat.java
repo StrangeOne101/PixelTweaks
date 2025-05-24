@@ -343,6 +343,7 @@ public class PokeChat {
     public void onItemTooltip(RenderTooltipEvent.Pre event) {
         if (event.getItemStack().getItem() == PixelmonItems.pixelmon_sprite.asItem()) {
             if (event.getItemStack().hasTag() && event.getItemStack().getTag().getBoolean("PokeChat")) {
+
                 renderItem(event.getGraphics(), event.getItemStack(), event.getX() + event.getGraphics().guiWidth() - 48, event.getY());
                 //Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(event.getStack(), event.getX() + event.getWidth() - 19, event.getY() + 3);
             }
@@ -351,19 +352,24 @@ public class PokeChat {
 
     @OnlyIn(Dist.CLIENT)
     private void renderItem(GuiGraphics matrixStack, ItemStack stack, int x, int y) {
+
         matrixStack.pose().pushPose();
-        //Minecraft.getInstance().getTextureManager().bindForSetup(TextureAtlas.LOCATION_BLOCKS);
-        //Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS).setBlurMipmap(false, false);
+        Minecraft.getInstance().getTextureManager().bindForSetup(TextureAtlas.LOCATION_BLOCKS);
+        Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS).setBlurMipmap(false, false);
         float half = 8.0F * 2;
         float full = 16.0F * 2;
+
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.applyModelViewMatrix();
 
         BakedModel bakedmodel = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
         bakedmodel = bakedmodel.getOverrides().resolve(bakedmodel, stack, null, null, 0);
 
-        matrixStack.pose().translate((float)x, (float)y, 100.0F + 400);
-        matrixStack.pose().translate(half, half, 0.0F);
+        matrixStack.pose().translate((float)x + half, (float)y + half, 150F);
         //matrixStack.pose().translate((float)(x + 8), (float)(y + 8), (float)(150 + (bakedmodel.isGui3d() ? 1 : 0)));
-        matrixStack.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        //matrixStack.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         matrixStack.pose().mulPoseMatrix((new Matrix4f()).scaling(1.0F, -1.0F, 1.0F));
 
         //RenderSystem.enableDepthTest();
@@ -371,7 +377,8 @@ public class PokeChat {
        /// RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
         //matrixStack.pose().scale(1.0F, -1.0F, 1.0F);
-        matrixStack.pose().scale(full, full, full);
+        matrixStack.pose().scale(full, -full, full);
+
 
         Minecraft.getInstance().getItemRenderer().render(stack, ItemDisplayContext.GUI, false, matrixStack.pose(), matrixStack.bufferSource(), 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
 

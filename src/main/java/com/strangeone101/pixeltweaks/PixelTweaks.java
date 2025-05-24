@@ -47,6 +47,7 @@ public class PixelTweaks {
 
         new CommonListener();
 
+        LOGGER.info("Enabling Tweaks");
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::initializeTweaks);
 
         //FEATURES.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -70,10 +71,14 @@ public class PixelTweaks {
         new NewGamerules();
         new TridentDrops();
         new FoxImmunity();
+        LOGGER.debug("Anti Trample");
         new AntiPokeTrample();
+        LOGGER.debug("Pokechat");
         new PokeChat();
+        LOGGER.debug("Mod integration");
         ModIntegration.registerBackpackIntegrations();
         ModIntegration.registerFTBQuestsIntegration();
+        LOGGER.debug("Done");
 
         /*Lazy<ZygardeCellFeature> lazyFeature = Lazy.of(() -> ZygardeCellFeature.FEATURE);
         event.enqueueWork(() -> {

@@ -1,35 +1,21 @@
 package com.strangeone101.pixeltweaks.integration.jei;
 
-import com.pixelmonmod.pixelmon.api.pokemon.drops.PokemonDropInformation;
-import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
-import com.pixelmonmod.pixelmon.api.recipe.InfuserRecipe;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
-import com.pixelmonmod.pixelmon.client.gui.machines.infuser.InfuserScreen;
-import com.pixelmonmod.pixelmon.entities.npcs.registry.DropItemRegistry;
-import com.pixelmonmod.pixelmon.init.registry.RecipeTypeRegistration;
-import com.strangeone101.pixeltweaks.PixelTweaks;
+
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.ingredients.IIngredientType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeType;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @JeiPlugin
 public class JEIIntegration implements IModPlugin {
 
     public static final ResourceLocation UID = new ResourceLocation("pixeltweaks", "jei");
-
-
 
     public static final IIngredientType<Stats> POKEMON = () -> Stats.class;
     public static final IIngredientType<PokemonIngredient> WRAPPED_POKEMON = () -> PokemonIngredient.class;
