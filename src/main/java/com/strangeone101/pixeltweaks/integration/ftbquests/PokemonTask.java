@@ -124,12 +124,7 @@ public abstract class PokemonTask extends Task {
             return pokemon;
         }
         List<Component> componentList = new ArrayList<>();
-        if (spec.getValue(PokeBallRequirement.class).isPresent()) {
-            MutableComponent ball = Component.translatable("item.pixelmon." +
-                    spec.getValue(PokeBallRequirement.class).get().getName().toLowerCase());
-            MutableComponent ballText = Component.translatable("pixeltweaks.lang.ball", ball);
-            componentList.add(ballText);
-        }
+
         if (spec.getValue(PokerusRequirement.class).isPresent()) {
             boolean pokerus = spec.getValue(PokerusRequirement.class).get() != PokerusStrain.UNINFECTED;
             if (pokerus) {
@@ -214,6 +209,13 @@ public abstract class PokemonTask extends Task {
             MutableComponent egg = Component.translatable("pixelmon.egg");
             if (!bool) egg = Component.translatable("pixeltweaks.lang.not", Component.translatable("pixelmon.egg"));
             componentList.add(egg);
+        }
+
+        if (spec.getValue(PokeBallRequirement.class).isPresent()) {
+            MutableComponent ball = Component.translatable("item.pixelmon." +
+                    spec.getValue(PokeBallRequirement.class).get().getName().toLowerCase());
+            MutableComponent ballText = Component.translatable("pixeltweaks.lang.ball", ball);
+            componentList.add(ballText);
         }
 
         MutableComponent all = Component.literal("");

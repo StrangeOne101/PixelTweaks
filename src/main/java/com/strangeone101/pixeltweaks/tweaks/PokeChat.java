@@ -1,33 +1,28 @@
 package com.strangeone101.pixeltweaks.tweaks;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.Lighting;
 import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.Gender;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
-import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
-import com.pixelmonmod.pixelmon.api.util.helpers.ItemStackHelper;
 import com.pixelmonmod.pixelmon.api.util.helpers.SpriteItemHelper;
 import com.pixelmonmod.pixelmon.battles.attacks.ImmutableAttack;
 import com.pixelmonmod.pixelmon.init.registry.ItemRegistration;
-import com.pixelmonmod.pixelmon.init.registry.PixelmonRegistry;
-import com.pixelmonmod.pixelmon.items.SpriteItem;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.TweaksConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -40,7 +35,6 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.ServerChatEvent;
-import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +47,8 @@ public class PokeChat {
     private final Pattern pokemon = Pattern.compile("\\[pokemon]", Pattern.CASE_INSENSITIVE);
     private final Pattern party = Pattern.compile("\\[party]", Pattern.CASE_INSENSITIVE);
     private final Pattern slot = Pattern.compile("\\[(?:slot|pokemon)[(1-6)]]", Pattern.CASE_INSENSITIVE);
+
+    public static final int SCALE = 3;
 
     public PokeChat() {
         if (TweaksConfig.enablePokemonChat.get()) {
@@ -333,49 +329,44 @@ public class PokeChat {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void onItemTooltip(RenderTooltipEvent.Pre event) {
+    public void onItemTooltip(RenderTooltipEvent.Color event) {
         if (event.getItemStack().getItem() == ItemRegistration.PIXELMON_SPRITE.get()) {
             if (event.getItemStack().get(DataComponents.CUSTOM_DATA) != null && event.getItemStack().get(DataComponents.CUSTOM_DATA).contains("PokeChat")) {
-
-                renderItem(event.getGraphics(), event.getItemStack(), event.getX() + event.getGraphics().guiWidth() - 48, event.getY());
-                //Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(event.getStack(), event.getX() + event.getWidth() - 19, event.getY() + 3);
+                int width = 0;
+                for (ClientTooltipComponent clienttooltipcomponent : event.getComponents()) {
+                    int tempWidth = clienttooltipcomponent.getWidth(event.getFont());
+                    if (tempWidth > width) {
+                        width = tempWidth;
+                    }
+                }
+                renderItem(event.getGraphics(), event.getItemStack(), event.getX() + width - (16 * SCALE), event.getY());
             }
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     private void renderItem(GuiGraphics matrixStack, ItemStack stack, int x, int y) {
-
-        matrixStack.pose().pushPose();
-        Minecraft.getInstance().getTextureManager().bindForSetup(TextureAtlas.LOCATION_BLOCKS);
-        Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS).setBlurMipmap(false, false);
-        float half = 8.0F * 2;
-        float full = 16.0F * 2;
-
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.applyModelViewMatrix();
+        float half = 8.0F * SCALE;
+        float full = 16.0F * SCALE;
 
         BakedModel bakedmodel = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
-        bakedmodel = bakedmodel.getOverrides().resolve(bakedmodel, stack, null, null, 0);
+        bakedmodel = bakedmodel.getOverrides().resolve(bakedmodel, stack, Minecraft.getInstance().level, Minecraft.getInstance().player, 0);
 
-        matrixStack.pose().translate((float)x + half, (float)y + half, 150F);
-        //matrixStack.pose().translate((float)(x + 8), (float)(y + 8), (float)(150 + (bakedmodel.isGui3d() ? 1 : 0)));
-        //matrixStack.setColor(1.0F, 1.0F, 1.0F, 1.0F);
-        matrixStack.pose().mulPose((new Matrix4f()).scaling(1.0F, -1.0F, 1.0F));
-
-        //RenderSystem.enableDepthTest();
-        //RenderSystem.enableBlend();
-       /// RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-
-        //matrixStack.pose().scale(1.0F, -1.0F, 1.0F);
+        matrixStack.pose().pushPose();
+        boolean lightingFlag = !bakedmodel.usesBlockLight();
+        matrixStack.pose().translate((float)x + half, (float)y + half, 150 + 1000);
         matrixStack.pose().scale(full, -full, full);
 
+        if (lightingFlag) {
+            Lighting.setupForFlatItems();
+        }
 
         Minecraft.getInstance().getItemRenderer().render(stack, ItemDisplayContext.GUI, false, matrixStack.pose(), matrixStack.bufferSource(), 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
 
         matrixStack.flush();
+        if (lightingFlag) {
+            Lighting.setupFor3DItems();
+        }
         matrixStack.pose().popPose();
     }
 }

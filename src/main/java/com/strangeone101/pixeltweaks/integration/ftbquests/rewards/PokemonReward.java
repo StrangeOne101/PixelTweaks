@@ -130,7 +130,7 @@ public class PokemonReward extends Reward {
         if (cachedSpec != null && cachedSpec.getValue(SpeciesRequirement.class).isPresent() && this.cachedSpec != null && !this.cachedSpec.toString().split(" ")[0].equalsIgnoreCase("random")) {
             return Icon.getIcon(cachedSpec.create().getSprite());
         }
-        return Icon.getIcon("pixelmon:items/pokeballs/poke_ball");
+        return Icon.getIcon("pixelmon:item/poke_balls/poke_ball");
     }
 
     @Override
