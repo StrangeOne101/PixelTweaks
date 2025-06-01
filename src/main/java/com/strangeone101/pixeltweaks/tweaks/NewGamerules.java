@@ -2,9 +2,7 @@ package com.strangeone101.pixeltweaks.tweaks;
 
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import net.minecraft.world.level.GameRules;
-import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.common.NeoForge;
 
 public class NewGamerules {
 

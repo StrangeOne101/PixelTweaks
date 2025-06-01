@@ -1,6 +1,7 @@
 package com.strangeone101.pixeltweaks.integration.jei;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.util.helpers.SpriteItemHelper;
@@ -35,14 +36,24 @@ public class PokemonIngredientRenderer implements IIngredientRenderer<PokemonIng
     }
 
     @Override
+    public int getWidth() {
+        return (int) (16 * scale);
+    }
+
+    @Override
+    public int getHeight() {
+        return (int) (16 * scale);
+    }
+
+    @Override
     public void render(GuiGraphics matrixStack, @Nullable PokemonIngredient ingredient) {
         if (ingredient == null) return;
-        RenderSystem.enableDepthTest();
-        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+        //RenderSystem.enableDepthTest();
+        //ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         Pokemon pokemon = ingredient.buildPokemon;
         //itemRenderer.renderItemAndEffectIntoGUI(SpriteItemHelper.getPhoto(pokemon), xPosition, yPosition);
         renderItem(matrixStack, SpriteItemHelper.getPhoto(pokemon), 0, 0, this.scale);
-        RenderSystem.disableBlend();
+        //RenderSystem.disableBlend();
     }
 
     @Override
@@ -67,36 +78,38 @@ public class PokemonIngredientRenderer implements IIngredientRenderer<PokemonIng
         tooltip.addAll(allTooltips);
     }
 
+
+
     public static void renderItem(GuiGraphics matrixStack, ItemStack stack, int x, int y, float scale) {
         matrixStack.pose().pushPose();
-        Minecraft.getInstance().getTextureManager().bindForSetup(TextureAtlas.LOCATION_BLOCKS);
-        Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS).setBlurMipmap(false, false);
 
         BakedModel bakedmodel = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
         bakedmodel = bakedmodel.getOverrides().resolve(bakedmodel, stack, null, null, 0);
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        //RenderSystem.enableDepthTest();
+        //RenderSystem.enableBlend();
+        //RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         float half = 8.0F * scale;
         float full = 16.0F * scale;
 
         matrixStack.setColor(1.0F, 1.0F, 1.0F, 1.0F);
-        matrixStack.pose().translate((float)x, (float)y, 100.0F + 400);
+        matrixStack.pose().translate((float)x, (float)y, 100.0F);
         matrixStack.pose().translate(half, half, 0.0F);
         matrixStack.pose().scale(1.0F, -1.0F, 1.0F);
         matrixStack.pose().scale(full, full, full);
-        MultiBufferSource.BufferSource irendertypebuffer$impl = Minecraft.getInstance().renderBuffers().bufferSource();
-        boolean flag = !bakedmodel.useAmbientOcclusion();
-        /*if (flag) {
-            RenderHelper.setupGuiFlatDiffuseLighting();
-        }*/
+        boolean flag = !bakedmodel.usesBlockLight();
+        if (flag) {
+            Lighting.setupForFlatItems();
+        }
 
-        Minecraft.getInstance().getItemRenderer().render(stack, ItemDisplayContext.GUI, false, matrixStack.pose(), irendertypebuffer$impl, 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
-        irendertypebuffer$impl.endBatch();
-        RenderSystem.enableDepthTest();
+        Minecraft.getInstance().getItemRenderer().render(stack, ItemDisplayContext.GUI, false, matrixStack.pose(), matrixStack.bufferSource(), 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
+        matrixStack.flush();
+        //RenderSystem.enableDepthTest();
 
         RenderSystem.disableDepthTest();
 
+        if (flag) {
+            Lighting.setupFor3DItems();
+        }
         matrixStack.pose().popPose();
     }
 

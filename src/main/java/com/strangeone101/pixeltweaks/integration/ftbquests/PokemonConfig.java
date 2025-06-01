@@ -9,8 +9,6 @@ import com.pixelmonmod.api.pokemon.requirement.impl.SpeciesRequirement;
 import com.pixelmonmod.api.pokemon.requirement.impl.TypeRequirement;
 import com.pixelmonmod.api.requirement.Requirement;
 import com.pixelmonmod.pixelmon.api.pokemon.Element;
-import com.pixelmonmod.pixelmon.api.pokemon.boss.BossTierRegistry;
-import com.pixelmonmod.pixelmon.api.pokemon.boss.BossTiers;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.GenderProperties;

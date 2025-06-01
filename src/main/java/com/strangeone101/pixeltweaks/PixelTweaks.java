@@ -6,7 +6,6 @@ import com.strangeone101.pixeltweaks.listener.ClientListener;
 import com.strangeone101.pixeltweaks.listener.CommonListener;
 import com.strangeone101.pixeltweaks.tweaks.*;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
@@ -41,9 +40,11 @@ public class PixelTweaks {
         //Make the server tell clients it is fine to join without it
         //ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
 
-        container.registerConfig(ModConfig.Type.COMMON, TweaksConfig.CONFIG_SPEC);
+        container.registerConfig(ModConfig.Type.COMMON, TweaksConfig.SERVER_SPEC);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
+            container.registerConfig(ModConfig.Type.CLIENT, TweaksConfig.CLIENT_SPEC);
+
             new ClientListener(container);
         }
 
@@ -79,13 +80,7 @@ public class PixelTweaks {
         ModIntegration.registerBackpackIntegrations();
         ModIntegration.registerFTBQuestsIntegration();
         LOGGER.debug("Done");
-
-        /*Lazy<ZygardeCellFeature> lazyFeature = Lazy.of(() -> ZygardeCellFeature.FEATURE);
-        event.enqueueWork(() -> {
-            ZygardeCellFeature feature = lazyFeature.get();
-            ZygardeCellFeature.CONFIGURED_FEATURE = Registry.register(WorldGenRegistries.CONFIGURED_FEATURE,
-                    new ResourceLocation(MODID, "zygarde_cell"), feature.withConfiguration(new NoFeatureConfig()));
-        });*/
+        new BetterTypeColors();
     }
 
     public static int getPixelmonVersion() {

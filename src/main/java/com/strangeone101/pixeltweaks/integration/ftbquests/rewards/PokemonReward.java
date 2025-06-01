@@ -19,7 +19,6 @@ import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonRewardTypes;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.icon.Icon;
 import dev.ftb.mods.ftbquests.client.FTBQuestsNetClient;
-import dev.ftb.mods.ftbquests.net.DisplayRewardToastMessage;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.reward.Reward;
 import dev.ftb.mods.ftbquests.quest.reward.RewardType;
@@ -34,7 +33,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class PokemonReward extends Reward {
 

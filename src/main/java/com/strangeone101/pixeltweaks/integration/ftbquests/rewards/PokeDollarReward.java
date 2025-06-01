@@ -6,7 +6,6 @@ import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.icon.Icon;
 import dev.ftb.mods.ftblibrary.util.StringUtils;
 import dev.ftb.mods.ftbquests.client.FTBQuestsNetClient;
-import dev.ftb.mods.ftbquests.net.DisplayRewardToastMessage;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.reward.Reward;
 import dev.ftb.mods.ftbquests.quest.reward.RewardType;

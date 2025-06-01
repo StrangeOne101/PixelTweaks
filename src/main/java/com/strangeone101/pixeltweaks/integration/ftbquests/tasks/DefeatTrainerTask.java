@@ -1,13 +1,9 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests.tasks;
 
-import com.pixelmonmod.pixelmon.api.pokemon.boss.BossTier;
-import com.pixelmonmod.pixelmon.api.pokemon.boss.BossTierRegistry;
 import com.pixelmonmod.pixelmon.entities.npcs.NPC;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTaskTypes;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
-import dev.ftb.mods.ftblibrary.config.NameMap;
 import dev.ftb.mods.ftblibrary.config.Tristate;
-import dev.ftb.mods.ftblibrary.icon.Color4I;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.Task;
@@ -17,7 +13,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 

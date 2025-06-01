@@ -6,7 +6,6 @@ import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTaskTypes;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.config.NameMap;
 import dev.ftb.mods.ftblibrary.icon.Icon;
-import dev.ftb.mods.ftblibrary.util.NBTUtils;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.task.TaskType;
 import net.minecraft.core.HolderLookup;

@@ -1,19 +1,26 @@
 package com.strangeone101.pixeltweaks.mixin.client;
 
+import com.pixelmonmod.pixelmon.items.BadgeCaseItem;
 import com.pixelmonmod.pixelmon.items.PixelmonItem;
+import com.pixelmonmod.pixelmon.items.PokeBallItem;
+import com.pixelmonmod.pixelmon.items.heldItems.MailItem;
 import com.strangeone101.pixeltweaks.TweaksConfig;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Mixin(PixelmonItem.class)
+@Mixin({PixelmonItem.class, PokeBallItem.class})
 public abstract class PixelmonItemMixin extends Item {
 
     @Unique
@@ -27,13 +34,21 @@ public abstract class PixelmonItemMixin extends Item {
      * @author StrangeOne101
      * @reason Overwrite the tooltip to split it based on the line length
      */
-    @Overwrite(remap = false)
+    /*@Overwrite(remap = false)
     public String getTooltipText() {
         return
                 I18n.exists(this.getDescriptionId() + ".tooltip") && I18n.get(this.getDescriptionId() + ".tooltip", new Object[0]).isEmpty() ?
                         (TweaksConfig.autoWrapLoreLength.get() > 0 ?
                                 String.join("\n", pixelTweaks$splitString(I18n.get(this.getDescriptionId() + ".tooltip"), TweaksConfig.autoWrapLoreLength.get()))
                                 : I18n.get(this.getDescriptionId() + ".tooltip", new Object[0])) : "";
+    }*/
+
+    @Inject(method = "getTooltipText(Lnet/minecraft/world/item/ItemStack;)Ljava/lang/String;", at = @At("RETURN"), remap = false, cancellable = true)
+    public void getTooltipText(ItemStack stack, CallbackInfoReturnable<String> cir) {
+        String currentText = cir.getReturnValue();
+        if (TweaksConfig.autoWrapLoreLength.get() > 0) {
+            cir.setReturnValue(String.join("\n", pixelTweaks$splitString(currentText, TweaksConfig.autoWrapLoreLength.get())));
+        }
     }
 
     /**

@@ -17,7 +17,6 @@ import com.pixelmonmod.pixelmon.api.events.battles.AttackEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.api.events.moveskills.UseMoveSkillEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.api.util.Scheduling;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
 import com.pixelmonmod.pixelmon.battles.controller.BattleStage;
