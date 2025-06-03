@@ -91,8 +91,6 @@ public class PokeLootRecipeCategory implements IRecipeCategory<PokeLootPool> {
             offset++;
         }
 
-
-
         for (int i = offset; i < allItems.size(); i++) {
             //Collections.shuffle(allItems);
             int x = (i % columns) * 18;
@@ -121,6 +119,6 @@ public class PokeLootRecipeCategory implements IRecipeCategory<PokeLootPool> {
     @Override
     public void createRecipeExtras(IRecipeExtrasBuilder builder, PokeLootPool recipe, IFocusGroup focuses) {
         IScrollGridWidget widget = builder.addScrollGridWidget(builder.getRecipeSlots().getSlots(RecipeIngredientRole.OUTPUT), 7, 4);
-        widget.setPosition(16, 0, getWidth() - 32, getHeight() - 32, HorizontalAlignment.CENTER, VerticalAlignment.BOTTOM);
+        widget.setPosition(16, 24, getWidth() - 32, getHeight() - 32, HorizontalAlignment.CENTER, VerticalAlignment.BOTTOM);
     }
 }

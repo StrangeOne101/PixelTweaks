@@ -1,6 +1,9 @@
 package com.strangeone101.pixeltweaks.integration;
 
 import com.strangeone101.pixeltweaks.TweaksConfig;
+import com.strangeone101.pixeltweaks.integration.backpack.SophisticatedBackpacksIntegration;
+import com.strangeone101.pixeltweaks.integration.backpack.TravelersBackpackIntegration;
+import com.strangeone101.pixeltweaks.integration.backpack.UsefulBackpacksIntegration;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonRewardTypes;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTaskTypes;
 import com.strangeone101.pixeltweaks.integration.ftbquests.TaskListener;
@@ -12,6 +15,7 @@ public class ModIntegration {
         return isLoaded("usefulbackpacks") && TweaksConfig.backpacksIntegration.get();
     }
 
+    @Deprecated
     public static boolean simplyBackpacks() {
         return isLoaded("simplybackpacks") && TweaksConfig.backpacksIntegration.get();
     }
@@ -41,10 +45,10 @@ public class ModIntegration {
     }
 
     public static void registerBackpackIntegrations() {
-        //new SophisticatedBackpacksIntegration();
+        new SophisticatedBackpacksIntegration();
         //new SimplyBackpacksIntegration();
-        //new UsefulBackpacksIntegration();
-        //new TravelersBackpackIntegration();
+        new UsefulBackpacksIntegration();
+        new TravelersBackpackIntegration();
     }
 
     public static void registerFTBQuestsIntegration() {

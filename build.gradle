@@ -137,6 +137,14 @@ dependencies {
     implementation "curse.maven:ftb-teams-forge-404468:6119437"
     implementation "curse.maven:architectury-api-419699:5786327"
 
+    //Backpacks
+    implementation "curse.maven:sophisticated-backpacks-422301:6586226" //Sophisticated Backpacks
+    implementation "curse.maven:sophisticated-core-618298:6596310"      //Library for the above
+    implementation "curse.maven:travelers-backpack-321117:6545260"
+    implementation "curse.maven:useful-backpacks-274338:6556482"    //Useful Backpacks
+    implementation "curse.maven:u-team-core-273744:6548234"         //Library for the above
+    implementation "curse.maven:curios-309927:6529130"
+
     // Example project dependency using a sister or child project:
     // implementation project(":myproject")
 

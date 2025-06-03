@@ -14,17 +14,19 @@
     "ability.MixinMimikyuAbility",
     "block.ApriconLeavesBlockMixin",
     "block.BerryLeavesBlockMixin",
+    "integration.FTBQuests_Pokedollar",
+    "integration.SophisticatedBackpackMixin",
     "spam.AttackBaseTypeAdapterMixin",
     "spam.AttackTypeAdapterMixin",
     "spam.ImmutableAttackTypeAdapterMixin"
   ],
   "client": [
     "client.BattleMusicMixin",
-    "client.SyncSpeciesPacketMixin",
     "client.OpponentElementMixin",
     "client.PixelmonEntity_OverlayMixin",
-    "client.WorldHelperMixin",
     "client.PixelmonItemMixin",
+    "client.SyncSpeciesPacketMixin",
+    "client.WorldHelperMixin",
     "client.network.BattleMessagePacketMixin"
   ]
 }
