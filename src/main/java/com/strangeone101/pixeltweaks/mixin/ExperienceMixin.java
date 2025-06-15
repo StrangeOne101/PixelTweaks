@@ -34,7 +34,7 @@ public class ExperienceMixin {
         for (BattleParticipant teamOwner : participants) {
             if (teamOwner.team != losingTeamOwner.team && teamOwner instanceof PlayerParticipant) {
                 PlayerParticipant player = (PlayerParticipant)teamOwner;
-                Set<PixelmonWrapper> attackers = faintedPokemon.getAttackers();
+                List<PixelmonWrapper> attackers = faintedPokemon.getOpponentPokemon();
                 for (PixelmonWrapper pw : attackers) {
                     if (pw.getParticipant() == teamOwner)
                         calcExp(faintedPokemon, pw, 1.0D);
@@ -49,7 +49,7 @@ public class ExperienceMixin {
                         }
                     }
                 }
-                player.givePlayerExp(faintedPokemon);
+                player.givePlayerExperience(faintedPokemon);
             }
         }
     }

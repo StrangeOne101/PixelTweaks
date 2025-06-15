@@ -74,7 +74,7 @@ side = "BOTH"
 [[dependencies."${mod_id}"]]
 modId = "pixelmon"
 type = "required"
-versionRange = "[9.3.0, 9.4.12]"
+versionRange = "[9.3.3, 9.4.12]"
 side = "BOTH"
 ordering = "AFTER"
 [[dependencies."${mod_id}"]]
