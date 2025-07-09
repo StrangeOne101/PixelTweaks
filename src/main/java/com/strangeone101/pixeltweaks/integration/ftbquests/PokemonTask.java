@@ -168,7 +168,7 @@ public abstract class PokemonTask extends Task {
             }
             if (spec.getValue(TypeRequirement.class).isPresent()) {
                 MutableComponent type = Component.translatable("type." +
-                        spec.getValue(TypeRequirement.class).get().getSecond().name().toLowerCase());
+                        spec.getValue(TypeRequirement.class).get().getSecond().location().getPath().toString().toLowerCase());
                 MutableComponent newType = Component.translatable("pixeltweaks.lang.type", type);
                 componentList.add(newType);
             }

@@ -8,13 +8,17 @@ import com.pixelmonmod.api.pokemon.requirement.impl.PaletteRequirement;
 import com.pixelmonmod.api.pokemon.requirement.impl.SpeciesRequirement;
 import com.pixelmonmod.api.pokemon.requirement.impl.TypeRequirement;
 import com.pixelmonmod.api.requirement.Requirement;
-import com.pixelmonmod.pixelmon.api.pokemon.Element;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.GenderProperties;
+import com.pixelmonmod.pixelmon.api.pokemon.type.Type;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
+import com.pixelmonmod.pixelmon.init.registry.PixelmonRegistry;
+import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.mixin.AbstractSpecificationMixin;
 import dev.ftb.mods.ftblibrary.config.ConfigFromString;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceKey;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -98,7 +102,7 @@ public class PokemonConfig extends ConfigFromString<PokemonSpecification> {
     public boolean isCorrect(Requirement<?, ?, ?> requirement, PokemonSpecification s) {
         if (requirement instanceof SpeciesRequirement) {
             return ((SpeciesRequirement)requirement).getValue().getValue().isPresent();
-        } else if (requirement instanceof TypeRequirement) { //Types will parse to Normal type if the type isn't valid. So we manually check
+        } else if (requirement instanceof TypeRequirement typer) { //Types will parse to Normal type if the type isn't valid. So we manually check
             int place = ((TypeRequirement)requirement).getValue().getFirst();
             String stringPlace = "type:";
             if (place != -1) stringPlace = "type" + place + ":";
@@ -108,7 +112,11 @@ public class PokemonConfig extends ConfigFromString<PokemonSpecification> {
 
             String type = s.toString().substring(inString + stringPlace.length()).split(" ")[0];
 
-            return Element.hasType(type.toUpperCase());
+
+            ResourceKey<Type> pixelmonType = Type.parseOrNull("pixelmon:" + type.toLowerCase());
+            Type realType = Minecraft.getInstance().level.registryAccess().registry(PixelmonRegistry.TYPE_REGISTRY).get().get(pixelmonType);
+            PixelTweaks.LOGGER.info(realType == null ? "null" : realType.name().getString());
+            return realType != null;
         } else if (requirement instanceof FormRequirement) {
             String form = ((FormRequirement)requirement).getValue().equalsIgnoreCase("none") //Default form
                     ? "" : ((FormRequirement)requirement).getValue();

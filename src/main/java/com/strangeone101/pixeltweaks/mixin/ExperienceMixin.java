@@ -10,6 +10,7 @@ import com.pixelmonmod.pixelmon.init.registry.ItemRegistration;
 import com.pixelmonmod.pixelmon.items.HeldItem;
 import com.pixelmonmod.pixelmon.items.helpers.ItemHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.AirItem;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.launch.MixinInitialisationError;
 import org.spongepowered.asm.mixin.Mixin;
@@ -44,7 +45,7 @@ public class ExperienceMixin {
 
                 for (PixelmonWrapper pw : teamOwner.allPokemon) {
                     if (!attackers.contains(pw)) {
-                        if (hasExpAll || ((HeldItem)pw.getHeldItem().getItem()).getHeldItemType() == EnumHeldItems.expShare) {
+                        if (hasExpAll || (!(pw.getHeldItem().getItem() instanceof AirItem) && ((HeldItem)pw.getHeldItem().getItem()).getHeldItemType() == EnumHeldItems.expShare)) {
                             calcExp(faintedPokemon, pw, 0.5D);
                         }
                     }

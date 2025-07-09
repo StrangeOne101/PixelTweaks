@@ -285,7 +285,7 @@ public class PokeChat {
                 }
 
                 ImmutableAttack attack = pokemon.getMoveset().get(i).getActualMove();
-                Component attackComponent = attack.getTranslatedName().withStyle(Style.EMPTY.withColor(attack.getAttackType().getColor()).withItalic(false));
+                Component attackComponent = attack.getTranslatedName().withStyle(Style.EMPTY.withColor(attack.getAttackType().value().color().getRGB()).withItalic(false));
 
                 moves.append(attackComponent);
             }

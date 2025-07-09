@@ -186,7 +186,7 @@ public class PokemonReward extends Reward {
             }
             if (cachedSpec.getValue(TypeRequirement.class).isPresent()) {
                 MutableComponent type = Component.translatable("type." +
-                        cachedSpec.getValue(TypeRequirement.class).get().getSecond().name().toLowerCase());
+                        cachedSpec.getValue(TypeRequirement.class).get().getSecond().location().toString().toLowerCase());
                 MutableComponent newType = Component.translatable("pixeltweaks.lang.type", type);
                 componentList.add(newType);
             }

@@ -1,13 +1,12 @@
 package com.strangeone101.pixeltweaks.tweaks;
 
-import com.pixelmonmod.pixelmon.api.pokemon.Element;
 
 import java.lang.reflect.Field;
 
 public class BetterTypeColors {
 
     public BetterTypeColors() {
-        try {
+        /*try {
             Field colorField = Element.class.getDeclaredField("color");
             colorField.setAccessible(true);
             colorField.set(Element.WATER, 0x2481ef);
@@ -33,7 +32,7 @@ public class BetterTypeColors {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 
 }

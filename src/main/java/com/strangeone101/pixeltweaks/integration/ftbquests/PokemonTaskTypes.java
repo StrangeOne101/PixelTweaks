@@ -109,7 +109,7 @@ public class PokemonTaskTypes {
                     ReleaseTask::new, () -> Icon.getIcon("pixeltweaks:textures/gui/release2.png"));
 
             BRING_POKEMON = TaskTypes.register(ResourceLocation.fromNamespaceAndPath("pixelmon", "bring_pokemon"),
-                    BringPokemonTask::new, () -> Icon.getIcon("pixelmon:item/quests/eon_ticket"));
+                    BringPokemonTask::new, () -> Icon.getIcon("pixelmon:item/quest/eon_ticket"));
 
 
         } catch (Exception e) {

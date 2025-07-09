@@ -1,23 +1,27 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests.tasks;
 
 import com.pixelmonmod.pixelmon.api.pokedex.PlayerPokedex;
-import com.pixelmonmod.pixelmon.api.pokemon.Element;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
+import com.pixelmonmod.pixelmon.api.pokemon.type.Type;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
+import com.pixelmonmod.pixelmon.init.registry.PixelmonRegistry;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.config.NameMap;
 import dev.ftb.mods.ftblibrary.icon.Icon;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.Task;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -40,7 +44,7 @@ public abstract class PokedexTask extends Task {
 
     public boolean caught = true;
     public PokedexFilter filter = PokedexFilter.ALL;
-    public Element type = Element.NORMAL;
+    public ResourceKey<Type> type = Type.NORMAL;
     public byte genMinFilter = 1;
     public byte genMaxFilter = 9;
     public boolean allowUndexable = false;
@@ -62,7 +66,7 @@ public abstract class PokedexTask extends Task {
         nbt.putBoolean("caught", caught);
         nbt.putBoolean("allowUndexable", allowUndexable);
         if (filter == PokedexFilter.TYPE) {
-            nbt.putByte("pokeType", (byte) type.ordinal());
+            nbt.putString("pokeType", type.location().toString());
         } else if (filter == PokedexFilter.GENERATION) {
             nbt.putByte("genMin", genMinFilter);
             nbt.putByte("genMax", genMaxFilter);
@@ -78,7 +82,7 @@ public abstract class PokedexTask extends Task {
         caught = nbt.getBoolean("caught");
         allowUndexable = nbt.getBoolean("allowUndexable");
         if (filter == PokedexFilter.TYPE) {
-            type = Element.values()[nbt.getByte("pokeType")];
+            type = Type.parseOrNull(nbt.getString("pokeType"));
         } else if (filter == PokedexFilter.GENERATION) {
             genMinFilter = nbt.getByte("genMin");
             genMaxFilter = nbt.getByte("genMax");
@@ -95,7 +99,7 @@ public abstract class PokedexTask extends Task {
         buffer.writeBoolean(caught);
         buffer.writeBoolean(allowUndexable);
         if (filter == PokedexFilter.TYPE) {
-            buffer.writeByte(type.ordinal());
+            buffer.writeUtf(type.location().toString());
         } else if (filter == PokedexFilter.GENERATION) {
             buffer.writeByte(genMinFilter);
             buffer.writeByte(genMaxFilter);
@@ -111,7 +115,7 @@ public abstract class PokedexTask extends Task {
         caught = buffer.readBoolean();
         allowUndexable = buffer.readBoolean();
         if (filter == PokedexFilter.TYPE) {
-            type = Element.values()[buffer.readByte()];
+            type = Type.parseOrNull(buffer.readUtf());
         } else if (filter == PokedexFilter.GENERATION) {
             genMinFilter = buffer.readByte();
             genMaxFilter = buffer.readByte();
@@ -143,10 +147,10 @@ public abstract class PokedexTask extends Task {
         config.addEnum("type", type, v -> {
             type = v;
             calculateAmount();
-        }, NameMap.of(Element.NORMAL, Element.getElements().toArray(new Element[0]))
-                .nameKey(v -> "type." + v.name().toLowerCase())
-                .icon(v -> Icon.getIcon(ResourceLocation.parse("pixeltweaks:textures/gui/types/" + v.name().toLowerCase() + ".png")))
-                .create(), Element.NORMAL);
+        }, NameMap.of(Type.NORMAL, Minecraft.getInstance().level.registryAccess().registry(PixelmonRegistry.TYPE_REGISTRY).get().registryKeySet().toArray(new ResourceKey[0]))
+                .nameKey(v -> "type." + v.location().getPath().toLowerCase())
+                .icon(v -> Icon.getIcon(ResourceLocation.parse("pixeltweaks:textures/gui/types/" + v.location().getPath().toLowerCase() + ".png")))
+                .create(), Type.NORMAL);
 
         config.addInt("genMin", genMinFilter, v -> {
             genMinFilter = v.byteValue();
