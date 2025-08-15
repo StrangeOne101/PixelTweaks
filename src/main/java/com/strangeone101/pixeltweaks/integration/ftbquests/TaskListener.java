@@ -11,11 +11,11 @@ import com.pixelmonmod.pixelmon.api.events.EggHatchEvent;
 import com.pixelmonmod.pixelmon.api.events.EvolveEvent;
 import com.pixelmonmod.pixelmon.api.events.LevelUpEvent;
 import com.pixelmonmod.pixelmon.api.events.PixelmonDeletedEvent;
-import com.pixelmonmod.pixelmon.api.events.PokedexEvent;
 import com.pixelmonmod.pixelmon.api.events.PokemonReceivedEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.AttackEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.api.events.moveskills.UseMoveSkillEvent;
+import com.pixelmonmod.pixelmon.api.pokedex.event.PokedexEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
@@ -49,6 +49,7 @@ import dev.ftb.mods.ftbquests.quest.BaseQuestFile;
 import dev.ftb.mods.ftbquests.quest.ServerQuestFile;
 import dev.ftb.mods.ftbquests.quest.TeamData;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -382,10 +383,14 @@ public class TaskListener {
                     }
                 } else if (entry.getValue() == BattleResults.VICTORY) {
                     if (pvp) {
-                        ServerPlayer other = event.getPlayers().stream().filter(p -> p != player).findFirst().get();
+                        Player other = event.getPlayers().stream().filter(p -> p != player).findFirst().get();
+                        if (!(other instanceof ServerPlayer)) {
+                            PixelTweaks.LOGGER.warn("PVP battle ended with non-server player: " + other.getName().getString());
+                            return;
+                        }
                         for (DefeatPlayersTask task : defeatPlayersTasks) {
                             if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.getQuest())) {
-                                task.onDefeat(data, other);
+                                task.onDefeat(data, (ServerPlayer) other);
                             }
                         }
                     } else if (trainer) {

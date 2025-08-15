@@ -13,12 +13,17 @@ import com.pixelmonmod.api.pokemon.requirement.impl.TypeRequirement;
 import com.pixelmonmod.api.pokemon.requirement.impl.UltraBeastRequirement;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
+import com.pixelmonmod.pixelmon.api.util.helpers.SpriteItemHelper;
+import com.pixelmonmod.pixelmon.items.SpriteItem;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonConfig;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonRewardTypes;
+import dev.architectury.networking.NetworkManager;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.icon.Icon;
 import dev.ftb.mods.ftbquests.client.FTBQuestsNetClient;
+import dev.ftb.mods.ftbquests.net.DisplayItemRewardToastMessage;
+import dev.ftb.mods.ftbquests.net.DisplayRewardToastMessage;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.reward.Reward;
 import dev.ftb.mods.ftbquests.quest.reward.RewardType;
@@ -105,8 +110,8 @@ public class PokemonReward extends Reward {
             }
 
             if (notify) {
-                FTBQuestsNetClient.displayRewardToast(this.id, Component.translatable("ftbquests.reward.pixelmon.pokemon.toast",
-                        this.getPokemon()), Icon.getIcon(pokemon.getSprite()), true);
+                NetworkManager.sendToPlayer(player, new DisplayRewardToastMessage(this.id, Component.translatable("ftbquests.reward.pixelmon.pokemon.toast",
+                        this.getPokemon()), Icon.getIcon(pokemon.getSprite()), true));
             }
             try {
                 if (!StorageProxy.getParty(player).get().add(pokemon)) {
@@ -128,7 +133,7 @@ public class PokemonReward extends Reward {
         if (cachedSpec != null && cachedSpec.getValue(SpeciesRequirement.class).isPresent() && this.cachedSpec != null && !this.cachedSpec.toString().split(" ")[0].equalsIgnoreCase("random")) {
             return Icon.getIcon(cachedSpec.create().getSprite());
         }
-        return Icon.getIcon("pixelmon:item/poke_balls/poke_ball");
+        return Icon.getIcon("pixelmon:item/pokeballs/poke_ball");
     }
 
     @Override

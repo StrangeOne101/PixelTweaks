@@ -1,14 +1,21 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests.tasks;
 
+import com.pixelmonmod.pixelmon.api.pokedex.Pokedex;
+import com.pixelmonmod.pixelmon.api.pokedex.Region;
+import com.pixelmonmod.pixelmon.api.pokemon.type.Type;
+import com.pixelmonmod.pixelmon.init.registry.PixelmonRegistry;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonTaskTypes;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.util.StringUtils;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.TaskType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -89,5 +96,38 @@ public class PokedexPercentageTask extends PokedexTask {
         this.count = (int) Math.ceil((this.percentage / 100.0) * ((double)this.maxPokedexSize));
     }
 
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public Component getAltTitle() {
+        MutableComponent catchOrRegister = Component.translatable("pixeltweaks.lang." + (this.caught ? "catch" : "seen"));
+
+        MutableComponent type = Component.literal("");
+        if (this.type != Type.MYSTERY) {
+            type.append(Minecraft.getInstance().level.registryAccess().registry(PixelmonRegistry.TYPE_REGISTRY).get().get(this.type).name());
+            type.append(" ");
+        }
+        if (this.filter != PokedexFilter.ALL) {
+            type.append(Component.translatable("pixeltweaks.lang." + this.filter.name().toLowerCase()));
+            type.append(" ");
+        }
+
+        MutableComponent region = Component.literal("");
+        if (this.region != null) {
+            region.append(Minecraft.getInstance().level.registryAccess().registry(Region.REGISTRY).get().get(this.region).name());
+            region.append(" ");
+        }
+
+        Component pokedex = Component.translatable("pixeltweaks.lang.pokedex");
+
+        if (this.pokedex != Pokedex.NATIONAL_DEX) {
+            pokedex = Minecraft.getInstance().level.registryAccess().registry(Pokedex.REGISTRY).get().get(this.pokedex).name();
+        }
+
+        region.append(pokedex);
+
+        MutableComponent title = Component.translatable("ftbquests.task." + this.getType().getTypeId().getNamespace() + '.' + this.getType().getTypeId().getPath() + ".title",
+                catchOrRegister, this.percentage, type, region);
+        return title;
+    }
 
 }

@@ -86,7 +86,7 @@ public abstract class OpponentElementMixin extends PixelmonWidget {
         graphics.setColor(1F, 1F, 1F, 1F);
         this.particleEngine.drawAtOffset(graphics, this.enemy.pokemonUUID.toString(), (double)(this.x + 5), (double)(this.y + 1), (double) RandomHelper.getRandom().nextInt(26), (double)RandomHelper.getRandom().nextInt(26));
         float offset = 0.0F;
-        if (ClientStorageManager.pokedex().hasCaught(this.enemy.species)) {
+        if (ClientStorageManager.pokedex().hasCaught(this.enemy.toPokemonBase())) {
             ScreenHelper.drawImage(graphics, CAUGHT, (float)(this.x + 52), (float)(this.y + 5), 8.0F, 8.0F, this.zLevel);
             offset += 9.0F;
         }

@@ -5,10 +5,12 @@ import com.pixelmonmod.pixelmon.entities.npcs.registry.DropItemRegistry;
 import com.pixelmonmod.pixelmon.init.registry.SoundRegistration;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonRewardTypes;
 import dev.architectury.hooks.item.ItemStackHooks;
+import dev.architectury.networking.NetworkManager;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.config.NameMap;
 import dev.ftb.mods.ftblibrary.icon.Icon;
 import dev.ftb.mods.ftbquests.client.FTBQuestsNetClient;
+import dev.ftb.mods.ftbquests.net.DisplayRewardToastMessage;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.reward.Reward;
 import dev.ftb.mods.ftbquests.quest.reward.RewardType;
@@ -45,9 +47,9 @@ public class PokelootReward extends Reward {
         }
 
         if (notify) {
-            FTBQuestsNetClient.displayRewardToast(this.id, Component.translatable("ftbquests.reward.pixelmon.pokeloot.toast",
+            NetworkManager.sendToPlayer(player, new DisplayRewardToastMessage(this.id, Component.translatable("ftbquests.reward.pixelmon.pokeloot.toast",
                     this.count, Component.translatable("ftbquests.reward.pixelmon.pokeloot." + lootTier.name().toLowerCase())),
-                    Icon.getIcon("pixeltweaks:textures/gui/pokeloot/" + (lootTier.ordinal() + 1) + ".png"), true);
+                    Icon.getIcon("pixeltweaks:textures/gui/pokeloot/" + (lootTier.ordinal() + 1) + ".png"), true));
         }
 
         for (int i = 0; i < count; i++) {

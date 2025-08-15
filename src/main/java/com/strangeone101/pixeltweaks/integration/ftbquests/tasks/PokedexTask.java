@@ -1,6 +1,11 @@
 package com.strangeone101.pixeltweaks.integration.ftbquests.tasks;
 
-import com.pixelmonmod.pixelmon.api.pokedex.PlayerPokedex;
+import static com.pixelmonmod.pixelmon.api.pokedex.status.PokedexRegistrationStatus.*;
+import com.pixelmonmod.pixelmon.api.pokedex.PokeDexStorageProxy;
+import com.pixelmonmod.pixelmon.api.pokedex.Pokedex;
+import com.pixelmonmod.pixelmon.api.pokedex.Region;
+import com.pixelmonmod.pixelmon.api.pokedex.status.PokedexRegistrationStatus;
+import com.pixelmonmod.pixelmon.api.pokemon.PokemonBase;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
 import com.pixelmonmod.pixelmon.api.pokemon.type.Type;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
@@ -16,39 +21,45 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class PokedexTask extends Task {
 
     public enum PokedexFilter {
         ALL,
-        GENERATION,
-        TYPE,
+        STARTERS,
         LEGEND,
         MYTHICAL,
         LEGEND_AND_MYTHICAL,
         ULTRA_BEAST,
-        SINGLE_MON
+        PARADOX
     }
 
-    protected int maxPokedexSize = PixelmonSpecies.getAll().size();
-    protected transient Set<Integer> filteredPokedex = new HashSet<>();
+    public static final List<Integer> PARADOX = Arrays.asList(new Integer[] {984, 985, 986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 1005, 1006, 1009, 1010, 1020, 1021, 1022, 1023});
+
+    protected transient Set<PokemonBase> filteredPokedex = new HashSet<>();
+    protected transient long maxPokedexSize = 0;
 
     public boolean caught = true;
     public PokedexFilter filter = PokedexFilter.ALL;
-    public ResourceKey<Type> type = Type.NORMAL;
-    public byte genMinFilter = 1;
-    public byte genMaxFilter = 9;
-    public boolean allowUndexable = false;
-    public int singleMon = 0;
+    public ResourceKey<Type> type = Type.MYSTERY;
+    public ResourceKey<Region> region = null;
+    public ResourceKey<Pokedex> pokedex = Pokedex.NATIONAL_DEX;
 
     public PokedexTask(long id, Quest q) {
         super(id, q);
@@ -64,15 +75,9 @@ public abstract class PokedexTask extends Task {
         super.writeData(nbt, provider);
         nbt.putByte("filter", (byte) filter.ordinal());
         nbt.putBoolean("caught", caught);
-        nbt.putBoolean("allowUndexable", allowUndexable);
-        if (filter == PokedexFilter.TYPE) {
-            nbt.putString("pokeType", type.location().toString());
-        } else if (filter == PokedexFilter.GENERATION) {
-            nbt.putByte("genMin", genMinFilter);
-            nbt.putByte("genMax", genMaxFilter);
-        } else if (filter == PokedexFilter.SINGLE_MON) {
-            nbt.putInt("singleMon", singleMon);
-        }
+        nbt.putString("pokeType", type == null ? "" : type.location().toString());
+        nbt.putString("region", region == null ? "": region.location().toString());
+        nbt.putString("pokedex", pokedex == null ? "" : pokedex.location().toString());
     }
 
     @Override
@@ -80,15 +85,13 @@ public abstract class PokedexTask extends Task {
         super.readData(nbt, provider);
         filter = PokedexFilter.values()[nbt.getByte("filter")];
         caught = nbt.getBoolean("caught");
-        allowUndexable = nbt.getBoolean("allowUndexable");
-        if (filter == PokedexFilter.TYPE) {
-            type = Type.parseOrNull(nbt.getString("pokeType"));
-        } else if (filter == PokedexFilter.GENERATION) {
-            genMinFilter = nbt.getByte("genMin");
-            genMaxFilter = nbt.getByte("genMax");
-        } else if (filter == PokedexFilter.SINGLE_MON) {
-            singleMon = nbt.getInt("singleMon");
-        }
+        String typeString = nbt.getString("pokeType");
+        type = typeString.isEmpty() ? Type.MYSTERY : ResourceKey.create(PixelmonRegistry.TYPE_REGISTRY, ResourceLocation.parse(typeString));
+        String regionString = nbt.getString("region");
+        region = regionString.isEmpty() ? null : ResourceKey.create(Region.REGISTRY, ResourceLocation.parse(regionString));
+        String pokedexString = nbt.getString("pokedex");
+        pokedex = pokedexString.isEmpty() ? Pokedex.NATIONAL_DEX : ResourceKey.create(Pokedex.REGISTRY, ResourceLocation.parse(pokedexString));
+
         calculateAmount();
     }
 
@@ -97,15 +100,9 @@ public abstract class PokedexTask extends Task {
         super.writeNetData(buffer);
         buffer.writeByte(filter.ordinal());
         buffer.writeBoolean(caught);
-        buffer.writeBoolean(allowUndexable);
-        if (filter == PokedexFilter.TYPE) {
-            buffer.writeUtf(type.location().toString());
-        } else if (filter == PokedexFilter.GENERATION) {
-            buffer.writeByte(genMinFilter);
-            buffer.writeByte(genMaxFilter);
-        } else if (filter == PokedexFilter.SINGLE_MON) {
-            buffer.writeVarInt(singleMon);
-        }
+        buffer.writeUtf(type == null ? "" : type.location().toString());
+        buffer.writeUtf(region == null ? "" : region.location().toString());
+        buffer.writeUtf(pokedex == null ? "" : pokedex.location().toString());
     }
 
     @Override
@@ -113,15 +110,12 @@ public abstract class PokedexTask extends Task {
         super.readNetData(buffer);
         filter = PokedexFilter.values()[buffer.readByte()];
         caught = buffer.readBoolean();
-        allowUndexable = buffer.readBoolean();
-        if (filter == PokedexFilter.TYPE) {
-            type = Type.parseOrNull(buffer.readUtf());
-        } else if (filter == PokedexFilter.GENERATION) {
-            genMinFilter = buffer.readByte();
-            genMaxFilter = buffer.readByte();
-        } else if (filter == PokedexFilter.SINGLE_MON) {
-            singleMon = buffer.readVarInt();
-        }
+        String typeString = buffer.readUtf();
+        type = typeString.isEmpty() ? Type.MYSTERY : ResourceKey.create(PixelmonRegistry.TYPE_REGISTRY, ResourceLocation.parse(typeString));
+        String regionString = buffer.readUtf();
+        region = regionString.isEmpty() ? null : ResourceKey.create(Region.REGISTRY, ResourceLocation.parse(regionString));
+        String pokedexString = buffer.readUtf();
+        pokedex = pokedexString.isEmpty() ? Pokedex.NATIONAL_DEX : ResourceKey.create(Pokedex.REGISTRY, ResourceLocation.parse(pokedexString));
 
         calculateAmount();
     }
@@ -133,10 +127,16 @@ public abstract class PokedexTask extends Task {
 
         PokedexFilter[] filterTypes = PokedexFilter.values();
 
-        if (this instanceof PokedexPercentageTask) {
-            filterTypes = new PokedexFilter[] { PokedexFilter.ALL, PokedexFilter.GENERATION, PokedexFilter.TYPE,
-                    PokedexFilter.LEGEND, PokedexFilter.MYTHICAL, PokedexFilter.LEGEND_AND_MYTHICAL, PokedexFilter.ULTRA_BEAST };
-        }
+        List<ResourceKey<Type>> types = new ArrayList<>();
+        types.addAll(Minecraft.getInstance().level.registryAccess().registry(PixelmonRegistry.TYPE_REGISTRY).get().registryKeySet());
+        types.remove(Type.STELLAR);
+
+        List<String> regions = new ArrayList<>();
+        regions.add("");
+        regions.addAll(Minecraft.getInstance().level.registryAccess().registry(Region.REGISTRY).get().registryKeySet().stream()
+                .map(ResourceKey::location)
+                .map(ResourceLocation::toString)
+                .toList());
 
         config.addEnum("filter", filter, v -> {
             filter = v;
@@ -147,130 +147,119 @@ public abstract class PokedexTask extends Task {
         config.addEnum("type", type, v -> {
             type = v;
             calculateAmount();
-        }, NameMap.of(Type.NORMAL, Minecraft.getInstance().level.registryAccess().registry(PixelmonRegistry.TYPE_REGISTRY).get().registryKeySet().toArray(new ResourceKey[0]))
-                .nameKey(v -> "type." + v.location().getPath().toLowerCase())
-                .icon(v -> Icon.getIcon(ResourceLocation.parse("pixeltweaks:textures/gui/types/" + v.location().getPath().toLowerCase() + ".png")))
-                .create(), Type.NORMAL);
+        }, NameMap.of(Type.MYSTERY, types)
+                .name(v -> v == Type.MYSTERY ? Component.translatable("pixeltweaks.pokedex_filter.all") : Minecraft.getInstance().level.registryAccess().registry(PixelmonRegistry.TYPE_REGISTRY).get().get(v).name())
+                .icon(v -> Icon.getIcon(Minecraft.getInstance().level.registryAccess().registry(PixelmonRegistry.TYPE_REGISTRY).get().get(v).icon().getTexture()))
+                .create(), Type.MYSTERY);
 
-        config.addInt("genMin", genMinFilter, v -> {
-            genMinFilter = v.byteValue();
+        config.addEnum("region", region == null ? "" : region.location().toString(), v -> {
+            region = v.equals("") ? null : ResourceKey.create(Region.REGISTRY, ResourceLocation.parse(v));
             calculateAmount();
-        }, (byte) 1, (byte) 1, (byte) 9);
-        config.addInt("genMax", genMaxFilter, v -> {
-            genMaxFilter = v.byteValue();
-            calculateAmount();
-        }, (byte) 9, (byte) 1, (byte) 9);
+        }, NameMap.of("", regions)
+                .name(v -> v.equals("") ? Component.translatable("pixeltweaks.pokedex_filter.globalregion") : Minecraft.getInstance().level.registryAccess().registry(Region.REGISTRY).get().get(ResourceLocation.parse(v)).name())
+                .create(), "");
 
-        if (!(this instanceof PokedexPercentageTask)) {
-            config.addInt("singleMon", singleMon, v -> {
-                singleMon = v;
-                filteredPokedex = new HashSet<>();
-                filteredPokedex.add(singleMon);
-                maxPokedexSize = 1;
-            }, 0, 1, 5000);
-        }
-        config.addBool("allowUndexable", allowUndexable, v -> {
-            allowUndexable = v;
+        config.addEnum("pokedex", pokedex, v -> {
+            pokedex = v;
             calculateAmount();
-        }, false);
+        }, NameMap.of(Pokedex.NATIONAL_DEX, Minecraft.getInstance().level.registryAccess().registry(Pokedex.REGISTRY).get().registryKeySet().toArray(new ResourceKey[0]))
+                .name(v -> Component.literal(v.location().getPath()))
+                .create(), Pokedex.NATIONAL_DEX);
     }
 
+
     protected void calculateAmount() {
-        Set<Integer> all = new HashSet<>();
 
-        if (this.filter == PokedexFilter.SINGLE_MON) {
-            all.add(this.singleMon);
-            this.filteredPokedex = all;
-            this.maxPokedexSize = all.size();
-            return;
-        }
-
-        if (this.allowUndexable) {
-            if (this.filter == PokedexFilter.TYPE) {
-                PixelmonSpecies.getAll().parallelStream().forEach(species -> {
-                    Stats form = species.getDefaultForm();
-                    if (form.getTypes().contains(this.type)) {
-                        all.add(species.getDex());
-                    }
-                });
-            } else if (this.filter == PokedexFilter.GENERATION) {
-                for (int current = this.genMinFilter; current <= this.genMaxFilter; current++) {
-                    all.addAll(PixelmonSpecies.getGenerationDex(current));
-                }
-            } else if (this.filter == PokedexFilter.LEGEND) {
-                all.addAll(PixelmonSpecies.getLegendaries(true));
-            } else if (this.filter == PokedexFilter.MYTHICAL) {
-                all.addAll(PixelmonSpecies.getMythicals());
-            } else if (this.filter == PokedexFilter.LEGEND_AND_MYTHICAL) {
-                all.addAll(PixelmonSpecies.getLegendaries(false));
-            } else if (this.filter == PokedexFilter.ULTRA_BEAST) {
-                all.addAll(PixelmonSpecies.getUltraBeasts());
-            } else {
-                for (int gen : PixelmonSpecies.getGenerations()) {
-                    all.addAll(PixelmonSpecies.getGenerationDex(gen));
+        this.filteredPokedex = getPokedex().pokemon().getPokemon().parallelStream().filter(pokemon -> {
+            //If the type is set, check if the pokemon has that type. If not, don't bother
+            //filtering further
+            if (this.type != null && this.type != Type.MYSTERY) {
+                if (!pokemon.getForm().hasType(this.type)) {
+                    return false; //Return because we are in the forEach method
                 }
             }
-        } else {
-            PixelmonSpecies.getAll().parallelStream().forEach(species -> {
-                Stats form = species.getDefaultForm();
-
-                if (form.hasTag("undexable")) return;
-
-                if (this.filter == PokedexFilter.TYPE) {
-                    if (form.getTypes().contains(this.type)) {
-                        all.add(species.getDex());
-                    }
-                } else if (this.filter == PokedexFilter.GENERATION) {
-                    if (species.getGeneration() >= this.genMinFilter && species.getGeneration() <= this.genMaxFilter) {
-                        all.add(species.getDex());
-                    }
-                } else if (this.filter == PokedexFilter.LEGEND) {
-                    if (form.getTags().isLegendary(true)) {
-                        all.add(species.getDex());
-                    }
-                } else if (this.filter == PokedexFilter.MYTHICAL) {
-                    if (form.getTags().isMythical()) {
-                        all.add(species.getDex());
-                    }
-                } else if (this.filter == PokedexFilter.LEGEND_AND_MYTHICAL) {
-                    if (form.getTags().isLegendary(false)) {
-                        all.add(species.getDex());
-                    }
-                } else if (this.filter == PokedexFilter.ULTRA_BEAST) {
-                    if (form.getTags().isUltraBeast()) {
-                        all.add(species.getDex());
-                    }
-                } else {
-                    all.add(species.getDex());
+            //If the region is set, check if the pokemon is in that region. If not, don't bother
+            boolean found = false;
+            for (Region r : getRegions()) {
+                if (r.pokemon().contains(pokemon.getDex())) {
+                    found = true;
+                    break;
                 }
-            });
-        }
+            }
+            if (!found) {
+                return false; //Return because we are in the forEach method
+            }
+            if (this.filter == PokedexFilter.STARTERS) {
+                for (Region r : getRegions()) {
+                    for (PokemonBase starter : r.starters()) {
+                        if (starter.getSpecies().equals(pokemon.getSpecies())) {
+                            return true;
+                        }
+                    }
+                }
+            } else if (this.filter == PokedexFilter.LEGEND) {
+                if (pokemon.getForm().getTags().isLegendary(true)) {
+                    return true;
+                }
+            } else if (this.filter == PokedexFilter.MYTHICAL) {
+                if (pokemon.getForm().getTags().isMythical()) {
+                    return true;
+                }
+            } else if (this.filter == PokedexFilter.LEGEND_AND_MYTHICAL) {
+                if (pokemon.getForm().getTags().isLegendary(false)) {
+                    return true;
+                }
+            } else if (this.filter == PokedexFilter.ULTRA_BEAST) {
+                if (pokemon.getForm().getTags().isUltraBeast()) {
+                    return true;
+                }
+            } else if (this.filter == PokedexFilter.PARADOX) {
+                if (PARADOX.contains(pokemon.getSpecies().getDex())) {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+            return false;
+        }).collect(Collectors.toSet());
 
-
-        this.filteredPokedex = all;
-        this.maxPokedexSize = all.size();
+        this.maxPokedexSize = filteredPokedex.size();
     }
 
     public void updatePokedex(TeamData teamData, ServerPlayer player) {
         if (teamData.isCompleted(this) || !teamData.getFile().isServerSide()) return;
 
-        int ordinalToCheck = this.caught ? 2 : 1;
-
         try {
-            PlayerPokedex dex = StorageProxy.getParty(player).get().playerPokedex;
-            int progress = (int) dex.getSeenMap().entrySet().parallelStream()
-                    .filter(entry -> this.filteredPokedex.contains(entry.getKey()) && entry.getValue().ordinal() >= ordinalToCheck
-                    ).count();
-            progress += (int) dex.formDex.rowMap().entrySet().parallelStream()
-                    .filter(entry -> this.filteredPokedex.contains(entry.getKey()) && entry.getValue().values().stream().anyMatch(e -> e >= ordinalToCheck)
-                    ).count();
-            progress = Math.min(progress, this.maxPokedexSize);
+            PokeDexStorageProxy.getStorage(player).thenAccept(pokedexStorage -> {
+                if (pokedexStorage == null) return;
 
-            teamData.setProgress(this, progress);
+                long progress = filteredPokedex.parallelStream()
+                        .filter(poke -> {
+                            if (this.caught) {
+                                return pokedexStorage.getStatus(poke) == CAUGHT;
+                            }
+                            return pokedexStorage.getStatus(poke) == SEEN || pokedexStorage.getStatus(poke) == CAUGHT;
+                        }).count();
+                progress = Math.min(progress, this.maxPokedexSize);
+                teamData.setProgress(this, (int) progress);
+
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    private Region[] getRegions() {
+        if (this.region == null) {
+            return ServerLifecycleHooks.getCurrentServer().registryAccess().registry(Region.REGISTRY).get().registryKeySet().stream()
+                    .map(ServerLifecycleHooks.getCurrentServer().registryAccess().registry(Region.REGISTRY).get()::get)
+                    .toArray(Region[]::new);
+        } else {
+            return new Region[]{ServerLifecycleHooks.getCurrentServer().registryAccess().registry(Region.REGISTRY).get().get(this.region)};
+        }
+    }
 
+    private Pokedex getPokedex() {
+        return ServerLifecycleHooks.getCurrentServer().registryAccess().registry(Pokedex.REGISTRY).get().get(this.pokedex);
     }
 }

@@ -2,10 +2,12 @@ package com.strangeone101.pixeltweaks.integration.ftbquests.rewards;
 
 import com.pixelmonmod.pixelmon.api.economy.BankAccountProxy;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonRewardTypes;
+import dev.architectury.networking.NetworkManager;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.icon.Icon;
 import dev.ftb.mods.ftblibrary.util.StringUtils;
 import dev.ftb.mods.ftbquests.client.FTBQuestsNetClient;
+import dev.ftb.mods.ftbquests.net.DisplayRewardToastMessage;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.reward.Reward;
 import dev.ftb.mods.ftbquests.quest.reward.RewardType;
@@ -68,8 +70,8 @@ public class PokeDollarReward extends Reward {
         BankAccountProxy.getBankAccountNow(ServerPlayer).add(count);
         //StorageProxy.getParty(ServerPlayer).add(count);
 
-        FTBQuestsNetClient.displayRewardToast(this.id, Component.translatable("ftbquests.reward.pixelmon.pokedollars.toast", this.count),
-                Icon.getIcon("pixelmon:textures/gui/pokedollar.png"), true);
+        NetworkManager.sendToPlayer(ServerPlayer, new DisplayRewardToastMessage(this.id, Component.translatable("ftbquests.reward.pixelmon.pokedollars.toast", this.count),
+                Icon.getIcon("pixelmon:textures/gui/pokedollar.png"), true));
     }
 
     @OnlyIn(Dist.CLIENT)

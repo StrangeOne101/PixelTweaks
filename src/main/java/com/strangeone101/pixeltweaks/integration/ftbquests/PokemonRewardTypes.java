@@ -22,7 +22,7 @@ public class PokemonRewardTypes {
                 () -> Icon.getIcon("pixelmon:textures/gui/pokedollar.png"));
 
         POKEMON = RewardTypes.register(ResourceLocation.fromNamespaceAndPath("pixelmon", "pokemon"), PokemonReward::new,
-                () -> Icon.getIcon("pixelmon:items/pokeballs/poke_ball"));
+                () -> Icon.getIcon("pixelmon:item/pokeballs/poke_ball"));
 
     }
 }

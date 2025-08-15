@@ -43,8 +43,8 @@ public class PokemonIngredientHelper implements IIngredientHelper<PokemonIngredi
     }
 
     public String getResourceId(PokemonIngredient ingredient) {
-        String species = ingredient.getForm().getParentSpecies().getName();
-        String form = ingredient.getForm().getName();
+        String species = ingredient.getForm().getParentSpecies().getName().toLowerCase();
+        String form = ingredient.getForm().getName().toLowerCase();
         if (form != null && !form.isEmpty()) species = form + "_" + species;
 
         return species;

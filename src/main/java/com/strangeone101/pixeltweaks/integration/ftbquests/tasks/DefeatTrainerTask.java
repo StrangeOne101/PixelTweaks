@@ -92,7 +92,7 @@ public class DefeatTrainerTask extends Task {
 
     public void recalculateNameCache() {
         if (customName != null && !customName.isEmpty()) {
-            if (I18n.exists(customName)) {
+            if (customName.startsWith("pixelmon.") || customName.startsWith("minecraft.")) {
                 customNameCache = Component.translatable(customName);
             } else {
                 customNameCache = Component.literal(customName);
