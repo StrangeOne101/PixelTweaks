@@ -13,16 +13,13 @@ import com.pixelmonmod.api.pokemon.requirement.impl.TypeRequirement;
 import com.pixelmonmod.api.pokemon.requirement.impl.UltraBeastRequirement;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
-import com.pixelmonmod.pixelmon.api.util.helpers.SpriteItemHelper;
-import com.pixelmonmod.pixelmon.items.SpriteItem;
 import com.strangeone101.pixeltweaks.PixelTweaks;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonConfig;
 import com.strangeone101.pixeltweaks.integration.ftbquests.PokemonRewardTypes;
 import dev.architectury.networking.NetworkManager;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.icon.Icon;
-import dev.ftb.mods.ftbquests.client.FTBQuestsNetClient;
-import dev.ftb.mods.ftbquests.net.DisplayItemRewardToastMessage;
+import dev.ftb.mods.ftblibrary.icon.IconAnimation;
 import dev.ftb.mods.ftbquests.net.DisplayRewardToastMessage;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.reward.Reward;
@@ -37,6 +34,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PokemonReward extends Reward {
@@ -132,8 +130,17 @@ public class PokemonReward extends Reward {
     public Icon getAltIcon() {
         if (cachedSpec != null && cachedSpec.getValue(SpeciesRequirement.class).isPresent() && this.cachedSpec != null && !this.cachedSpec.toString().split(" ")[0].equalsIgnoreCase("random")) {
             return Icon.getIcon(cachedSpec.create().getSprite());
+        } else {
+            int randomMon = 100;
+            List<Icon> icons = new ArrayList<>();
+            for (int i = 0; i < randomMon; i++) {
+                Pokemon pokemon = this.cachedSpec.create();
+                if (pokemon.getSprite() != null && !pokemon.getSprite().getPath().isEmpty()) {
+                    icons.add(Icon.getIcon(pokemon.getSprite()));
+                }
+            }
+            return IconAnimation.fromList(icons, false);
         }
-        return Icon.getIcon("pixelmon:item/pokeballs/poke_ball");
     }
 
     @Override
@@ -212,7 +219,7 @@ public class PokemonReward extends Reward {
             MutableComponent gender = Component.translatable(cachedSpec.getValue(GenderRequirement.class).get().getTranslationKey());
             componentList.add(gender);
         }
-        if (cachedSpec.getValue(ShinyRequirement.class).isPresent()) {
+        if (cachedSpec.getValue(ShinyRequirement.class).isPresent() || Arrays.asList(this.cachedSpec.toString().toLowerCase().split(" ")).contains("shiny")) {
             MutableComponent shiny = Component.translatable("pixelmon.palette.shiny");
             componentList.add(shiny);
         }

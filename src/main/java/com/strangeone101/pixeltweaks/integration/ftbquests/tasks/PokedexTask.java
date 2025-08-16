@@ -19,6 +19,7 @@ import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.Task;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -30,6 +31,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforgespi.Environment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -250,16 +252,28 @@ public abstract class PokedexTask extends Task {
     }
 
     private Region[] getRegions() {
+        RegistryAccess registry;
+        if (Environment.get().getDist().isClient() && Minecraft.getInstance().level != null) {
+            registry = Minecraft.getInstance().level.registryAccess();
+        } else {
+            registry = ServerLifecycleHooks.getCurrentServer().registryAccess();
+        }
         if (this.region == null) {
-            return ServerLifecycleHooks.getCurrentServer().registryAccess().registry(Region.REGISTRY).get().registryKeySet().stream()
-                    .map(ServerLifecycleHooks.getCurrentServer().registryAccess().registry(Region.REGISTRY).get()::get)
+            return registry.registry(Region.REGISTRY).get().registryKeySet().stream()
+                    .map(registry.registry(Region.REGISTRY).get()::get)
                     .toArray(Region[]::new);
         } else {
-            return new Region[]{ServerLifecycleHooks.getCurrentServer().registryAccess().registry(Region.REGISTRY).get().get(this.region)};
+            return new Region[]{registry.registry(Region.REGISTRY).get().get(this.region)};
         }
     }
 
     private Pokedex getPokedex() {
-        return ServerLifecycleHooks.getCurrentServer().registryAccess().registry(Pokedex.REGISTRY).get().get(this.pokedex);
+        RegistryAccess registry;
+        if (Environment.get().getDist().isClient() && Minecraft.getInstance().level != null) {
+            registry = Minecraft.getInstance().level.registryAccess();
+        } else {
+            registry = ServerLifecycleHooks.getCurrentServer().registryAccess();
+        }
+        return registry.registry(Pokedex.REGISTRY).get().get(this.pokedex);
     }
 }
