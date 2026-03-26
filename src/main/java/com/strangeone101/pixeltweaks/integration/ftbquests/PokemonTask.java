@@ -18,7 +18,9 @@ import com.pixelmonmod.pixelmon.api.pokemon.PokerusStrain;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.icon.Icon;
+import dev.ftb.mods.ftblibrary.util.TooltipList;
 import dev.ftb.mods.ftbquests.quest.Quest;
+import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.task.Task;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.HolderLookup;
@@ -26,6 +28,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.contents.PlainTextContents;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -224,6 +229,39 @@ public abstract class PokemonTask extends Task {
             if (i != 0) all.append(" ");
         }
         return all;
+
+    }
+
+    @Override
+    public void addMouseOverText(TooltipList list, TeamData teamData) {
+
+        List<Component> clonedList = new ArrayList<>();
+        if (list.getLines().isEmpty()) {
+            super.addMouseOverText(list, teamData);
+            return;
+        }
+        clonedList.add(list.getLines().get(0));
+        for (int i = 1; i < list.getLines().size(); i++) {
+            Component line = list.getLines().get(i);
+            Style style = line.getStyle();
+            if (line.getContents() instanceof PlainTextContents contents) {
+                String text = contents.text();
+                for (String s : text.split("\n")) {
+                    clonedList.add(Component.literal(s).withStyle(style));
+                }
+            } else if (line.getContents() instanceof TranslatableContents contents) {
+                String content = I18n.get(contents.getKey());
+                for (String s : content.split("\n")) {
+                    clonedList.add(Component.literal(s).withStyle(style));
+                }
+            } else {
+                clonedList.add(line);
+            }
+        }
+        list.getLines().clear();
+        list.getLines().addAll(clonedList);
+
+        super.addMouseOverText(list, teamData);
 
     }
 }

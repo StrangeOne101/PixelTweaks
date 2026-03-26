@@ -148,7 +148,7 @@ dependencies {
     // Example project dependency using a sister or child project:
     // implementation project(":myproject")
 
-    implementation "com.pixelmonmod.pixelmon:Pixelmon-1.21.1-9.3.7-universal:9.3.7"
+    implementation "com.pixelmonmod.pixelmon:Pixelmon-1.21.1-9.3.14-universal:9.3.14"
 
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html

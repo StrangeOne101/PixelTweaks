@@ -117,7 +117,7 @@ public class SubmitPokemonTask extends PokemonTask {
         if (teamData.getFile().isServerSide()) {
             if (this.party != Party.ONLY_PARTY) {
                 PCStorage storage = StorageProxy.getStorageManager().getPCForPlayer(player).getNow(null);
-                for (int box = 0; box < storage.getLastBox(); box++) {
+                for (int box = 0; box < storage.getBoxCount(); box++) {
                     PCBox pcbox = storage.getBox(box);
                     for (int slot = 0; slot < 30; slot++) {
                         Pokemon pokemon = pcbox.get(slot);
