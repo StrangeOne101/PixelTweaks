@@ -182,7 +182,7 @@ public class TaskListener {
         BattleController controller = event.getBattleController();
         if (controller.getStage() == BattleStage.PICKACTION || wrapper.getEntity() == null) return; //For some reason, this event is called when the battle starts without triggering a move??? On the client, it is pick action, on the server, the entity is null
         
-        for (PixelmonWrapper opponent : controller.getOpponentPokemon(wrapper)) {
+        for (PixelmonWrapper opponent : wrapper.getOpponentPokemon()) {
             if (opponent.getPlayerOwner() != null) {
                 TeamData data = ServerQuestFile.INSTANCE.getOrCreateTeamData(opponent.getPlayerOwner());
 
@@ -362,11 +362,11 @@ public class TaskListener {
             return;
         }
 
-        if (event.getBattleController().isRaid() || event.getBattleController().isSimulation()
+        if (event.getBattleController().isRaid() || event.getBattleController().isSimulatedBattle()
                 || event.getBattleController().getPlayers().isEmpty()) return;
 
         boolean pvp = event.getBattleController().isPvP();
-        boolean trainer = event.getBattleController().participants.stream().anyMatch(p -> p instanceof EntityParticipant pe && pe.isTrainer() && pe.getEntity() instanceof NPC);
+        boolean trainer = event.getBattleController().participants().stream().anyMatch(p -> p instanceof EntityParticipant pe && pe.isTrainer() && pe.getEntity() instanceof NPC);
 
         for (Map.Entry<BattleParticipant, BattleResults> entry : event.getResults().entrySet()) {
             if (entry.getKey() instanceof PlayerParticipant) {
@@ -394,7 +394,7 @@ public class TaskListener {
                             }
                         }
                     } else if (trainer) {
-                        EntityParticipant participant = (EntityParticipant) event.getBattleController().participants.stream().filter(p -> p instanceof EntityParticipant ep && p.isTrainer()).findFirst().get();
+                        EntityParticipant participant = (EntityParticipant) event.getBattleController().participants().stream().filter(p -> p instanceof EntityParticipant ep && p.isTrainer()).findFirst().get();
                         NPC trainerNPC = (NPC) participant.getEntity();
                         for (DefeatTrainerTask task : defeatTrainerTasks) {
                             if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.getQuest())) {

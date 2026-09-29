@@ -90,7 +90,7 @@ public abstract class BattleMusicMixin {
             } else {
                 PixelTweaks.LOGGER.debug("Controller is " + controller);
                 BattleParticipant player = controller.getPlayer(Minecraft.getInstance().player.getDisplayName().getString());
-                controller.getOpponentPokemon(player).stream().map(Pokemon::getEntity).forEach(opponentEntities::add);
+                player.getOpponentPokemon().stream().map(Pokemon::getEntity).forEach(opponentEntities::add);
             }
         }
 
