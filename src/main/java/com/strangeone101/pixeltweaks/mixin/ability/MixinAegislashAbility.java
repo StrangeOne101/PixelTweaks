@@ -49,11 +49,11 @@ public class MixinAegislashAbility extends AbstractAbility {
 
         if (Attack.dealsDamage(user.attack) && user.getForm().getName().endsWith(shield)) {
             user.setForm(newBlade);
-            user.bc.modifyStats(user);
+            user.modifyStats();
             user.bc.sendToAll("pixelmon.abilities.stancechange.blade", user.getNickname());
         } else if (!Attack.dealsDamage(user.attack) && user.getForm().getName().endsWith(blade)) {
             user.setForm(newShield);
-            user.bc.modifyStats(user);
+            user.modifyStats();
             user.bc.sendToAll("pixelmon.abilities.stancechange.shield", user.getNickname());
         }
 
